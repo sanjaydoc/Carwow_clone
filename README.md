@@ -2,11 +2,13 @@
 
 # 🚗 Carwow Clone
 
-### A full‑stack car marketplace to **browse, buy, sell & compare** cars
+### A pixel-faithful, full-stack clone of [carwow.co.uk](https://www.carwow.co.uk) — browse, buy, sell & compare cars
 
-*Inspired by [carwow.co.uk](https://www.carwow.co.uk) — rebuilt from scratch with a warm, Claude‑inspired orange theme and a fully mobile‑friendly UI.*
+*Built section-by-section to mirror Carwow's mobile & desktop experience, with real car photography, in a warm Claude-inspired orange theme.*
 
 <br/>
+
+[![Live demo](https://img.shields.io/badge/▶_Live_demo-sanjaydoc.github.io%2FCarwow__clone-D97757?style=for-the-badge)](https://sanjaydoc.github.io/Carwow_clone/)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-D97757.svg?style=flat-square)](LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org)
@@ -19,7 +21,7 @@
 
 <br/>
 
-![Carwow clone home page](docs/screenshots/home-desktop.png)
+![Carwow clone — home](docs/screenshots/home-hero.png)
 
 </div>
 
@@ -27,17 +29,11 @@
 
 ## 🌐 Live demo
 
-The **full interactive app** runs client-side on GitHub Pages (a backend-free
-build that uses an in-browser data layer), so you can click through the real
-thing — browse, filter, compare, save and sell — right in your browser:
+The **full interactive app** is deployed on GitHub Pages (a backend-free build that runs entirely in the browser), so you can click through the real thing — every page, flow and animation:
 
-**🔗 https://sanjaydoc.github.io/Carwow_clone/**
+### 👉 **https://sanjaydoc.github.io/Carwow_clone/**
 
-> Published from the [`docs/`](docs/) folder. To rebuild it after changing the
-> app, run `npm run build:pages` and commit the updated `docs/`. In the repo,
-> Pages is configured under **Settings → Pages → Deploy from a branch → `/docs`**.
-> Car photography is loaded from the [imagin.studio](https://imagin.studio) CDN
-> with a clean illustrated fallback.
+> Car photography loads live from a car-image CDN in your browser, with a Wikimedia fallback and a clean illustrated last resort.
 
 ---
 
@@ -45,60 +41,73 @@ thing — browse, filter, compare, save and sell — right in your browser:
 
 - [✨ Overview](#-overview)
 - [🖼️ Screenshots](#️-screenshots)
-- [🧩 Features](#-features)
+- [🧩 Pages & features](#-pages--features)
 - [🛠 Tech stack](#-tech-stack)
 - [🏗 Architecture](#-architecture)
-- [⚡ Quickstart](#-quickstart)
-  - [Prerequisites](#prerequisites)
-  - [Windows](#-windows)
-  - [macOS](#-macos)
-  - [Linux](#-linux)
-- [🔥 Development mode](#-development-mode-hot-reload)
+- [⚡ Quickstart](#-quickstart) · [Windows](#-windows) · [macOS](#-macos) · [Linux](#-linux)
+- [🔥 Dev mode](#-development-mode-hot-reload)
+- [🌍 Static / Pages build](#-static--github-pages-build)
 - [📡 API reference](#-api-reference)
 - [🗂 Project structure](#-project-structure)
-- [⚙️ Configuration](#️-configuration)
-- [❓ FAQ / Troubleshooting](#-faq--troubleshooting)
 - [📝 License](#-license)
 
 ---
 
 ## ✨ Overview
 
-**Carwow Clone** is a complete car marketplace built as a modern single‑page app on top of a REST API. Shoppers can search and filter a catalogue of new & used cars, read the specs, compare models side‑by‑side, save favourites to their account, and get an instant valuation with **competing dealer offers** when selling their own car.
+**Carwow Clone** recreates the Carwow car-marketplace experience end to end. It's a single-page React app on top of a REST API, with a **backend-free "static" mode** that lets the entire thing run in the browser for the GitHub Pages demo.
 
-The whole thing runs from **one server with one command** — the Node/Express backend serves both the `/api` routes **and** the compiled React app on a single port. No separate frontend server, no proxy juggling in production.
+The homepage is rebuilt **section-by-section** to match carwow.co.uk — a tabbed hero, promotional poster, budget & type & manufacturer browsing, "Electric is trending", Trustpilot-style reviews, guides, videos and a dark footer — and the primary journeys each have their own dedicated page: **Buying**, **Selling**, **EV Deals** and **Car Insurance**, plus car detail, compare and auth.
 
-> 💡 This is a portfolio / learning project. The car data, valuations and dealer offers are generated from sample data and simple models — they are illustrative, not real.
+> 💡 A portfolio / learning project. Car data, valuations, offers and quotes are illustrative, generated from sample data.
 
 ---
 
 ## 🖼️ Screenshots
 
-| Home (desktop) | Car detail |
+| Home | EV Deals |
 | :---: | :---: |
-| ![Home](docs/screenshots/home-desktop.png) | ![Car detail](docs/screenshots/car-detail.png) |
+| [![Home](docs/screenshots/home-desktop.png)](docs/screenshots/home-desktop.png) | [![EV Deals](docs/screenshots/ev-deals.png)](docs/screenshots/ev-deals.png) |
 
-| Browse & filter | Compare cars |
+| Sell my car | Car insurance |
 | :---: | :---: |
-| ![Browse](docs/screenshots/browse-desktop.png) | ![Compare](docs/screenshots/compare-desktop.png) |
+| [![Sell](docs/screenshots/sell.png)](docs/screenshots/sell.png) | [![Car insurance](docs/screenshots/car-insurance.png)](docs/screenshots/car-insurance.png) |
 
-| Sell → dealer offers | Home (mobile) | Mobile menu |
+| Car detail | Compare |
+| :---: | :---: |
+| [![Car detail](docs/screenshots/car-detail.png)](docs/screenshots/car-detail.png) | [![Compare](docs/screenshots/compare.png)](docs/screenshots/compare.png) |
+
+| Browse & filter | Log in | Home (mobile) |
 | :---: | :---: | :---: |
-| ![Sell offers](docs/screenshots/sell-offers.png) | ![Home mobile](docs/screenshots/home-mobile.png) | ![Mobile menu](docs/screenshots/mobile-menu.png) |
+| [![Browse](docs/screenshots/browse.png)](docs/screenshots/browse.png) | [![Login](docs/screenshots/login.png)](docs/screenshots/login.png) | [![Home mobile](docs/screenshots/home-mobile.png)](docs/screenshots/home-mobile.png) |
 
 ---
 
-## 🧩 Features
+## 🧩 Pages & features
 
-- 🏠 **Home** — bold hero with a tabbed *Find a car / Sell my car* search card, horizontally‑scrollable category chips, and browse‑by‑budget / car‑type / manufacturer sections.
-- 🔎 **Browse** — search plus filters (make, body type, fuel, transmission, condition, max price), sorting and pagination. **All filters sync to the URL** so results are shareable.
-- 📄 **Car detail** — full specification table, cash & finance pricing, save button, and “you might also like” similar cars.
-- ⚖️ **Compare** — put up to **3 cars side by side**; the best value in each row is highlighted.
-- 💷 **Sell my car** — enter your car’s details for an instant valuation and a list of **competing dealer offers**, sorted by best price.
-- 🔐 **Accounts** — register / log in with JWT auth (passwords hashed with bcrypt).
-- ❤️ **Saved cars** — heart any car to save it to your account, with optimistic UI updates.
-- 📱 **Mobile‑first** — a native‑style fixed **bottom navigation bar** and a sticky “sell your car” banner on small screens.
-- 🎨 **Themed** — a cohesive warm‑orange design system in both light content and dark feature sections.
+**🏠 Home** — carwow-style, section by section:
+- Bold hero with a **tabbed search card** (Find a car / Sell my car / Read reviews) and category chips
+- **Featured-deal poster**, top-rated cars, **browse by budget / car type / manufacturer** (real logos)
+- **Electric is trending**, customer **reviews slider**, "we make car changing easy", popular used models
+- **Latest car news & videos**, **Join the electric revolution**, and an **FAQ** accordion
+
+**🛒 Buying** — a "What are you looking for?" chooser (Build a new car / New in-stock / Used / Leasing / quiz).
+
+**💷 Selling** — instant valuation → competing **dealer offers**, plus **Carwow vs. paid sites** comparison table, "make your sale worth it", **Sell my car FAQs** and selling guides.
+
+**⚡ EV Deals** — "save up to £X" hero, 🔥 **Latest price drops** slider, filterable **all electric deals** grid, and a "what's your car worth?" block.
+
+**🛡️ Car Insurance** — why-compare blocks, three-step how-it-works, interactive **types-of-cover** tabs (TPO / TPFT / Comprehensive), cheaper-quote tips, reg quote CTA and FAQs.
+
+**📄 Car detail** — real photo, full specs, cash & finance pricing, save button, similar cars.
+
+**⚖️ Compare** — up to 3 cars side by side; best value per row highlighted.
+
+**🔎 Browse** — search + filters (make, body, fuel, transmission, condition, price), sorting, pagination, URL-synced.
+
+**🔐 Accounts** — Carwow-style login (Continue with Google, email/password), register, JWT auth, and ❤️ **saved cars**.
+
+**📱 Mobile-first** — a native-style **floating bottom nav** (Buying / Selling / EV Deals / Log in / Menu) and a full-screen **menu** with dropdown accordions (New car reviews, Used cars, Car leasing, Car deals, Sell my car, Car guides, Car insurance).
 
 ---
 
@@ -108,120 +117,76 @@ The whole thing runs from **one server with one command** — the Node/Express b
 | ----- | ---------- |
 | **Front end** | React 18 · TypeScript · Vite · Tailwind CSS · React Router |
 | **Back end** | Node.js · Express |
-| **Database** | SQLite (via `better-sqlite3`) |
-| **Auth** | JSON Web Tokens (`jsonwebtoken`) · `bcryptjs` |
-| **Tooling** | ESLint‑ready TypeScript · single‑command build & serve |
+| **Database** | SQLite (`better-sqlite3`) |
+| **Auth** | JWT (`jsonwebtoken`) · `bcryptjs` |
+| **Imagery** | imagin.studio car CDN → Wikimedia fallback → SVG illustration; open car-logos dataset |
 
 ---
 
 ## 🏗 Architecture
 
 ```text
-                      ┌─────────────────────────────────────────┐
-                      │           Node.js (Express)             │
-   Browser  ───────►  │                                         │
-   (React SPA)        │   /api/*   ──►  Route handlers          │
-                      │                   │                     │
-                      │                   ▼                     │
-                      │              better-sqlite3  ──►  SQLite│
-                      │                                         │
-                      │   /*       ──►  serves client/dist      │
-                      └─────────────────────────────────────────┘
-                                one server · one port (4000)
-```
+                ┌──────────────────────────────────────────┐
+  Browser  ──►  │            Node.js (Express)             │
+ (React SPA)    │   /api/*  ──►  routes ──► better-sqlite3 ──► SQLite
+                │   /*      ──►  serves the built client    │
+                └──────────────────────────────────────────┘
+                          one server · one port (4000)
 
-The React app is compiled to static files in `client/dist`. In production the Express server serves those files for all non‑API routes and handles SPA fallback, so the entire application is delivered from **a single origin**.
+  GitHub Pages demo  ──►  same React app, VITE_STATIC=true
+                          (in-browser mock API + localStorage, no backend)
+```
 
 ---
 
 ## ⚡ Quickstart
 
-### Prerequisites
-
-- **[Node.js](https://nodejs.org) 18 or newer** (includes npm) — check with `node -v`
-- **Git**
-
-The commands below are identical on every OS thanks to npm scripts. Pick your platform for the exact terminal steps.
+**Prerequisites:** [Node.js 18+](https://nodejs.org) (includes npm) and Git. The npm commands are identical on every OS.
 
 <details open>
-<summary><b>🪟 Windows</b></summary>
-
-Use **PowerShell** or **Command Prompt** (install Node via the [official installer](https://nodejs.org) or `winget install OpenJS.NodeJS.LTS`).
+<summary><b>🪟 Windows</b> (PowerShell / CMD)</summary>
 
 ```powershell
-# 1. Clone the repo
 git clone https://github.com/sanjaydoc/Carwow_clone.git
 cd Carwow_clone
-
-# 2. Install all dependencies (root, server & client)
-npm install
-
-# 3. Seed the database with sample cars
-npm run seed
-
-# 4. Build the client and start the single server
-npm start
+npm install       # installs root, server & client
+npm run seed      # seed sample cars
+npm start         # builds the client and starts the single server
 ```
-
-Then open **http://localhost:4000** in your browser.
-
+Open **http://localhost:4000**.
 </details>
 
 <details>
 <summary><b>🍎 macOS</b></summary>
 
-Install Node via the [official installer](https://nodejs.org) or Homebrew (`brew install node`).
-
 ```bash
-# 1. Clone the repo
 git clone https://github.com/sanjaydoc/Carwow_clone.git
 cd Carwow_clone
-
-# 2. Install all dependencies (root, server & client)
 npm install
-
-# 3. Seed the database with sample cars
 npm run seed
-
-# 4. Build the client and start the single server
 npm start
 ```
-
-Then open **http://localhost:4000** in your browser.
-
+Open **http://localhost:4000**.
 </details>
 
 <details>
 <summary><b>🐧 Linux</b></summary>
 
-Install Node via [nodesource](https://github.com/nodesource/distributions), your package manager, or [nvm](https://github.com/nvm-sh/nvm).
-
 ```bash
-# 1. Clone the repo
 git clone https://github.com/sanjaydoc/Carwow_clone.git
 cd Carwow_clone
-
-# 2. Install all dependencies (root, server & client)
 npm install
-
-# 3. Seed the database with sample cars
 npm run seed
-
-# 4. Build the client and start the single server
 npm start
 ```
-
-Then open **http://localhost:4000** in your browser.
-
+Open **http://localhost:4000**.
 </details>
 
-> ✅ **One command to run it all:** `npm start` compiles the React app and then boots the Express server, which serves the UI **and** the API together on port **4000**.
+> ✅ **One command:** `npm start` builds the React app and boots the Express server, which serves the UI **and** the `/api` routes together on port **4000**.
 
 ---
 
 ## 🔥 Development mode (hot reload)
-
-Prefer live reloading while you hack on the UI? Run the API and the Vite dev server together:
 
 ```bash
 npm run dev
@@ -230,9 +195,19 @@ npm run dev
 | Service | URL |
 | ------- | --- |
 | API (Express, `--watch`) | http://localhost:4000 |
-| Client (Vite dev server) | http://localhost:5173 |
+| Client (Vite dev server, proxies `/api`) | http://localhost:5173 |
 
-In dev mode Vite proxies `/api` to the backend automatically, so you still hit a single URL (`5173`) in the browser.
+---
+
+## 🌍 Static / GitHub Pages build
+
+The live demo is a **backend-free** build: the client is compiled with `VITE_STATIC=true`, swapping the HTTP API for an in-browser mock (embedded catalogue + `localStorage`) and using `HashRouter`.
+
+```bash
+npm run build:pages   # builds the static client into ./docs
+```
+
+Commit the updated `docs/` — GitHub Pages serves it from **Settings → Pages → Deploy from a branch → `/docs`**.
 
 ---
 
@@ -243,31 +218,14 @@ Base URL: `http://localhost:4000/api`
 | Method | Endpoint | Auth | Description |
 | ------ | -------- | :--: | ----------- |
 | `GET` | `/health` | – | Health check |
-| `GET` | `/cars` | – | List cars — supports `search`, `make`, `body_type`, `fuel_type`, `transmission`, `condition`, `min_price`, `max_price`, `sort`, `page`, `limit` |
+| `GET` | `/cars` | – | List cars — `search, make, body_type, fuel_type, transmission, condition, min_price, max_price, sort, page, limit` |
 | `GET` | `/cars/filters` | – | Distinct filter values + price range |
-| `GET` | `/cars/:id` | – | A single car plus similar cars |
-| `POST` | `/auth/register` | – | Create an account → `{ token, user }` |
-| `POST` | `/auth/login` | – | Log in → `{ token, user }` |
+| `GET` | `/cars/:id` | – | A single car + similar cars |
+| `POST` | `/auth/register` · `/auth/login` | – | Auth → `{ token, user }` |
 | `GET` | `/auth/me` | ✅ | Current user |
 | `POST` | `/sell` | – | Submit a car → valuation + dealer offers |
-| `GET` | `/sell/:id` | – | Retrieve a submission + offers |
-| `GET` | `/saved` | ✅ | The current user’s saved cars |
-| `POST` | `/saved/:carId` | ✅ | Save a car |
-| `DELETE` | `/saved/:carId` | ✅ | Un‑save a car |
-
-**Example — search for electric cars under £50k, cheapest first:**
-
-```bash
-curl "http://localhost:4000/api/cars?fuel_type=Electric&max_price=50000&sort=price_asc"
-```
-
-**Example — get an instant valuation:**
-
-```bash
-curl -X POST http://localhost:4000/api/sell \
-  -H "Content-Type: application/json" \
-  -d '{"make":"BMW","model":"3 Series","year":2020,"mileage":28000,"condition":"good","name":"Sanjay","email":"sanjay@example.com"}'
-```
+| `GET` | `/sell/:id` | – | A submission + its offers |
+| `GET` · `POST` · `DELETE` | `/saved` · `/saved/:carId` | ✅ | List / save / un-save cars |
 
 ---
 
@@ -275,85 +233,18 @@ curl -X POST http://localhost:4000/api/sell \
 
 ```text
 Carwow_clone/
-├── package.json              # root scripts — single-command build & start
-├── README.md
-├── LICENSE
-├── docs/
-│   ├── index.html            # GitHub Pages landing page
-│   └── screenshots/          # UI screenshots used in the docs
-├── server/                   # Express + SQLite API
-│   ├── .env.example
-│   └── src/
-│       ├── index.js          # server entry — also serves client/dist
-│       ├── db/
-│       │   ├── index.js      # schema
-│       │   └── seed.js       # sample car data
-│       ├── middleware/
-│       │   └── auth.js       # JWT sign / verify
-│       └── routes/
-│           ├── cars.js
-│           ├── auth.js
-│           ├── sell.js
-│           └── saved.js
-└── client/                   # React + Vite + Tailwind app
+├── package.json          # root scripts (start, build:pages, dev, seed)
+├── scripts/build-pages.mjs
+├── docs/                 # published GitHub Pages build + screenshots
+├── server/               # Express + SQLite API
+│   └── src/  index.js · db/ · middleware/ · routes/
+└── client/               # React + Vite + Tailwind app
     └── src/
-        ├── pages/            # Home, Browse, CarDetail, Compare, Sell, Login, …
-        ├── components/       # Navbar, MobileNav, CarCard, CarImage, …
-        ├── context/          # Auth + Saved providers
-        ├── api/              # typed API client
-        └── utils/            # formatting helpers
+        ├── pages/        # Home, Buying, EvDeals, CarInsurance, Sell, CarDetail, Compare, Browse, Login, …
+        ├── components/   # Navbar, MobileNav, CarCard, CarImage, BrandLogo, Footer, …
+        ├── context/      # Auth + Saved providers
+        └── api/          # client, mock API, static data, car photos
 ```
-
----
-
-## ⚙️ Configuration
-
-The server reads optional environment variables (copy `server/.env.example` → `server/.env`):
-
-| Variable | Default | Description |
-| -------- | ------- | ----------- |
-| `PORT` | `4000` | Server port |
-| `JWT_SECRET` | `dev-secret-change-me` | Secret used to sign JWTs — **set this in production!** |
-| `CLIENT_ORIGIN` | `*` | Allowed CORS origin (useful in dev) |
-
-Setting an env var per platform (optional):
-
-```powershell
-# Windows (PowerShell)
-$env:PORT=5000; npm start
-```
-```bash
-# macOS / Linux
-PORT=5000 npm start
-```
-
----
-
-## ❓ FAQ / Troubleshooting
-
-<details>
-<summary><b>The page is blank / “Cannot GET /”.</b></summary>
-
-Run `npm start` (not `npm run serve`) at least once so the client is built into `client/dist`. `npm start` runs the build for you.
-</details>
-
-<details>
-<summary><b>Port 4000 is already in use.</b></summary>
-
-Start on another port: `PORT=5000 npm start` (macOS/Linux) or `$env:PORT=5000; npm start` (Windows PowerShell).
-</details>
-
-<details>
-<summary><b>No cars appear in Browse.</b></summary>
-
-You probably skipped seeding. Run `npm run seed` and refresh.
-</details>
-
-<details>
-<summary><b><code>better-sqlite3</code> failed to install / build.</b></summary>
-
-It ships prebuilt binaries for common platforms. If your platform needs a compile, install build tools: **Windows** → `npm i -g windows-build-tools` or install “Desktop development with C++” via Visual Studio Build Tools; **macOS** → `xcode-select --install`; **Linux** → `sudo apt install build-essential python3`.
-</details>
 
 ---
 
