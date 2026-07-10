@@ -4,6 +4,7 @@ import { api } from '../api/client';
 import type { Car } from '../types';
 import CarCard from '../components/CarCard';
 import CarImage from '../components/CarImage';
+import CarTypeIcon from '../components/CarTypeIcon';
 import BrandLogo from '../components/BrandLogo';
 import Spinner from '../components/Spinner';
 import { gbp } from '../utils/format';
@@ -12,9 +13,9 @@ const categories = [
   { label: 'Electric', icon: 'bolt', to: '/browse?fuel_type=Electric' },
   { label: 'Hybrid', icon: 'leaf', to: '/browse?fuel_type=Hybrid' },
   { label: 'New', icon: 'sparkle', to: '/browse?condition=new' },
-  { label: 'Used', icon: 'car', to: '/browse?condition=used' },
-  { label: 'SUVs', icon: 'car', to: '/browse?body_type=SUV' },
-  { label: 'Saloons', icon: 'car', to: '/browse?body_type=Saloon' },
+  { label: 'Used', icon: 'car', carType: 'Hatchback', to: '/browse?condition=used' },
+  { label: 'SUVs', icon: 'car', carType: 'SUV', to: '/browse?body_type=SUV' },
+  { label: 'Saloons', icon: 'car', carType: 'Saloon', to: '/browse?body_type=Saloon' },
 ];
 
 function ChipIcon({ name }: { name: string }) {
@@ -242,7 +243,11 @@ export default function Home() {
                 to={c.to}
                 className="flex shrink-0 items-center gap-2 rounded-full bg-neutral-200 px-5 py-3 font-semibold text-ink-900 transition hover:bg-neutral-300"
               >
-                <ChipIcon name={c.icon} />
+                {c.carType ? (
+                  <CarTypeIcon type={c.carType} className="h-5 w-9 text-ink-900" />
+                ) : (
+                  <ChipIcon name={c.icon} />
+                )}
                 {c.label}
               </Link>
             ))}

@@ -21,7 +21,7 @@
 
 <br/>
 
-![Carwow clone — home](docs/screenshots/home-hero.png)
+![Carwow clone — home](docs/screenshots/home-hero.png?v4)
 
 </div>
 
@@ -67,19 +67,19 @@ The homepage is rebuilt **section-by-section** to match carwow.co.uk — a tabbe
 
 | Home | EV Deals |
 | :---: | :---: |
-| [![Home](docs/screenshots/home-desktop.png)](docs/screenshots/home-desktop.png) | [![EV Deals](docs/screenshots/ev-deals.png)](docs/screenshots/ev-deals.png) |
+| [![Home](docs/screenshots/home-desktop.png?v4)](docs/screenshots/home-desktop.png?v4) | [![EV Deals](docs/screenshots/ev-deals.png?v4)](docs/screenshots/ev-deals.png?v4) |
 
 | Sell my car | Car insurance |
 | :---: | :---: |
-| [![Sell](docs/screenshots/sell.png)](docs/screenshots/sell.png) | [![Car insurance](docs/screenshots/car-insurance.png)](docs/screenshots/car-insurance.png) |
+| [![Sell](docs/screenshots/sell.png?v4)](docs/screenshots/sell.png?v4) | [![Car insurance](docs/screenshots/car-insurance.png?v4)](docs/screenshots/car-insurance.png?v4) |
 
 | Car detail | Compare |
 | :---: | :---: |
-| [![Car detail](docs/screenshots/car-detail.png)](docs/screenshots/car-detail.png) | [![Compare](docs/screenshots/compare.png)](docs/screenshots/compare.png) |
+| [![Car detail](docs/screenshots/car-detail.png?v4)](docs/screenshots/car-detail.png?v4) | [![Compare](docs/screenshots/compare.png?v4)](docs/screenshots/compare.png?v4) |
 
 | Browse & filter | Log in | Home (mobile) |
 | :---: | :---: | :---: |
-| [![Browse](docs/screenshots/browse.png)](docs/screenshots/browse.png) | [![Login](docs/screenshots/login.png)](docs/screenshots/login.png) | [![Home mobile](docs/screenshots/home-mobile.png)](docs/screenshots/home-mobile.png) |
+| [![Browse](docs/screenshots/browse.png?v4)](docs/screenshots/browse.png?v4) | [![Login](docs/screenshots/login.png?v4)](docs/screenshots/login.png?v4) | [![Home mobile](docs/screenshots/home-mobile.png?v4)](docs/screenshots/home-mobile.png?v4) |
 
 ---
 

@@ -263,16 +263,14 @@ function UserIcon() {
   );
 }
 function HeartIcon() {
-  // A car silhouette with a heart centred on the body (carwow "Buying").
+  // A bold filled car silhouette with a heart knocked out of the centre
+  // (carwow "Buying"). A solid shape reads clearly as a car at this size.
   return (
-    <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9L18.4 8.4a2 2 0 0 0-1.9-1.4H7.5a2 2 0 0 0-1.9 1.4L3.5 11.1C2.7 11.3 2 12.1 2 13v3c0 .6.4 1 1 1h2" />
-      <circle cx="7" cy="17" r="2" />
-      <circle cx="17" cy="17" r="2" />
+    <svg viewBox="0 0 24 24" className="h-6 w-6" fill="currentColor">
+      <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z" />
       <path
-        fill="currentColor"
-        stroke="none"
-        d="M12 10.05c-.5-.56-1.33-.72-1.96-.27-.72.5-.72 1.43-.12 2.03L12 13.9l2.08-2.09c.6-.6.6-1.53-.12-2.03-.63-.45-1.46-.29-1.96.27z"
+        fill="#fff"
+        d="M12 15.1c-.13 0-.26-.05-.36-.14l-1.74-1.6c-.78-.72-.28-1.96.77-1.96.5 0 .96.3 1.16.73h.34c.2-.43.66-.73 1.16-.73 1.05 0 1.55 1.24.77 1.96l-1.74 1.6c-.1.09-.23.14-.36.14z"
       />
     </svg>
   );
