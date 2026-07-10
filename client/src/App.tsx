@@ -6,6 +6,7 @@ import MobileNav from './components/MobileNav';
 import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
 import Buying from './pages/Buying';
+import EvDeals from './pages/EvDeals';
 import Browse from './pages/Browse';
 import CarDetail from './pages/CarDetail';
 import Compare from './pages/Compare';
@@ -30,6 +31,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/buy" element={<Buying />} />
+          <Route path="/ev-deals" element={<EvDeals />} />
           <Route path="/browse" element={<Browse />} />
           <Route path="/cars/:id" element={<CarDetail />} />
           <Route path="/compare" element={<Compare />} />

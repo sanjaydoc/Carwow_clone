@@ -107,19 +107,7 @@ export default function MobileNav() {
 
       {/* Floating bottom navigation */}
       <nav className="fixed inset-x-3 bottom-3 z-40 flex h-[64px] items-stretch overflow-hidden rounded-2xl border border-cream-300 bg-white/95 shadow-[0_8px_30px_rgba(20,20,19,0.18)] backdrop-blur md:hidden">
-        <NavLink to="/" className={itemClass} end onClick={close}>
-          <HomeIcon />
-          Home
-        </NavLink>
         <NavLink to="/buy" className={itemClass} onClick={close}>
-          <CarIcon />
-          Buy
-        </NavLink>
-        <NavLink to="/sell" className={itemClass} onClick={close}>
-          <TagIcon />
-          Sell
-        </NavLink>
-        <NavLink to="/saved" className={itemClass} onClick={close}>
           <span className="relative">
             <HeartIcon />
             {count > 0 && (
@@ -128,7 +116,19 @@ export default function MobileNav() {
               </span>
             )}
           </span>
-          Saved
+          Buying
+        </NavLink>
+        <NavLink to="/sell" className={itemClass} onClick={close}>
+          <PoundIcon />
+          Selling
+        </NavLink>
+        <NavLink to="/ev-deals" className={itemClass} onClick={close}>
+          <BoltIcon />
+          EV Deals
+        </NavLink>
+        <NavLink to={user ? '/saved' : '/login'} className={itemClass} onClick={close}>
+          <UserIcon />
+          {user ? 'Account' : 'Log in'}
         </NavLink>
         <button
           onClick={() => setMenuOpen((o) => !o)}
@@ -154,30 +154,26 @@ const iconProps = {
   viewBox: '0 0 24 24',
 };
 
-function HomeIcon() {
-  return (
-    <svg {...iconProps}>
-      <path d="M3 10.5 12 3l9 7.5" />
-      <path d="M5 9.5V21h14V9.5" />
-    </svg>
-  );
-}
-function CarIcon() {
-  return (
-    <svg {...iconProps}>
-      <path d="M5 13l1.5-4.5A2 2 0 0 1 8.4 7h7.2a2 2 0 0 1 1.9 1.5L19 13" />
-      <path d="M3 13h18v4H3z" />
-      <circle cx="7" cy="17" r="1.5" />
-      <circle cx="17" cy="17" r="1.5" />
-    </svg>
-  );
-}
-function TagIcon() {
+function PoundIcon() {
   return (
     <svg {...iconProps}>
       <circle cx="12" cy="12" r="9" />
-      <path d="M9.5 9.5c0-1.4 1.1-2.2 2.5-2.2s2.5.8 2.5 2c0 2-2.5 1.8-2.5 3.4" />
-      <circle cx="12" cy="16.2" r="0.6" fill="currentColor" />
+      <path d="M9.5 16.5h5M9.5 12.5h3.5M13.8 8.2c-.7-.8-1.8-1-2.7-.5-1 .5-1.3 1.7-1.1 2.8l.6 3.5c.2 1-.2 2-1.1 2.5" />
+    </svg>
+  );
+}
+function BoltIcon() {
+  return (
+    <svg {...iconProps} fill="currentColor" stroke="none">
+      <path d="M13 2L4.5 13.5H11l-1 8.5L19.5 10H13l0-8z" />
+    </svg>
+  );
+}
+function UserIcon() {
+  return (
+    <svg {...iconProps}>
+      <circle cx="12" cy="8" r="3.5" />
+      <path d="M5 20c1.5-3.5 4-5 7-5s5.5 1.5 7 5" />
     </svg>
   );
 }
