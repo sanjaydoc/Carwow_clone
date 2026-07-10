@@ -1,0 +1,17 @@
+{
+  "name": "carwow-clone",
+  "version": "1.0.0",
+  "description": "A full-stack Carwow clone — a car marketplace to buy, sell, and compare cars. Single Node server serves both the API and the built React app.",
+  "private": true,
+  "scripts": {
+    "postinstall": "npm --prefix server install && npm --prefix client install",
+    "build": "npm --prefix client run build",
+    "seed": "npm --prefix server run seed",
+    "start": "npm run build && node server/src/index.js",
+    "serve": "node server/src/index.js",
+    "dev": "concurrently -n api,web -c yellow,cyan \"node --watch server/src/index.js\" \"npm --prefix client run dev\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}

@@ -1,0 +1,17 @@
+node_modules/
+dist/
+build/
+*.log
+.env
+.DS_Store
+server/data/*.db
+server/data/*.db-journal
+server/data/*.db-shm
+server/data/*.db-wal
+coverage/
+.vite/
+
+# TypeScript build artifacts
+*.tsbuildinfo
+client/vite.config.js
+client/vite.config.d.ts
