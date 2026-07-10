@@ -37,6 +37,19 @@ const usedModels = [
   'Skoda Octavia', 'Toyota Yaris', 'Kia EV6', 'BMW X3', 'Land Rover Defender',
 ];
 
+const news = [
+  'I have £300 per month to spend on a car — what can I get?',
+  'The best electric cars for 2026, road-tested',
+  'Living with a hybrid: one month and 1,200 miles',
+  'How to get the best price when you sell your car',
+];
+
+const videos = [
+  'New EV mega-test: which one goes furthest?',
+  'Hot hatch drag race — you pick the winner',
+  "We review the UK's best-selling SUV",
+];
+
 const reviews = [
   { title: 'Sold my car in 3 days', body: 'I sold my car through carwow and bought a new one too. The whole process was smooth and I got a great price.', author: 'C. T.', when: '38 minutes ago' },
   { title: 'Best price, zero hassle', body: 'Dealers competed for my business and I saved over £3,000 versus the RRP. No haggling at all.', author: 'Priya S.', when: '2 hours ago' },
@@ -551,6 +564,79 @@ export default function Home() {
                 </div>
               </Link>
             ))}
+          </div>
+        </section>
+      )}
+
+      {/* ---------- NEWS + VIDEOS (dark) ---------- */}
+      {featured.length > 0 && (
+        <section className="bg-ink-900 py-14 text-white">
+          <div className="container-x">
+            <h2 className="font-display text-2xl font-extrabold uppercase sm:text-3xl">
+              Helpful advice and latest car news
+            </h2>
+            <div className="-mx-4 mt-6 flex snap-x gap-5 overflow-x-auto px-4 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {news.map((title, i) => {
+                const car = featured[i % featured.length];
+                return (
+                  <Link
+                    key={title}
+                    to="/browse"
+                    className="group w-[300px] shrink-0 snap-start"
+                  >
+                    <CarImage
+                      accent={car.accent}
+                      bodyType={car.body_type}
+                      make={car.make}
+                      model={car.model}
+                      year={car.year}
+                      className="h-44 w-full rounded-2xl"
+                    />
+                    <h3 className="mt-3 font-display text-lg font-bold underline-offset-4 group-hover:underline">
+                      {title}
+                    </h3>
+                  </Link>
+                );
+              })}
+            </div>
+            <div className="mt-6 text-center">
+              <Link to="/browse" className="btn bg-white px-6 py-3 text-ink-900 hover:bg-clay-500 hover:text-white">
+                View more car news
+              </Link>
+            </div>
+
+            <h2 className="mt-12 font-display text-2xl font-extrabold uppercase sm:text-3xl">
+              Latest videos
+            </h2>
+            <div className="-mx-4 mt-6 flex snap-x gap-5 overflow-x-auto px-4 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {videos.map((title, i) => {
+                const car = featured[(i + 2) % featured.length];
+                return (
+                  <Link key={title} to="/browse" className="group w-[320px] shrink-0 snap-start">
+                    <div className="relative overflow-hidden rounded-2xl">
+                      <CarImage
+                        accent={car.accent}
+                        bodyType={car.body_type}
+                        make={car.make}
+                        model={car.model}
+                        year={car.year}
+                        className="h-44 w-full"
+                      />
+                      <span className="absolute inset-0 grid place-items-center bg-black/20">
+                        <span className="grid h-14 w-14 place-items-center rounded-full bg-white/90 text-ink-900 transition group-hover:scale-110">
+                          <svg viewBox="0 0 24 24" className="h-6 w-6 translate-x-0.5" fill="currentColor">
+                            <path d="M8 5v14l11-7z" />
+                          </svg>
+                        </span>
+                      </span>
+                    </div>
+                    <h3 className="mt-3 font-display text-lg font-bold underline-offset-4 group-hover:underline">
+                      {title}
+                    </h3>
+                  </Link>
+                );
+              })}
+            </div>
           </div>
         </section>
       )}
