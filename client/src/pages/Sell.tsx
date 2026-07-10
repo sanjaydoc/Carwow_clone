@@ -270,6 +270,129 @@ export default function Sell() {
           </p>
         </form>
       </div>
+
+      {/* ---------- CARWOW VS PAID SITES ---------- */}
+      <section className="mt-16 rounded-3xl bg-clay-500 px-4 py-12 text-white sm:px-8">
+        <h2 className="text-center font-display text-3xl font-extrabold uppercase sm:text-4xl">
+          Carwow vs. paid sites
+        </h2>
+        <div className="mx-auto mt-8 max-w-3xl overflow-x-auto">
+          <table className="w-full min-w-[520px] border-separate border-spacing-0 overflow-hidden rounded-2xl bg-cream-100 text-ink-900">
+            <thead>
+              <tr>
+                <th className="p-4" />
+                <th className="bg-white p-4 text-center font-display text-lg font-extrabold">carwow</th>
+                <th className="p-4 text-center font-display font-bold">Motorway</th>
+                <th className="p-4 text-center font-display font-bold">WeBuyAnyCar</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                ['Completely free to sell', true, false, false],
+                ['Sell & buy from one platform', true, false, false],
+                ['Multiple offers for your car', true, true, false],
+                ['Free home collection', true, true, false],
+                ['Free same-day payment', true, true, false],
+              ].map((r, i) => (
+                <tr key={i as number}>
+                  <td className="border-t border-cream-300 p-4 text-sm font-semibold">{r[0] as string}</td>
+                  {[r[1], r[2], r[3]].map((v, j) => (
+                    <td key={j} className={`border-t border-cream-300 p-4 text-center ${j === 0 ? 'bg-white' : ''}`}>
+                      {v ? <span className="text-xl text-green-500">✓</span> : <span className="text-xl text-red-500">✕</span>}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      {/* ---------- MAKE YOUR SALE WORTH IT ---------- */}
+      <section className="py-16 text-center">
+        <h2 className="font-display text-3xl font-extrabold uppercase text-ink-900 sm:text-4xl">
+          Make your sale worth it
+        </h2>
+        <div className="mt-10 grid gap-10 md:grid-cols-3">
+          {[
+            { icon: '💷', title: 'Worth the money', body: 'Sell your car for an average of £1,000 more than part-exchange, completely free.' },
+            { icon: '⏱️', title: 'Worth your time', body: 'Same-day payment and free collection at a time which suits you.' },
+            { icon: '📋', title: 'Worth great support', body: 'Your own car-selling checklist and free specialist guides at your fingertips.' },
+          ].map((b) => (
+            <div key={b.title}>
+              <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-clay-100 text-3xl">{b.icon}</div>
+              <h3 className="mt-4 font-display text-xl font-bold text-ink-900">{b.title}</h3>
+              <p className="mx-auto mt-2 max-w-xs text-ink-700/70">{b.body}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ---------- SELL MY CAR FAQS ---------- */}
+      <section className="pb-12">
+        <h2 className="text-center font-display text-3xl font-extrabold uppercase text-ink-900 sm:text-4xl">
+          Sell my car FAQs
+        </h2>
+        <div className="mx-auto mt-8 max-w-3xl space-y-3">
+          {[
+            { q: 'How do I sell my car with carwow?', a: 'Enter your registration or car details for a free valuation, then trusted dealers make you offers. Accept your favourite and arrange free collection.' },
+            { q: 'Is it free?', a: 'Yes — selling your car with carwow is completely free, with no hidden fees.' },
+            { q: 'How long does it take to sell?', a: 'Many sellers receive offers within minutes and complete the sale within a day or two.' },
+            { q: 'What information do I need to sell my car with you?', a: 'Just your registration, mileage and a few details about the car’s condition.' },
+            { q: 'What types of cars do you buy?', a: 'Dealers buy almost anything — petrol, diesel, hybrid and electric, new or used.' },
+            { q: 'Can I sell my car with outstanding finance?', a: 'Yes. Any outstanding finance is settled from the sale price when you complete.' },
+            { q: 'Can I sell a car with a private reg plate?', a: 'Absolutely — you can retain your private plate before the sale completes.' },
+            { q: 'How can I contact carwow for help?', a: 'Visit our support centre or reach the Help Centre Monday–Saturday.' },
+          ].map((f) => (
+            <details key={f.q} className="group rounded-2xl bg-cream-200 px-5">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-4 font-display font-bold text-ink-900 [&::-webkit-details-marker]:hidden">
+                {f.q}
+                <span className="text-clay-600 transition group-open:rotate-180">
+                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                </span>
+              </summary>
+              <p className="pb-4 text-ink-700/80">{f.a}</p>
+            </details>
+          ))}
+        </div>
+
+        <div className="mt-12 text-center">
+          <h3 className="font-display text-2xl font-extrabold text-ink-900">Got a less frequent question?</h3>
+          <p className="mt-1 text-ink-700/70">We can help</p>
+          <a href="#" onClick={(e) => e.preventDefault()} className="btn-primary mt-5 px-8 py-3.5">
+            Visit support centre
+          </a>
+        </div>
+      </section>
+
+      {/* ---------- CAR SELLING GUIDES ---------- */}
+      <section className="pb-16">
+        <h2 className="text-center font-display text-3xl font-extrabold uppercase text-ink-900 sm:text-4xl">
+          Car selling guides
+        </h2>
+        <p className="mx-auto mt-2 max-w-xl text-center text-ink-700/70">
+          Need a hand? Our short guides are full of useful tips to help you sell your car.
+        </p>
+        <div className="mx-auto mt-8 grid max-w-3xl gap-3 sm:grid-cols-2">
+          {[
+            'How to sell a car for parts',
+            'How to sell a car quickly',
+            "How to sell a deceased person's car",
+            'How to sell a modified car',
+            'Best ways to sell a car',
+            'Cars that hold their value best',
+          ].map((g) => (
+            <a
+              key={g}
+              href="#"
+              onClick={(e) => e.preventDefault()}
+              className="rounded-2xl bg-cream-200 px-5 py-4 text-center font-display font-bold text-ink-900 transition hover:bg-clay-100 hover:text-clay-700"
+            >
+              {g}
+            </a>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
