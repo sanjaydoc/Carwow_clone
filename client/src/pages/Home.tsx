@@ -80,6 +80,15 @@ const reviews = [
   { title: 'So easy to compare', body: 'Being able to line up three cars side by side made the decision simple. Brilliant tool.', author: 'Mark D.', when: '2 days ago' },
 ];
 
+const faqs = [
+  { q: 'How does carwow work?', a: 'Search thousands of new and used cars, compare them side by side, and let trusted dealers compete to give you their best price — no haggling required.' },
+  { q: 'Is carwow free to use?', a: 'Yes. Browsing, comparing, getting offers and valuing your car are all completely free, with no obligation to buy or sell.' },
+  { q: 'Can I sell my car through carwow?', a: 'Absolutely. Enter your car’s details for an instant valuation, then receive competing offers from our network of verified dealers, often for more than a part-exchange.' },
+  { q: 'How do I get the best price on a new car?', a: 'Dealers make you their best offers up front, so you can compare prices in one place and pick the deal that suits you.' },
+  { q: 'Are the dealers trustworthy?', a: 'Every dealer on carwow is vetted and rated by other buyers, so you can buy with confidence.' },
+  { q: 'Can I get car finance?', a: 'Yes — many cars can be bought on flexible finance, with monthly pricing shown alongside the cash price.' },
+];
+
 const steps = [
   { title: 'Search & compare', body: 'Browse thousands of new and used cars with expert reviews.', icon: '🔍' },
   { title: 'Get the best offers', body: 'Trusted dealers compete to give you their best price.', icon: '🏷️' },
@@ -708,6 +717,28 @@ export default function Home() {
           </div>
         </section>
       )}
+
+      {/* ---------- FAQ ---------- */}
+      <section className="container-x py-14">
+        <h2 className="font-display text-2xl font-extrabold uppercase text-ink-900 sm:text-3xl">
+          Frequently asked questions
+        </h2>
+        <div className="mt-6 divide-y divide-cream-300 overflow-hidden rounded-2xl border border-cream-300 bg-white">
+          {faqs.map((f) => (
+            <details key={f.q} className="group">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-5 font-display font-bold text-ink-900 [&::-webkit-details-marker]:hidden">
+                {f.q}
+                <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-cream-200 text-clay-600 transition group-open:rotate-45">
+                  <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M12 5v14M5 12h14" strokeLinecap="round" />
+                  </svg>
+                </span>
+              </summary>
+              <p className="px-5 pb-5 text-ink-700/80">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
