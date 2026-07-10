@@ -36,6 +36,15 @@ const carTypes = [
   { label: 'Convertibles', icon: 'Convertibles', body: '' },
 ];
 
+const BRANDS = [
+  'Abarth', 'Alfa Romeo', 'Alpine', 'Aston Martin', 'Audi', 'Bentley', 'BMW', 'BYD',
+  'Citroen', 'Cupra', 'Dacia', 'DS', 'Ferrari', 'Fiat', 'Ford', 'Honda', 'Hyundai',
+  'Jaguar', 'Jeep', 'Kia', 'Land Rover', 'Lexus', 'Lotus', 'Maserati', 'Mazda',
+  'McLaren', 'Mercedes-Benz', 'MG', 'MINI', 'Mitsubishi', 'Nissan', 'Peugeot',
+  'Polestar', 'Porsche', 'Renault', 'SEAT', 'Skoda', 'Smart', 'Subaru', 'Suzuki',
+  'Tesla', 'Toyota', 'Vauxhall', 'Volkswagen', 'Volvo',
+];
+
 const usedModels = [
   'Audi A4', 'BMW 3 Series', 'Tesla Model 3', 'Volkswagen Golf', 'Ford Focus',
   'Ford Puma', 'Kia Sportage', 'Toyota Corolla', 'Nissan Qashqai', 'Hyundai Ioniq 5',
@@ -82,7 +91,6 @@ type Tab = 'find' | 'sell' | 'reviews';
 export default function Home() {
   const [featured, setFeatured] = useState<Car[]>([]);
   const [trending, setTrending] = useState<Car[]>([]);
-  const [makes, setMakes] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<Tab>('find');
   const [search, setSearch] = useState('');
@@ -92,7 +100,6 @@ export default function Home() {
   useEffect(() => {
     api.getCars({ sort: 'rating_desc', limit: 8 }).then(({ cars }) => setFeatured(cars)).finally(() => setLoading(false));
     api.getCars({ fuel_type: 'Electric', sort: 'rating_desc', limit: 8 }).then(({ cars }) => setTrending(cars));
-    api.getFilters().then((f) => setMakes(f.makes));
   }, []);
 
   const onFind = (e: FormEvent) => {
@@ -416,7 +423,7 @@ export default function Home() {
           Browse by car manufacturer
         </h3>
         <div className="mt-5 grid grid-cols-2 gap-x-8 gap-y-1 sm:grid-cols-3 lg:grid-cols-4">
-          {makes.map((m) => (
+          {BRANDS.map((m) => (
             <Link
               key={m}
               to={`/browse?make=${encodeURIComponent(m)}`}
