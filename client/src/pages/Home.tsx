@@ -484,6 +484,76 @@ export default function Home() {
           <span className="font-semibold text-green-600">★ Trustpilot</span>
         </p>
       </section>
+
+      {/* ---------- PARTNERS WE TRUST ---------- */}
+      <section className="container-x py-10">
+        <div className="flex items-start gap-4">
+          <span className="text-4xl text-clay-500">❤</span>
+          <div>
+            <h2 className="font-display text-2xl font-extrabold text-ink-900 sm:text-3xl">
+              With partners we trust
+            </h2>
+            <p className="mt-1 max-w-xl text-ink-700/70">
+              We connect you with all the major manufacturers and thousands of hand-picked dealers.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ---------- WE MAKE CAR CHANGING EASY ---------- */}
+      <section className="container-x pb-10">
+        <div className="rounded-3xl bg-ink-900 p-8 text-white sm:p-12">
+          <div className="flex flex-col items-start gap-6 sm:flex-row">
+            <span className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-clay-500 text-3xl">
+              🧑‍💼
+            </span>
+            <div>
+              <h2 className="font-display text-3xl font-extrabold uppercase leading-tight sm:text-4xl">
+                We make car changing easy
+              </h2>
+              <p className="mt-4 max-w-2xl text-lg text-white/70">
+                We're here with a team of expert writers to make car-changing easy. Our detailed car
+                reviews and helpful news and advice articles have got you covered.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ---------- MOST POPULAR CAR REVIEWS ---------- */}
+      {featured.length > 0 && (
+        <section className="container-x pb-14">
+          <h2 className="font-display text-2xl font-extrabold uppercase text-ink-900 sm:text-3xl">
+            Most popular car reviews
+          </h2>
+          <div className="-mx-4 mt-6 flex snap-x gap-5 overflow-x-auto px-4 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {featured.slice(0, 6).map((car) => (
+              <Link
+                key={car.id}
+                to={`/cars/${car.id}`}
+                className="group w-[280px] shrink-0 snap-start overflow-hidden rounded-2xl bg-white shadow-card transition hover:shadow-card-hover"
+              >
+                <CarImage
+                  accent={car.accent}
+                  bodyType={car.body_type}
+                  make={car.make}
+                  model={car.model}
+                  year={car.year}
+                  className="h-40 w-full"
+                />
+                <div className="p-4">
+                  <h3 className="font-display text-lg font-bold text-ink-900 underline-offset-4 group-hover:underline">
+                    {car.make} {car.model} Review
+                  </h3>
+                  <span className="mt-2 inline-block rounded-lg bg-clay-100 px-2.5 py-1 text-sm font-extrabold text-clay-700">
+                    {Math.round(car.rating * 2)}/10
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }
