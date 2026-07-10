@@ -36,6 +36,11 @@ jobs:
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
+        with:
+          # Attempt to enable Pages automatically (needs Actions to have the
+          # pages:write permission granted above). If your org disables this,
+          # enable Pages once under Settings → Pages → Source: "GitHub Actions".
+          enablement: true
 
       - name: Upload docs artifact
         uses: actions/upload-pages-artifact@v3
