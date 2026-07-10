@@ -90,21 +90,46 @@ export default function Footer() {
         </div>
 
         {/* Legal */}
-        <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 text-sm text-white/60 sm:flex-row">
+        <div className="mt-10 border-t border-white/10 pt-6 text-sm text-white/60">
           <p>© {new Date().getFullYear()} Carwow clone. A demo project — not affiliated with Carwow.</p>
-          <div className="flex gap-5">
-            <a href="#" onClick={(e) => e.preventDefault()} className="hover:text-white">
-              Terms &amp; conditions
-            </a>
-            <a href="#" onClick={(e) => e.preventDefault()} className="hover:text-white">
-              Privacy
-            </a>
+          <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2">
+            {legal.map((l) => (
+              <a key={l} href="#" onClick={(e) => e.preventDefault()} className="underline-offset-4 hover:text-white hover:underline">
+                {l}
+              </a>
+            ))}
+          </div>
+          <div className="mt-6 flex items-center gap-4">
+            {countries.map((c) => (
+              <span key={c.label} className="flex items-center gap-2 text-white/70">
+                <span className="text-lg">{c.flag}</span>
+                {c.label}
+              </span>
+            ))}
           </div>
         </div>
       </div>
     </footer>
   );
 }
+
+const legal = [
+  'Terms & conditions',
+  'Manage cookies & privacy',
+  'Fraud disclaimer',
+  'ESG policy',
+  'Privacy policy',
+  'Fake reviews policy',
+  'Modern slavery statement',
+  'Accessibility notice',
+  'Code of car changing',
+];
+
+const countries = [
+  { flag: '🇬🇧', label: 'UK' },
+  { flag: '🇩🇪', label: 'Germany' },
+  { flag: '🇪🇸', label: 'Spain' },
+];
 
 const iconCls = 'h-5 w-5';
 const socials = [
