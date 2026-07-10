@@ -97,16 +97,16 @@ export default function MobileNav() {
         </div>
       )}
 
-      {/* Sticky "sell your car" banner */}
+      {/* Floating "sell your car" banner */}
       <Link
         to="/sell"
-        className="fixed inset-x-0 bottom-[60px] z-40 block bg-clay-500 py-2.5 text-center text-sm font-bold text-white underline decoration-2 underline-offset-2 md:hidden"
+        className="fixed inset-x-3 bottom-[84px] z-40 block rounded-full bg-clay-500 py-2.5 text-center text-sm font-bold text-white shadow-lg underline decoration-2 underline-offset-2 md:hidden"
       >
         Sell your car fast, fair, and totally free
       </Link>
 
-      {/* Bottom navigation */}
-      <nav className="fixed inset-x-0 bottom-0 z-40 flex h-[60px] items-stretch border-t border-cream-300 bg-white md:hidden">
+      {/* Floating bottom navigation */}
+      <nav className="fixed inset-x-3 bottom-3 z-40 flex h-[64px] items-stretch overflow-hidden rounded-2xl border border-cream-300 bg-white/95 shadow-[0_8px_30px_rgba(20,20,19,0.18)] backdrop-blur md:hidden">
         <NavLink to="/" className={itemClass} end onClick={close}>
           <HomeIcon />
           Home
