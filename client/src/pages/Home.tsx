@@ -4,7 +4,6 @@ import { api } from '../api/client';
 import type { Car } from '../types';
 import CarCard from '../components/CarCard';
 import CarImage from '../components/CarImage';
-import CarTypeIcon from '../components/CarTypeIcon';
 import BrandLogo from '../components/BrandLogo';
 import Spinner from '../components/Spinner';
 import { gbp } from '../utils/format';
@@ -26,14 +25,14 @@ const budgets = [
 ];
 
 const carTypes = [
-  { label: 'SUVs', icon: 'SUV', body: 'SUV' },
-  { label: 'Hatchbacks', icon: 'Hatchback', body: 'Hatchback' },
-  { label: 'Saloons', icon: 'Saloon', body: 'Saloon' },
-  { label: 'Coupes', icon: 'Coupe', body: '' },
-  { label: 'Estate cars', icon: 'Estate', body: 'Estate' },
-  { label: 'People carriers', icon: 'People carriers', body: '' },
-  { label: 'Sports cars', icon: 'Sports cars', body: '' },
-  { label: 'Convertibles', icon: 'Convertibles', body: '' },
+  { label: 'SUVs', body: 'SUV', make: 'Kia', model: 'Sportage' },
+  { label: 'Hatchbacks', body: 'Hatchback', make: 'Volkswagen', model: 'Golf' },
+  { label: 'Saloons', body: 'Saloon', make: 'BMW', model: '3 Series' },
+  { label: 'Coupes', body: '', make: 'BMW', model: '4 Series' },
+  { label: 'Estate cars', body: 'Estate', make: 'Skoda', model: 'Octavia' },
+  { label: 'People carriers', body: '', make: 'Volkswagen', model: 'Touran' },
+  { label: 'Sports cars', body: '', make: 'Porsche', model: '911' },
+  { label: 'Convertibles', body: '', make: 'Mazda', model: 'MX-5' },
 ];
 
 const BRANDS = [
@@ -420,10 +419,17 @@ export default function Home() {
             <Link
               key={t.label}
               to={t.body ? `/browse?body_type=${t.body}` : '/browse'}
-              className="group flex w-[150px] shrink-0 snap-start flex-col items-center rounded-2xl border border-cream-300 bg-white p-4 transition hover:border-clay-400 hover:shadow-card"
+              className="group flex w-[180px] shrink-0 snap-start flex-col items-center overflow-hidden rounded-2xl border border-cream-300 bg-white p-3 transition hover:border-clay-400 hover:shadow-card"
             >
-              <CarTypeIcon type={t.icon} className="h-16 w-full text-ink-800 transition group-hover:text-clay-600" />
-              <p className="mt-3 font-semibold text-ink-900">{t.label}</p>
+              <CarImage
+                accent="#334155"
+                bodyType={t.body || 'Hatchback'}
+                make={t.make}
+                model={t.model}
+                year={2024}
+                className="h-24 w-full"
+              />
+              <p className="mt-2 font-semibold text-ink-900">{t.label}</p>
             </Link>
           ))}
         </div>
