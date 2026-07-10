@@ -263,12 +263,18 @@ function UserIcon() {
   );
 }
 function HeartIcon() {
+  // A car silhouette with a heart centred on the body (carwow "Buying").
   return (
-    <svg {...iconProps} strokeWidth={1.7}>
-      <path d="M11 14h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 16" />
-      <path d="m7 20 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.75-2.91l-4.2 3.9" />
-      <path d="m2 15 6 6" />
-      <path d="M19.5 8.5c.7-.7 1.5-1.6 1.5-2.7A2.73 2.73 0 0 0 16 4a2.78 2.78 0 0 0-5 1.8c0 1.2.8 2 1.5 2.8L16 12Z" />
+    <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M2.5 15.2v-1c0-.45.25-.85.66-1.03l1.34-.57 1.5-3A2 2 0 0 1 7.8 8.5h8.4a2 2 0 0 1 1.8 1.1l1.5 3 1.34.57c.41.18.66.58.66 1.03v1" />
+      <path d="M2.5 15.2h19" />
+      <circle cx="7" cy="16.4" r="1.7" />
+      <circle cx="17" cy="16.4" r="1.7" />
+      <path
+        fill="currentColor"
+        stroke="none"
+        d="M12 10.1c-.55-.62-1.45-.78-2.12-.3-.78.56-.78 1.55-.13 2.2L12 14.2l2.25-2.2c.65-.65.65-1.64-.13-2.2-.67-.48-1.57-.32-2.12.3z"
+      />
     </svg>
   );
 }
