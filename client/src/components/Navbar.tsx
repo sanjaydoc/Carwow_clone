@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useSaved } from '../context/SavedContext';
 
 const links = [
-  { to: '/browse', label: 'Buy a car' },
+  { to: '/buy', label: 'Buy a car' },
   { to: '/sell', label: 'Sell my car' },
   { to: '/compare', label: 'Compare' },
 ];

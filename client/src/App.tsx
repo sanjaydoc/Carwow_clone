@@ -5,6 +5,7 @@ import Footer from './components/Footer';
 import MobileNav from './components/MobileNav';
 import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
+import Buying from './pages/Buying';
 import Browse from './pages/Browse';
 import CarDetail from './pages/CarDetail';
 import Compare from './pages/Compare';
@@ -28,6 +29,7 @@ export default function App() {
       <main className="flex-1 pb-36 md:pb-0">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/buy" element={<Buying />} />
           <Route path="/browse" element={<Browse />} />
           <Route path="/cars/:id" element={<CarDetail />} />
           <Route path="/compare" element={<Compare />} />

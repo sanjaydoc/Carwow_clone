@@ -111,7 +111,7 @@ export default function MobileNav() {
           <HomeIcon />
           Home
         </NavLink>
-        <NavLink to="/browse" className={itemClass} onClick={close}>
+        <NavLink to="/buy" className={itemClass} onClick={close}>
           <CarIcon />
           Buy
         </NavLink>
