@@ -73,7 +73,7 @@ const menuSections: MenuSection[] = [
       ['Car tools', '/compare'],
     ],
   },
-  { title: 'Car insurance', to: '/' },
+  { title: 'Car insurance', to: '/car-insurance' },
 ];
 
 export default function MobileNav() {

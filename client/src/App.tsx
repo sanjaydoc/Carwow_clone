@@ -7,6 +7,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
 import Buying from './pages/Buying';
 import EvDeals from './pages/EvDeals';
+import CarInsurance from './pages/CarInsurance';
 import Browse from './pages/Browse';
 import CarDetail from './pages/CarDetail';
 import Compare from './pages/Compare';
@@ -32,6 +33,7 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/buy" element={<Buying />} />
           <Route path="/ev-deals" element={<EvDeals />} />
+          <Route path="/car-insurance" element={<CarInsurance />} />
           <Route path="/browse" element={<Browse />} />
           <Route path="/cars/:id" element={<CarDetail />} />
           <Route path="/compare" element={<Compare />} />
