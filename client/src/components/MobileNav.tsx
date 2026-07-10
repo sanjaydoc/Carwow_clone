@@ -8,14 +8,72 @@ const itemClass = ({ isActive }: { isActive: boolean }) =>
     isActive ? 'text-clay-600' : 'text-ink-700/70'
   }`;
 
-const menuLinks = [
-  { to: '/browse', label: 'Buy a car' },
-  { to: '/browse?condition=new', label: 'New cars' },
-  { to: '/browse?condition=used', label: 'Used cars' },
-  { to: '/browse?fuel_type=Electric', label: 'Electric cars' },
-  { to: '/sell', label: 'Sell my car' },
-  { to: '/compare', label: 'Compare cars' },
-  { to: '/saved', label: 'Saved cars' },
+interface MenuSection {
+  title: string;
+  to?: string; // direct link (no dropdown)
+  links?: [string, string][];
+}
+
+const menuSections: MenuSection[] = [
+  {
+    title: 'New car reviews',
+    links: [
+      ['Car reviews', '/browse?condition=new&sort=rating_desc'],
+      ['By make', '/browse?condition=new'],
+      ['By type', '/browse?condition=new'],
+      ['By popular models', '/browse?sort=rating_desc'],
+      ['How we test cars', '/browse'],
+    ],
+  },
+  {
+    title: 'Used cars',
+    links: [
+      ['Used cars', '/browse?condition=used'],
+      ['By make', '/browse?condition=used'],
+      ['By type', '/browse?condition=used'],
+      ['By popular models', '/browse?condition=used&sort=rating_desc'],
+      ['By popular location', '/browse?condition=used'],
+      ['Car history checker', '/browse?condition=used'],
+    ],
+  },
+  {
+    title: 'Car leasing',
+    links: [
+      ['Carwow Leasey', '/browse?sort=monthly_asc'],
+      ['Car leasing', '/browse?sort=monthly_asc'],
+      ['Business car leasing', '/browse?sort=monthly_asc'],
+      ['By make', '/browse?sort=monthly_asc'],
+      ['By type', '/browse?sort=monthly_asc'],
+      ['By popular models', '/browse?sort=monthly_asc'],
+    ],
+  },
+  {
+    title: 'Car deals',
+    links: [
+      ['New car deals', '/browse?condition=new&sort=price_asc'],
+      ['By make', '/browse?condition=new'],
+      ['By popular models', '/browse?condition=new&sort=rating_desc'],
+      ['By latest deals', '/ev-deals'],
+    ],
+  },
+  {
+    title: 'Sell my car',
+    links: [
+      ['Sell my car', '/sell'],
+      ['By popular location', '/sell'],
+      ['By popular makes', '/sell'],
+      ['Value my car', '/sell'],
+      ['Sell my van', '/sell'],
+    ],
+  },
+  {
+    title: 'Car guides and news',
+    links: [
+      ['Car news and advice', '/'],
+      ['Car tools', '/compare'],
+    ],
+  },
+  { title: 'Car insurance', to: '/' },
 ];
 
 export default function MobileNav() {
@@ -47,19 +105,39 @@ export default function MobileNav() {
           </div>
 
           <nav className="flex-1 overflow-y-auto">
-            {menuLinks.map((l) => (
-              <Link
-                key={l.label}
-                to={l.to}
-                onClick={close}
-                className="flex items-center justify-between border-b border-cream-300 px-5 py-4 font-display text-lg font-bold text-ink-900"
-              >
-                {l.label}
-                <svg viewBox="0 0 24 24" className="h-5 w-5 text-clay-500" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </Link>
-            ))}
+            {menuSections.map((s) =>
+              s.to ? (
+                <Link
+                  key={s.title}
+                  to={s.to}
+                  onClick={close}
+                  className="block border-b border-cream-300 px-5 py-4 font-display text-lg font-bold text-ink-900"
+                >
+                  {s.title}
+                </Link>
+              ) : (
+                <details key={s.title} className="group border-b border-cream-300">
+                  <summary className="flex cursor-pointer list-none items-center justify-between px-5 py-4 font-display text-lg font-bold text-ink-900 [&::-webkit-details-marker]:hidden">
+                    {s.title}
+                    <svg viewBox="0 0 24 24" className="h-5 w-5 transition group-open:rotate-180" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </summary>
+                  <div className="bg-cream-100 pb-2">
+                    {s.links!.map(([label, to]) => (
+                      <Link
+                        key={label}
+                        to={to}
+                        onClick={close}
+                        className="block px-8 py-3 text-ink-800 transition hover:text-clay-600"
+                      >
+                        {label}
+                      </Link>
+                    ))}
+                  </div>
+                </details>
+              )
+            )}
           </nav>
 
           <div className="border-t border-cream-300 p-4">
