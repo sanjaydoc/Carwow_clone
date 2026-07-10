@@ -265,15 +265,14 @@ function UserIcon() {
 function HeartIcon() {
   // A car silhouette with a heart centred on the body (carwow "Buying").
   return (
-    <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M2.5 15.2v-1c0-.45.25-.85.66-1.03l1.34-.57 1.5-3A2 2 0 0 1 7.8 8.5h8.4a2 2 0 0 1 1.8 1.1l1.5 3 1.34.57c.41.18.66.58.66 1.03v1" />
-      <path d="M2.5 15.2h19" />
-      <circle cx="7" cy="16.4" r="1.7" />
-      <circle cx="17" cy="16.4" r="1.7" />
+    <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9L18.4 8.4a2 2 0 0 0-1.9-1.4H7.5a2 2 0 0 0-1.9 1.4L3.5 11.1C2.7 11.3 2 12.1 2 13v3c0 .6.4 1 1 1h2" />
+      <circle cx="7" cy="17" r="2" />
+      <circle cx="17" cy="17" r="2" />
       <path
         fill="currentColor"
         stroke="none"
-        d="M12 10.1c-.55-.62-1.45-.78-2.12-.3-.78.56-.78 1.55-.13 2.2L12 14.2l2.25-2.2c.65-.65.65-1.64-.13-2.2-.67-.48-1.57-.32-2.12.3z"
+        d="M12 10.05c-.5-.56-1.33-.72-1.96-.27-.72.5-.72 1.43-.12 2.03L12 13.9l2.08-2.09c.6-.6.6-1.53-.12-2.03-.63-.45-1.46-.29-1.96.27z"
       />
     </svg>
   );

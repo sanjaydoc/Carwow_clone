@@ -9,13 +9,42 @@ import Spinner from '../components/Spinner';
 import { gbp } from '../utils/format';
 
 const categories = [
-  { label: 'Electric', icon: '⚡', to: '/browse?fuel_type=Electric' },
-  { label: 'Hybrid', icon: '🔋', to: '/browse?fuel_type=Hybrid' },
-  { label: 'New', icon: '✨', to: '/browse?condition=new' },
-  { label: 'Used', icon: '🚗', to: '/browse?condition=used' },
-  { label: 'SUVs', icon: '🚙', to: '/browse?body_type=SUV' },
-  { label: 'Saloons', icon: '🚘', to: '/browse?body_type=Saloon' },
+  { label: 'Electric', icon: 'bolt', to: '/browse?fuel_type=Electric' },
+  { label: 'Hybrid', icon: 'leaf', to: '/browse?fuel_type=Hybrid' },
+  { label: 'New', icon: 'sparkle', to: '/browse?condition=new' },
+  { label: 'Used', icon: 'car', to: '/browse?condition=used' },
+  { label: 'SUVs', icon: 'car', to: '/browse?body_type=SUV' },
+  { label: 'Saloons', icon: 'car', to: '/browse?body_type=Saloon' },
 ];
+
+function ChipIcon({ name }: { name: string }) {
+  const p = {
+    className: 'h-5 w-5',
+    fill: 'none',
+    stroke: 'currentColor',
+    strokeWidth: 1.8,
+    strokeLinecap: 'round' as const,
+    strokeLinejoin: 'round' as const,
+    viewBox: '0 0 24 24',
+  };
+  if (name === 'bolt') return <svg {...p}><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z" /></svg>;
+  if (name === 'leaf')
+    return (
+      <svg {...p}>
+        <path d="M4 20c0-8 6-14 16-14 0 10-6 14-14 14z" />
+        <path d="M5 19c3-5 7-7 11-8" />
+      </svg>
+    );
+  if (name === 'sparkle') return <svg {...p}><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z" /></svg>;
+  return (
+    <svg {...p}>
+      <path d="M5 13l1.4-3.6A2 2 0 0 1 8.3 8h7.4a2 2 0 0 1 1.9 1.4L19 13" />
+      <path d="M4 13h16v3H4z" />
+      <circle cx="7.5" cy="16.5" r="1.5" />
+      <circle cx="16.5" cy="16.5" r="1.5" />
+    </svg>
+  );
+}
 
 const budgets = [
   { label: 'Under £25k', to: '/browse?max_price=25000&sort=price_desc', accent: '#ea580c', make: 'Toyota', model: 'Yaris', year: 2024 },
@@ -211,9 +240,9 @@ export default function Home() {
               <Link
                 key={c.label}
                 to={c.to}
-                className="flex shrink-0 items-center gap-2 rounded-full border border-ink-900/10 bg-white px-5 py-3 font-semibold text-ink-800 shadow-sm transition hover:border-clay-400 hover:text-clay-600"
+                className="flex shrink-0 items-center gap-2 rounded-full bg-neutral-200 px-5 py-3 font-semibold text-ink-900 transition hover:bg-neutral-300"
               >
-                <span className="text-lg">{c.icon}</span>
+                <ChipIcon name={c.icon} />
                 {c.label}
               </Link>
             ))}
