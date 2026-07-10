@@ -24,10 +24,10 @@ const budgets = [
 ];
 
 const carTypes = [
-  { label: 'SUVs', type: 'SUV', accent: '#334155' },
-  { label: 'Hatchbacks', type: 'Hatchback', accent: '#0891b2' },
-  { label: 'Saloons', type: 'Saloon', accent: '#7c3b25' },
-  { label: 'Estates', type: 'Estate', accent: '#16a34a' },
+  { label: 'SUVs', type: 'SUV', accent: '#334155', make: 'Kia', model: 'Sportage', year: 2024 },
+  { label: 'Hatchbacks', type: 'Hatchback', accent: '#0891b2', make: 'Volkswagen', model: 'Golf', year: 2024 },
+  { label: 'Saloons', type: 'Saloon', accent: '#7c3b25', make: 'BMW', model: '3 Series', year: 2024 },
+  { label: 'Estates', type: 'Estate', accent: '#16a34a', make: 'Skoda', model: 'Octavia', year: 2024 },
 ];
 
 const usedModels = [
@@ -389,7 +389,14 @@ export default function Home() {
               to={`/browse?body_type=${t.type}`}
               className="card flex flex-col items-center overflow-hidden p-4 transition hover:-translate-y-1 hover:shadow-card-hover"
             >
-              <CarImage accent={t.accent} bodyType={t.type} className="h-24 w-full" />
+              <CarImage
+                accent={t.accent}
+                bodyType={t.type}
+                make={t.make}
+                model={t.model}
+                year={t.year}
+                className="h-24 w-full"
+              />
               <p className="mt-3 font-display text-lg font-bold text-ink-900">{t.label}</p>
             </Link>
           ))}

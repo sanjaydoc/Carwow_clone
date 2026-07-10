@@ -27,7 +27,14 @@ export default function AuthLayout({
       <div className="hidden lg:block">
         <div className="relative overflow-hidden rounded-3xl bg-ink-900 p-10 text-white">
           <div className="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-clay-500/30 blur-3xl" />
-          <CarImage accent="#D97757" bodyType="SUV" className="w-full rounded-2xl" />
+          <CarImage
+            accent="#D97757"
+            bodyType="SUV"
+            make="Tesla"
+            model="Model Y"
+            year={2024}
+            className="aspect-[16/10] w-full rounded-2xl bg-white"
+          />
           <h2 className="mt-8 font-display text-2xl font-extrabold">
             The stress-free way to change your car
           </h2>

@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { getCarPhoto } from '../api/carPhotos';
 
 interface Props {
   accent: string;
@@ -10,8 +11,8 @@ interface Props {
   angle?: number;
 }
 
-// Builds a real, studio-style car render URL from the imagin.studio CDN
-// (the same kind of clean per-model imagery used by sites like Carwow).
+// Studio-style car render from the imagin.studio CDN (clean per-model imagery,
+// the same style used by sites like Carwow).
 function imaginUrl(make: string, model: string, year?: number, angle = 23) {
   const params = new URLSearchParams({
     customer: 'hrjavascript-mastery',
@@ -24,9 +25,10 @@ function imaginUrl(make: string, model: string, year?: number, angle = 23) {
   return `https://cdn.imagin.studio/getImage?${params.toString()}`;
 }
 
-// Renders a real car photo when a make/model is known, with a graceful
-// fallback to a clean vector illustration if the image can't be loaded
-// (or for decorative, non-specific uses).
+// Real car imagery with graceful degradation:
+//   1. imagin.studio studio render (transparent, per-model)
+//   2. Wikipedia/Wikimedia real photo (on failure)
+//   3. clean vector illustration (last resort / decorative use)
 export default function CarImage({
   accent,
   className = '',
@@ -36,20 +38,37 @@ export default function CarImage({
   year,
   angle,
 }: Props) {
-  const [failed, setFailed] = useState(false);
-  const usePhoto = Boolean(make && model) && !failed;
+  const [imaginFailed, setImaginFailed] = useState(false);
+  const [wikiSrc, setWikiSrc] = useState<string | null | undefined>(undefined);
+  const [wikiFailed, setWikiFailed] = useState(false);
+
+  useEffect(() => {
+    if (imaginFailed && make && model && wikiSrc === undefined) {
+      getCarPhoto(make, model).then(setWikiSrc).catch(() => setWikiSrc(null));
+    }
+  }, [imaginFailed, make, model, wikiSrc]);
+
+  const showImagin = Boolean(make && model) && !imaginFailed;
+  const showWiki = Boolean(make && model) && imaginFailed && Boolean(wikiSrc) && !wikiFailed;
 
   return (
-    <div
-      className={`relative overflow-hidden bg-gradient-to-b from-white to-cream-200 ${className}`}
-    >
-      {usePhoto ? (
+    <div className={`relative overflow-hidden bg-gradient-to-b from-white to-cream-200 ${className}`}>
+      {showImagin ? (
         <img
           src={imaginUrl(make!, model!, year, angle)}
           alt={`${make} ${model}`}
           loading="lazy"
-          onError={() => setFailed(true)}
+          onError={() => setImaginFailed(true)}
           className="h-full w-full object-contain p-2"
+          draggable={false}
+        />
+      ) : showWiki ? (
+        <img
+          src={wikiSrc!}
+          alt={`${make} ${model}`}
+          loading="lazy"
+          onError={() => setWikiFailed(true)}
+          className="h-full w-full object-cover"
           draggable={false}
         />
       ) : (
