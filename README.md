@@ -25,15 +25,19 @@
 
 ---
 
-## 🌐 Documentation site
+## 🌐 Live demo
 
-A project landing / documentation site lives in [`docs/`](docs/) and is published with GitHub Pages:
+The **full interactive app** runs client-side on GitHub Pages (a backend-free
+build that uses an in-browser data layer), so you can click through the real
+thing — browse, filter, compare, save and sell — right in your browser:
 
 **🔗 https://sanjaydoc.github.io/Carwow_clone/**
 
-> **One-time setup to make it live:** open **Settings → Pages → Build and deployment → Source: “GitHub Actions”** (a repository owner has to do this once — automation tokens aren’t allowed to create a Pages site). After that, the included workflow at [`.github/workflows/pages.yml`](.github/workflows/pages.yml) deploys the site automatically on every push.
->
-> *Prefer no workflow?* Instead choose **Source: “Deploy from a branch” → `/docs` folder** and Pages will serve `docs/index.html` directly.
+> Published from the [`docs/`](docs/) folder. To rebuild it after changing the
+> app, run `npm run build:pages` and commit the updated `docs/`. In the repo,
+> Pages is configured under **Settings → Pages → Deploy from a branch → `/docs`**.
+> Car photography is loaded from the [imagin.studio](https://imagin.studio) CDN
+> with a clean illustrated fallback.
 
 ---
 

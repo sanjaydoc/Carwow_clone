@@ -1,4 +1,5 @@
 import type { Car, DealerOffer, Filters, Pagination, SellResult, User } from '../types';
+import { mockApi } from './mockApi';
 
 const BASE = '/api';
 
@@ -41,7 +42,7 @@ export interface CarQuery {
   limit?: number;
 }
 
-export const api = {
+const httpApi = {
   // Cars
   getCars: (q: CarQuery = {}) => {
     const params = new URLSearchParams();
@@ -86,3 +87,9 @@ export const api = {
   saveCar: (id: number) => request<{ saved: boolean }>(`/saved/${id}`, { method: 'POST' }),
   unsaveCar: (id: number) => request<{ saved: boolean }>(`/saved/${id}`, { method: 'DELETE' }),
 };
+
+// In the static / GitHub Pages build there is no backend, so route every call
+// through the in-browser mock API instead of `fetch`.
+const isStatic = import.meta.env.VITE_STATIC === 'true';
+
+export const api = isStatic ? mockApi : httpApi;

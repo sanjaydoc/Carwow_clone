@@ -88,7 +88,15 @@ export default function CarDetail() {
         {/* Left: image + specs */}
         <div>
           <div className="card overflow-hidden">
-            <CarImage accent={car.accent} bodyType={car.body_type} className="aspect-[16/10] w-full" />
+            <CarImage
+              accent={car.accent}
+              bodyType={car.body_type}
+              make={car.make}
+              model={car.model}
+              year={car.year}
+              angle={29}
+              className="aspect-[16/10] w-full"
+            />
           </div>
 
           <div className="mt-6 card p-6">

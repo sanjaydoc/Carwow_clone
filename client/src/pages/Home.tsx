@@ -5,6 +5,7 @@ import type { Car } from '../types';
 import CarCard from '../components/CarCard';
 import CarImage from '../components/CarImage';
 import Spinner from '../components/Spinner';
+import { gbp } from '../utils/format';
 
 const categories = [
   { label: 'Electric', icon: '⚡', to: '/browse?fuel_type=Electric' },
@@ -16,10 +17,10 @@ const categories = [
 ];
 
 const budgets = [
-  { label: 'Under £25k', to: '/browse?max_price=25000&sort=price_desc', accent: '#2563eb' },
-  { label: 'Under £30k', to: '/browse?max_price=30000&sort=price_desc', accent: '#C15F3C' },
-  { label: 'Under £40k', to: '/browse?max_price=40000&sort=price_desc', accent: '#dc2626' },
-  { label: 'Under £50k', to: '/browse?max_price=50000&sort=price_desc', accent: '#64748b' },
+  { label: 'Under £25k', to: '/browse?max_price=25000&sort=price_desc', accent: '#ea580c', make: 'Toyota', model: 'Yaris', year: 2024 },
+  { label: 'Under £30k', to: '/browse?max_price=30000&sort=price_desc', accent: '#0ea5e9', make: 'Volkswagen', model: 'Golf', year: 2024 },
+  { label: 'Under £40k', to: '/browse?max_price=40000&sort=price_desc', accent: '#0891b2', make: 'Ford', model: 'Puma', year: 2024 },
+  { label: 'Under £50k', to: '/browse?max_price=50000&sort=price_desc', accent: '#c0392b', make: 'Tesla', model: 'Model 3', year: 2024 },
 ];
 
 const carTypes = [
@@ -29,16 +30,32 @@ const carTypes = [
   { label: 'Estates', type: 'Estate', accent: '#16a34a' },
 ];
 
+const usedModels = [
+  'Audi A4', 'BMW 3 Series', 'Tesla Model 3', 'Volkswagen Golf', 'Ford Focus',
+  'Ford Puma', 'Kia Sportage', 'Toyota Corolla', 'Nissan Qashqai', 'Hyundai Ioniq 5',
+  'Mercedes-Benz A-Class', 'Volvo XC40', 'MINI Cooper', 'Honda Civic', 'Peugeot 3008',
+  'Skoda Octavia', 'Toyota Yaris', 'Kia EV6', 'BMW X3', 'Land Rover Defender',
+];
+
+const reviews = [
+  { title: 'Sold my car in 3 days', body: 'I sold my car through carwow and bought a new one too. The whole process was smooth and I got a great price.', author: 'C. T.', when: '38 minutes ago' },
+  { title: 'Best price, zero hassle', body: 'Dealers competed for my business and I saved over £3,000 versus the RRP. No haggling at all.', author: 'Priya S.', when: '2 hours ago' },
+  { title: 'Genuinely excellent service', body: 'From search to delivery everything was clear and fast. The reviews helped me pick the right car.', author: 'James W.', when: '5 hours ago' },
+  { title: 'Would recommend to anyone', body: 'Got four offers within minutes of listing my car. Collection was free and payment was instant.', author: 'Aisha R.', when: 'Yesterday' },
+  { title: 'So easy to compare', body: 'Being able to line up three cars side by side made the decision simple. Brilliant tool.', author: 'Mark D.', when: '2 days ago' },
+];
+
 const steps = [
   { title: 'Search & compare', body: 'Browse thousands of new and used cars with expert reviews.', icon: '🔍' },
   { title: 'Get the best offers', body: 'Trusted dealers compete to give you their best price.', icon: '🏷️' },
   { title: 'Buy with confidence', body: 'Choose your offer and get your car delivered to your door.', icon: '🔑' },
 ];
 
-type Tab = 'find' | 'sell';
+type Tab = 'find' | 'sell' | 'reviews';
 
 export default function Home() {
   const [featured, setFeatured] = useState<Car[]>([]);
+  const [trending, setTrending] = useState<Car[]>([]);
   const [makes, setMakes] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<Tab>('find');
@@ -48,17 +65,22 @@ export default function Home() {
 
   useEffect(() => {
     api.getCars({ sort: 'rating_desc', limit: 8 }).then(({ cars }) => setFeatured(cars)).finally(() => setLoading(false));
+    api.getCars({ fuel_type: 'Electric', sort: 'rating_desc', limit: 8 }).then(({ cars }) => setTrending(cars));
     api.getFilters().then((f) => setMakes(f.makes));
   }, []);
 
   const onFind = (e: FormEvent) => {
     e.preventDefault();
-    navigate(`/browse?search=${encodeURIComponent(search.trim())}`);
+    const q = encodeURIComponent(search.trim());
+    // The "Read reviews" tab surfaces our top-rated cars.
+    navigate(tab === 'reviews' ? `/browse?search=${q}&sort=rating_desc` : `/browse?search=${q}`);
   };
   const onSell = (e: FormEvent) => {
     e.preventDefault();
     navigate('/sell', { state: { reg } });
   };
+
+  const posterCar = featured.find((c) => c.body_type === 'SUV') ?? featured[0];
 
   return (
     <div>
@@ -74,15 +96,16 @@ export default function Home() {
 
           {/* Tabbed search card */}
           <div className="mt-7 max-w-2xl overflow-hidden rounded-3xl bg-ink-900 p-5 shadow-card sm:p-7">
-            <div className="flex gap-6 border-b border-white/10">
+            <div className="flex gap-5 border-b border-white/10 sm:gap-8">
               {[
                 { id: 'find' as Tab, label: 'Find a car' },
                 { id: 'sell' as Tab, label: 'Sell my car' },
+                { id: 'reviews' as Tab, label: 'Read reviews' },
               ].map((t) => (
                 <button
                   key={t.id}
                   onClick={() => setTab(t.id)}
-                  className={`relative pb-3 text-lg font-bold transition ${
+                  className={`relative pb-3 text-base font-bold transition sm:text-lg ${
                     tab === t.id ? 'text-white' : 'text-white/50'
                   }`}
                 >
@@ -92,33 +115,35 @@ export default function Home() {
                   )}
                 </button>
               ))}
-              <Link
-                to="/compare"
-                className="ml-auto hidden self-center pb-3 text-lg font-bold text-white/50 transition hover:text-white sm:block"
-              >
-                Compare
-              </Link>
             </div>
 
-            {tab === 'find' ? (
-              <form onSubmit={onFind} className="mt-5 flex items-center gap-2 rounded-full bg-white p-1.5">
-                <input
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Search by make or model"
-                  className="w-full bg-transparent px-4 py-3 text-ink-900 placeholder:text-ink-700/40 focus:outline-none"
-                />
-                <button
-                  type="submit"
-                  aria-label="Search"
-                  className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-clay-500 text-white transition hover:bg-clay-600"
-                >
-                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <circle cx="11" cy="11" r="7" />
-                    <path d="M21 21l-4-4" strokeLinecap="round" />
-                  </svg>
-                </button>
-              </form>
+            {tab !== 'sell' ? (
+              <>
+                <form onSubmit={onFind} className="mt-5 flex items-center gap-2 rounded-full bg-white p-1.5">
+                  <input
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder={tab === 'reviews' ? 'Search reviews by model' : 'Search by make or model'}
+                    className="w-full bg-transparent px-4 py-3 text-ink-900 placeholder:text-ink-700/40 focus:outline-none"
+                  />
+                  <button
+                    type="submit"
+                    aria-label="Search"
+                    className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-clay-500 text-white transition hover:bg-clay-600"
+                  >
+                    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <circle cx="11" cy="11" r="7" />
+                      <path d="M21 21l-4-4" strokeLinecap="round" />
+                    </svg>
+                  </button>
+                </form>
+                <p className="mt-3 text-sm text-white/60">
+                  or let us help you{' '}
+                  <Link to="/browse" className="font-bold text-white underline underline-offset-4">
+                    Find a car
+                  </Link>
+                </p>
+              </>
             ) : (
               <form onSubmit={onSell} className="mt-5">
                 <label className="mb-2 block text-sm font-semibold text-white/70">
@@ -160,6 +185,47 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ---------- FEATURED DEAL POSTER ---------- */}
+      {posterCar && (
+        <section className="container-x pt-10">
+          <Link
+            to={`/cars/${posterCar.id}`}
+            className="group relative block overflow-hidden rounded-3xl bg-ink-900 text-white"
+          >
+            <div className="absolute -right-10 top-0 h-72 w-72 rounded-full bg-clay-500/25 blur-3xl" />
+            <div className="relative grid items-center gap-4 p-6 sm:p-10 md:grid-cols-2">
+              <div>
+                <span className="chip bg-white/10 text-white/80">Featured deal</span>
+                <h2 className="mt-4 font-display text-3xl font-extrabold uppercase leading-none sm:text-5xl">
+                  {posterCar.make} {posterCar.model}
+                </h2>
+                <p className="mt-3 max-w-sm text-white/70">
+                  {posterCar.description}
+                </p>
+                <div className="mt-5 flex flex-wrap items-center gap-4">
+                  <span className="rounded-full bg-white px-6 py-3 font-display font-bold text-ink-900 transition group-hover:bg-clay-500 group-hover:text-white">
+                    Configure yours
+                  </span>
+                  <span className="text-sm text-white/70">
+                    Cash from <b className="text-white">{gbp(posterCar.price)}</b> · from{' '}
+                    <b className="text-clay-300">{gbp(posterCar.monthly_price)}/mo</b>
+                  </span>
+                </div>
+              </div>
+              <CarImage
+                accent={posterCar.accent}
+                bodyType={posterCar.body_type}
+                make={posterCar.make}
+                model={posterCar.model}
+                year={posterCar.year}
+                angle={21}
+                className="h-56 w-full rounded-2xl bg-transparent sm:h-72"
+              />
+            </div>
+          </Link>
+        </section>
+      )}
+
       {/* ---------- FEATURED ---------- */}
       <section className="container-x py-14">
         <div className="flex items-end justify-between">
@@ -196,12 +262,74 @@ export default function Home() {
               to={b.to}
               className="card overflow-hidden transition hover:-translate-y-1 hover:shadow-card-hover"
             >
-              <CarImage accent={b.accent} className="h-28 w-full sm:h-32" />
+              <CarImage
+                accent={b.accent}
+                make={b.make}
+                model={b.model}
+                year={b.year}
+                className="h-28 w-full sm:h-32"
+              />
               <p className="p-4 font-display text-lg font-bold text-ink-900">{b.label}</p>
             </Link>
           ))}
         </div>
       </section>
+
+      {/* ---------- ELECTRIC IS TRENDING (slider) ---------- */}
+      {trending.length > 0 && (
+        <section className="container-x py-8">
+          <div className="flex items-center gap-3">
+            <span className="grid h-11 w-11 place-items-center rounded-xl bg-clay-100 text-2xl">⚡</span>
+            <div>
+              <h2 className="font-display text-2xl font-extrabold uppercase text-ink-900 sm:text-3xl">
+                Electric is trending
+              </h2>
+              <p className="text-ink-700/70">Say hello to the hottest deals on the market.</p>
+            </div>
+          </div>
+
+          <div className="-mx-4 mt-6 flex snap-x gap-5 overflow-x-auto px-4 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {trending.map((car) => (
+              <Link
+                key={car.id}
+                to={`/cars/${car.id}`}
+                className="group w-[300px] shrink-0 snap-start rounded-3xl bg-cream-200 p-5 transition hover:shadow-card-hover"
+              >
+                <h3 className="font-display text-xl font-bold text-ink-900">
+                  {car.make} {car.model}
+                </h3>
+                <p className="text-sm text-ink-700/70">{car.trim}</p>
+                <span className="mt-3 inline-block rounded-lg bg-ink-900 px-3 py-1 text-sm font-bold text-clay-300">
+                  Avg saving {gbp(Math.round(car.price * 0.08))} off RRP
+                </span>
+                <CarImage
+                  accent={car.accent}
+                  bodyType={car.body_type}
+                  make={car.make}
+                  model={car.model}
+                  year={car.year}
+                  className="my-4 h-36 w-full bg-transparent"
+                />
+                <div className="flex items-end justify-between">
+                  <div className="space-y-1">
+                    <p className="rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-ink-900 shadow-sm">
+                      Cash from <b>{gbp(car.price)}</b>
+                    </p>
+                    <p className="rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-ink-900 shadow-sm">
+                      Lease from <b>{gbp(car.monthly_price)}</b>/mo
+                    </p>
+                  </div>
+                  <span className="grid h-11 w-11 place-items-center rounded-full bg-ink-900 text-white transition group-hover:bg-clay-500">
+                    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* ---------- SELL CTA ---------- */}
       <section className="container-x py-10">
@@ -273,6 +401,24 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ---------- POPULAR USED MODELS ---------- */}
+      <section className="container-x py-8">
+        <h2 className="font-display text-2xl font-extrabold uppercase text-ink-900 sm:text-3xl">
+          Popular used car models
+        </h2>
+        <div className="mt-6 grid grid-cols-2 gap-x-8 gap-y-3 sm:grid-cols-3 lg:grid-cols-4">
+          {usedModels.map((m) => (
+            <Link
+              key={m}
+              to={`/browse?search=${encodeURIComponent(m)}&condition=used`}
+              className="font-semibold text-ink-800 underline-offset-4 transition hover:text-clay-600 hover:underline"
+            >
+              Used {m}
+            </Link>
+          ))}
+        </div>
+      </section>
+
       {/* ---------- HOW IT WORKS ---------- */}
       <section className="container-x py-14">
         <div className="text-center">
@@ -297,18 +443,46 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ---------- TRUST ---------- */}
-      <section className="container-x pb-16">
-        <div className="card flex flex-col items-center gap-4 p-8 text-center">
-          <div className="flex gap-1 text-2xl">{'★★★★★'}</div>
-          <p className="font-display text-xl font-bold text-ink-900">
-            Rated <span className="text-clay-600">4.4 / 5</span> based on 82,488 reviews
-          </p>
-          <p className="max-w-lg text-ink-700/70">
-            Our customers rate us as ‘Excellent’. We connect you with all the major manufacturers and
-            thousands of hand-picked dealers.
-          </p>
+      {/* ---------- CUSTOMER REVIEWS (slider) ---------- */}
+      <section className="container-x pb-8">
+        <div className="flex items-center gap-3">
+          <span className="grid h-11 w-11 place-items-center rounded-xl bg-clay-100 text-2xl">⭐</span>
+          <div>
+            <h2 className="font-display text-2xl font-extrabold uppercase text-ink-900 sm:text-3xl">
+              This is how it should feel
+            </h2>
+            <p className="text-ink-700/70">
+              Our customers rate us as <b>‘Excellent’</b> on Trustpilot.
+            </p>
+          </div>
         </div>
+
+        <div className="-mx-4 mt-6 flex snap-x gap-5 overflow-x-auto px-4 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {reviews.map((r) => (
+            <div
+              key={r.title}
+              className="w-[300px] shrink-0 snap-start rounded-2xl border border-cream-300 bg-white p-5 shadow-sm"
+            >
+              <div className="flex gap-1">
+                {[0, 1, 2, 3, 4].map((n) => (
+                  <span key={n} className="grid h-6 w-6 place-items-center bg-green-500 text-xs text-white">
+                    ★
+                  </span>
+                ))}
+              </div>
+              <h3 className="mt-3 font-display font-bold text-ink-900">{r.title}</h3>
+              <p className="mt-1 text-sm text-ink-700/70">{r.body}</p>
+              <p className="mt-4 text-sm font-semibold text-ink-800">
+                {r.author} <span className="font-normal text-ink-700/50">· {r.when}</span>
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <p className="mt-2 text-center text-sm text-ink-700/70">
+          Rated <b>4.4/5</b> based on <b>82,488</b> reviews on{' '}
+          <span className="font-semibold text-green-600">★ Trustpilot</span>
+        </p>
       </section>
     </div>
   );

@@ -24,6 +24,7 @@ export interface Car {
   accent: string;
   description: string | null;
   saved_at?: string;
+  created_at?: string;
 }
 
 export interface Pagination {

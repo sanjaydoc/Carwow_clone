@@ -1,72 +1,153 @@
 import { Link } from 'react-router-dom';
 
-const columns = [
-  {
-    title: 'Buy',
-    links: [
-      { label: 'New cars', to: '/browse?condition=new' },
-      { label: 'Used cars', to: '/browse?condition=used' },
-      { label: 'Electric cars', to: '/browse?fuel_type=Electric' },
-      { label: 'Compare cars', to: '/compare' },
-    ],
-  },
-  {
-    title: 'Sell',
-    links: [
-      { label: 'Sell my car', to: '/sell' },
-      { label: 'How it works', to: '/sell' },
-      { label: 'Car valuation', to: '/sell' },
-    ],
-  },
-  {
-    title: 'Company',
-    links: [
-      { label: 'About us', to: '/' },
-      { label: 'Careers', to: '/' },
-      { label: 'Help centre', to: '/' },
-    ],
-  },
+const linkCols = [
+  [
+    { label: 'About us', to: '/' },
+    { label: 'Contact us', to: '/' },
+    { label: 'Authors and experts', to: '/' },
+    { label: 'Carwow newsroom', to: '/' },
+    { label: 'Official merchandise', to: '/' },
+  ],
+  [
+    { label: 'Careers', to: '/' },
+    { label: 'Dealer & brand partners', to: '/' },
+    { label: 'Buy a car', to: '/browse' },
+    { label: 'Sell my car', to: '/sell' },
+    { label: 'Compare cars', to: '/compare' },
+  ],
 ];
 
 export default function Footer() {
   return (
-    <footer className="mt-20 border-t border-cream-300 bg-cream-200">
-      <div className="container-x py-12">
-        <div className="grid gap-10 md:grid-cols-4">
+    <footer className="bg-ink-900 text-white">
+      <div className="container-x py-14">
+        <div className="grid gap-10 lg:grid-cols-[1.2fr_1fr_1fr]">
+          {/* Help centre + socials */}
           <div>
-            <div className="flex items-center gap-2">
-              <span className="font-display text-xl font-extrabold text-ink-900">
-                car<span className="text-clay-500">wow</span>
+            <div className="mb-5 flex items-center gap-2">
+              <span className="font-display text-2xl font-extrabold">
+                car<span className="text-clay-400">wow</span>
               </span>
             </div>
-            <p className="mt-3 max-w-xs text-sm text-ink-700/70">
-              The stress-free way to buy, sell and compare cars. Get the best price from trusted
-              dealers.
-            </p>
-          </div>
-          {columns.map((col) => (
-            <div key={col.title}>
-              <h4 className="font-display font-bold text-ink-900">{col.title}</h4>
-              <ul className="mt-3 space-y-2">
-                {col.links.map((l) => (
-                  <li key={l.label}>
-                    <Link
-                      to={l.to}
-                      className="text-sm text-ink-700/70 transition hover:text-clay-600"
-                    >
-                      {l.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+            <h4 className="font-display text-lg font-bold underline decoration-clay-400 decoration-2 underline-offset-4">
+              Help Centre
+            </h4>
+            <div className="mt-3 space-y-0.5 text-sm text-white/70">
+              <p>Monday to Friday 9.00 – 18.00</p>
+              <p>Saturday 9.00 – 17.30</p>
+              <p>Sundays &amp; Bank Holidays closed</p>
             </div>
+            <div className="mt-5 flex gap-3">
+              {socials.map((s) => (
+                <a
+                  key={s.label}
+                  href="#"
+                  aria-label={s.label}
+                  className="grid h-10 w-10 place-items-center rounded-full bg-white/10 text-white transition hover:bg-clay-500"
+                  onClick={(e) => e.preventDefault()}
+                >
+                  {s.icon}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Link columns */}
+          {linkCols.map((col, i) => (
+            <ul key={i} className="space-y-3 pt-2">
+              {col.map((l) => (
+                <li key={l.label}>
+                  <Link
+                    to={l.to}
+                    className="text-white/80 underline-offset-4 transition hover:text-clay-300 hover:underline"
+                  >
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           ))}
         </div>
-        <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-cream-300 pt-6 text-sm text-ink-700/60 sm:flex-row">
-          <p>© {new Date().getFullYear()} Carwow clone. A demo project.</p>
-          <p>Built with React, Vite &amp; Node.js.</p>
+
+        {/* Trustpilot */}
+        <div className="mt-12 flex flex-col items-center gap-2 border-t border-white/10 pt-8 text-center">
+          <p className="text-lg">
+            Rated <span className="font-bold">4.4/5</span> from{' '}
+            <span className="font-bold">82,486</span> reviews
+          </p>
+          <div className="flex items-center gap-2">
+            <span className="text-green-400">★</span>
+            <span className="font-semibold">Trustpilot</span>
+            <span className="flex gap-0.5">
+              {[0, 1, 2, 3].map((n) => (
+                <span key={n} className="grid h-5 w-5 place-items-center bg-green-500 text-xs text-white">
+                  ★
+                </span>
+              ))}
+              <span className="grid h-5 w-5 place-items-center bg-green-500/40 text-xs text-white">★</span>
+            </span>
+          </div>
+        </div>
+
+        {/* Legal */}
+        <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 text-sm text-white/60 sm:flex-row">
+          <p>© {new Date().getFullYear()} Carwow clone. A demo project — not affiliated with Carwow.</p>
+          <div className="flex gap-5">
+            <a href="#" onClick={(e) => e.preventDefault()} className="hover:text-white">
+              Terms &amp; conditions
+            </a>
+            <a href="#" onClick={(e) => e.preventDefault()} className="hover:text-white">
+              Privacy
+            </a>
+          </div>
         </div>
       </div>
     </footer>
   );
 }
+
+const iconCls = 'h-5 w-5';
+const socials = [
+  {
+    label: 'Facebook',
+    icon: (
+      <svg viewBox="0 0 24 24" className={iconCls} fill="currentColor">
+        <path d="M13 22v-8h2.7l.4-3H13V9c0-.9.3-1.5 1.6-1.5H16V4.9c-.3 0-1.2-.1-2.3-.1-2.3 0-3.7 1.4-3.7 3.9V11H7.5v3H10v8h3z" />
+      </svg>
+    ),
+  },
+  {
+    label: 'X',
+    icon: (
+      <svg viewBox="0 0 24 24" className={iconCls} fill="currentColor">
+        <path d="M17.5 3h3l-6.6 7.6L21.8 21h-6l-4.7-6.1L5.7 21h-3l7-8.1L2.5 3h6.1l4.2 5.6L17.5 3zm-1 16h1.6L8.1 4.7H6.4L16.5 19z" />
+      </svg>
+    ),
+  },
+  {
+    label: 'Instagram',
+    icon: (
+      <svg viewBox="0 0 24 24" className={iconCls} fill="none" stroke="currentColor" strokeWidth="2">
+        <rect x="3" y="3" width="18" height="18" rx="5" />
+        <circle cx="12" cy="12" r="4" />
+        <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+      </svg>
+    ),
+  },
+  {
+    label: 'YouTube',
+    icon: (
+      <svg viewBox="0 0 24 24" className={iconCls} fill="currentColor">
+        <path d="M23 12s0-3.2-.4-4.7c-.2-.8-.9-1.5-1.7-1.7C19.3 5.2 12 5.2 12 5.2s-7.3 0-8.9.4c-.8.2-1.5.9-1.7 1.7C1 8.8 1 12 1 12s0 3.2.4 4.7c.2.8.9 1.5 1.7 1.7 1.6.4 8.9.4 8.9.4s7.3 0 8.9-.4c.8-.2 1.5-.9 1.7-1.7C23 15.2 23 12 23 12zM9.7 15.3V8.7l5.7 3.3-5.7 3.3z" />
+      </svg>
+    ),
+  },
+  {
+    label: 'TikTok',
+    icon: (
+      <svg viewBox="0 0 24 24" className={iconCls} fill="currentColor">
+        <path d="M16 3c.3 2.1 1.5 3.6 3.6 3.8V9c-1.3.1-2.5-.3-3.6-1v6.2c0 3.2-2.4 5.3-5.3 5.3-2.7 0-4.9-2-4.9-4.8 0-2.9 2.3-4.9 5.2-4.7v2.4c-.4-.1-.8-.2-1.2-.1-1.2.1-2 .9-2 2.1 0 1.3 1 2.2 2.3 2.1 1.3 0 2.1-1 2.1-2.4V3h3.8z" />
+      </svg>
+    ),
+  },
+];

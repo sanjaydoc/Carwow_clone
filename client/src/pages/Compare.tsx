@@ -101,7 +101,7 @@ export default function Compare() {
                   onClick={() => add(c)}
                   className="flex w-full items-center gap-3 p-3 text-left transition hover:bg-cream-100"
                 >
-                  <CarImage accent={c.accent} bodyType={c.body_type} className="h-12 w-20 rounded-lg" />
+                  <CarImage accent={c.accent} bodyType={c.body_type} make={c.make} model={c.model} year={c.year} className="h-12 w-20 rounded-lg" />
                   <div>
                     <p className="font-semibold text-ink-900">
                       {c.make} {c.model}

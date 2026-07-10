@@ -9,6 +9,7 @@
     "seed": "npm --prefix server run seed",
     "start": "npm run build && node server/src/index.js",
     "serve": "node server/src/index.js",
+    "build:pages": "node scripts/build-pages.mjs",
     "dev": "concurrently -n api,web -c yellow,cyan \"node --watch server/src/index.js\" \"npm --prefix client run dev\""
   },
   "devDependencies": {

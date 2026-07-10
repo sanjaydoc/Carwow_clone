@@ -32,7 +32,14 @@ export default function CarCard({ car }: { car: Car }) {
       className="group card overflow-hidden transition hover:-translate-y-1 hover:shadow-card-hover"
     >
       <div className="relative">
-        <CarImage accent={car.accent} bodyType={car.body_type} className="h-44 w-full" />
+        <CarImage
+          accent={car.accent}
+          bodyType={car.body_type}
+          make={car.make}
+          model={car.model}
+          year={car.year}
+          className="h-44 w-full"
+        />
         <span className="absolute left-3 top-3 chip bg-white/90 backdrop-blur capitalize">
           {car.condition}
         </span>
