@@ -25,6 +25,18 @@
 
 ---
 
+## 🌐 Documentation site
+
+A project landing / documentation site lives in [`docs/`](docs/) and is published with GitHub Pages:
+
+**🔗 https://sanjaydoc.github.io/Carwow_clone/**
+
+> **One-time setup to make it live:** open **Settings → Pages → Build and deployment → Source: “GitHub Actions”** (a repository owner has to do this once — automation tokens aren’t allowed to create a Pages site). After that, the included workflow at [`.github/workflows/pages.yml`](.github/workflows/pages.yml) deploys the site automatically on every push.
+>
+> *Prefer no workflow?* Instead choose **Source: “Deploy from a branch” → `/docs` folder** and Pages will serve `docs/index.html` directly.
+
+---
+
 ## 📋 Table of contents
 
 - [✨ Overview](#-overview)

@@ -34,13 +34,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # One-time setup required: in the repo, open
+      # Settings → Pages → Build and deployment → Source: "GitHub Actions".
+      # After that this workflow deploys the docs/ site automatically.
       - name: Setup Pages
         uses: actions/configure-pages@v5
-        with:
-          # Attempt to enable Pages automatically (needs Actions to have the
-          # pages:write permission granted above). If your org disables this,
-          # enable Pages once under Settings → Pages → Source: "GitHub Actions".
-          enablement: true
 
       - name: Upload docs artifact
         uses: actions/upload-pages-artifact@v3
