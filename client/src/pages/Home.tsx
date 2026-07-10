@@ -50,6 +50,13 @@ const videos = [
   "We review the UK's best-selling SUV",
 ];
 
+const evTools = [
+  'Electric cars with quick delivery times',
+  'Find your nearest charging point',
+  'The best electric cars for 2026',
+  'How far can an EV really go?',
+];
+
 const reviews = [
   { title: 'Sold my car in 3 days', body: 'I sold my car through carwow and bought a new one too. The whole process was smooth and I got a great price.', author: 'C. T.', when: '38 minutes ago' },
   { title: 'Best price, zero hassle', body: 'Dealers competed for my business and I saved over £3,000 versus the RRP. No haggling at all.', author: 'Priya S.', when: '2 hours ago' },
@@ -644,6 +651,52 @@ export default function Home() {
                 );
               })}
             </div>
+          </div>
+        </section>
+      )}
+
+      {/* ---------- JOIN THE ELECTRIC REVOLUTION ---------- */}
+      {trending.length > 0 && (
+        <section className="container-x py-14">
+          <div className="flex items-start gap-4">
+            <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-clay-500 text-2xl text-white">
+              ⚡
+            </span>
+            <div>
+              <h2 className="font-display text-2xl font-extrabold text-ink-900 sm:text-3xl">
+                Join the electric revolution!
+              </h2>
+              <p className="mt-1 text-ink-700/70">
+                Check out our electric car tools and other helpful advice.
+              </p>
+            </div>
+          </div>
+
+          <div className="-mx-4 mt-6 flex snap-x gap-5 overflow-x-auto px-4 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {evTools.map((t, i) => {
+              const car = trending[i % trending.length];
+              return (
+                <Link key={t} to="/browse?fuel_type=Electric" className="group w-[300px] shrink-0 snap-start">
+                  <CarImage
+                    accent={car.accent}
+                    bodyType={car.body_type}
+                    make={car.make}
+                    model={car.model}
+                    year={car.year}
+                    className="h-44 w-full rounded-2xl"
+                  />
+                  <h3 className="mt-3 font-display text-lg font-bold text-ink-900 underline-offset-4 group-hover:underline">
+                    {t}
+                  </h3>
+                </Link>
+              );
+            })}
+          </div>
+
+          <div className="mt-6">
+            <Link to="/browse?fuel_type=Electric" className="btn-outline w-full justify-center py-3.5 sm:w-auto sm:px-8">
+              Compare the best electric cars
+            </Link>
           </div>
         </section>
       )}
