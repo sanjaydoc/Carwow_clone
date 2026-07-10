@@ -234,9 +234,16 @@ const iconProps = {
 
 function PoundIcon() {
   return (
-    <svg {...iconProps}>
-      <circle cx="12" cy="12" r="9" />
-      <path d="M9.5 16.5h5M9.5 12.5h3.5M13.8 8.2c-.7-.8-1.8-1-2.7-.5-1 .5-1.3 1.7-1.1 2.8l.6 3.5c.2 1-.2 2-1.1 2.5" />
+    <svg viewBox="0 0 24 24" className="h-6 w-6">
+      <circle cx="12" cy="12" r="10" fill="currentColor" />
+      <path
+        d="M13.8 8.6c-.6-.6-1.6-.7-2.3-.2-.6.4-.9 1.2-.7 2l.4 1.8c.2.8-.1 1.6-.7 2.1M9.3 12.3h3.4M8.9 16h5.8"
+        fill="none"
+        stroke="#fff"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
@@ -257,8 +264,11 @@ function UserIcon() {
 }
 function HeartIcon() {
   return (
-    <svg {...iconProps}>
-      <path d="M12 21s-7.5-4.6-10-9.2C.3 8.4 2 4.9 5.3 4.9c2 0 3.4 1.1 4.2 2.4h.9c.8-1.3 2.2-2.4 4.2-2.4 3.3 0 5 3.5 3.3 6.9C19.5 16.4 12 21 12 21z" />
+    <svg {...iconProps} strokeWidth={1.7}>
+      <path d="M11 14h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 16" />
+      <path d="m7 20 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.75-2.91l-4.2 3.9" />
+      <path d="m2 15 6 6" />
+      <path d="M19.5 8.5c.7-.7 1.5-1.6 1.5-2.7A2.73 2.73 0 0 0 16 4a2.78 2.78 0 0 0-5 1.8c0 1.2.8 2 1.5 2.8L16 12Z" />
     </svg>
   );
 }
