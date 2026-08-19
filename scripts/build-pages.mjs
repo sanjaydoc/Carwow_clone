@@ -1,7 +1,7 @@
 // Builds the static (backend-free) client and copies it into ./docs so it can
 // be served by GitHub Pages from the /docs folder. Cross-platform.
 import { execSync } from 'node:child_process';
-import { cpSync, rmSync, existsSync, mkdirSync } from 'node:fs';
+import { cpSync, rmSync, existsSync, mkdirSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -18,11 +18,15 @@ execSync('npm --prefix client run build', {
 
 console.log('▶ Copying build into docs/ (keeping screenshots + .nojekyll)…');
 if (!existsSync(docs)) mkdirSync(docs);
-rmSync(join(docs, 'assets'), { recursive: true, force: true });
-rmSync(join(docs, 'index.html'), { force: true });
-rmSync(join(docs, 'favicon.svg'), { force: true });
-cpSync(join(dist, 'index.html'), join(docs, 'index.html'));
-cpSync(join(dist, 'assets'), join(docs, 'assets'), { recursive: true });
-if (existsSync(join(dist, 'favicon.svg'))) cpSync(join(dist, 'favicon.svg'), join(docs, 'favicon.svg'));
+// Wipe everything in docs/ EXCEPT screenshots and .nojekyll, then copy the
+// whole build output (index.html, assets/, favicon.svg, and any public/ assets
+// such as therapy/ images).
+for (const entry of readdirSync(docs)) {
+  if (entry === 'screenshots' || entry === '.nojekyll') continue;
+  rmSync(join(docs, entry), { recursive: true, force: true });
+}
+for (const entry of readdirSync(dist)) {
+  cpSync(join(dist, entry), join(docs, entry), { recursive: true });
+}
 
 console.log('✅ docs/ updated. Commit & push to publish to GitHub Pages.');

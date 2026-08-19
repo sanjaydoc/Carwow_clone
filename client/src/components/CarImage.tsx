@@ -11,41 +11,17 @@ interface Props {
   angle?: number;
 }
 
-// Real clinical photography per department (loads in the visitor's browser),
-// layered over an accent-tinted gradient. If the photo fails to load we fall
-// back to a clean department glyph — so a card never breaks.
-//
-// Photos come from a keyword image service, keyed to the department and made
-// stable per-therapy via a deterministic `lock` seed.
-const DEPT_TAGS: Record<string, string> = {
-  'Age Rejuvenation': 'laboratory,science',
-  Dental: 'dentist,dental',
-  Orthopedics: 'orthopedic,knee',
-  Cardiology: 'cardiology,heart',
-  Gastroenterology: 'gastroenterology,medical',
-  Neurology: 'neurology,brain',
-  Pulmonology: 'lungs,respiratory',
-  Cosmetic: 'skincare,cosmetic',
-};
-
-// Stable small integer from a string, so each therapy keeps the same photo.
-function seed(s: string): number {
-  let h = 0;
-  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 100000;
-  return h;
-}
-
-function photoUrl(make: string, model: string): string {
-  const tags = DEPT_TAGS[make] ?? 'medical,hospital';
-  return `https://loremflickr.com/640/420/${tags}?lock=${seed(make + model)}`;
-}
+// A single bundled, professional clinical photo (operating theatre) is used for
+// every therapy card when present. Drop the file at
+//   client/public/therapy/theatre.jpg
+// and it is served at `${BASE_URL}therapy/theatre.jpg`. If it is missing or
+// fails to load, we fall back to a clean accent-tinted gradient + department
+// glyph — so a card never breaks and never shows an irrelevant image.
+const CLINICAL_PHOTO = `${import.meta.env.BASE_URL}therapy/theatre.jpg`;
 
 export default function CarImage({ accent, className = '', make = '', model = '' }: Props) {
   const [failed, setFailed] = useState(false);
-  // Reset the error state if the therapy changes (component reuse across routes).
   useEffect(() => setFailed(false), [make, model]);
-
-  const showPhoto = Boolean(make && model) && !failed;
 
   return (
     <div
@@ -54,7 +30,7 @@ export default function CarImage({ accent, className = '', make = '', model = ''
         background: `linear-gradient(160deg, #ffffff 0%, ${hexA(accent, 0.1)} 60%, ${hexA(accent, 0.2)} 100%)`,
       }}
     >
-      {/* branded gradient + glyph — always present as the backdrop / fallback */}
+      {/* branded gradient + glyph — the backdrop and the fallback */}
       <svg
         viewBox="0 0 320 176"
         className="absolute inset-0 h-full w-full"
@@ -73,11 +49,11 @@ export default function CarImage({ accent, className = '', make = '', model = ''
         <DepartmentIcon name={make} className="h-11 w-11" strokeWidth={1.6} />
       </div>
 
-      {/* real clinical photo on top; hides itself (revealing the glyph) on error */}
-      {showPhoto && (
+      {/* bundled clinical photo on top; hides itself (revealing the glyph) if absent */}
+      {!failed && (
         <img
-          src={photoUrl(make, model)}
-          alt={`${make} — ${model}`}
+          src={CLINICAL_PHOTO}
+          alt="Clinical treatment"
           loading="lazy"
           onError={() => setFailed(true)}
           className="absolute inset-0 h-full w-full object-cover"
