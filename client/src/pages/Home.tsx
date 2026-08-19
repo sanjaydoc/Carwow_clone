@@ -136,8 +136,8 @@ export default function Home() {
   useEffect(() => {
     api.getCars({ sort: 'rating_desc', limit: 8 }).then(({ cars }) => setFeatured(cars)).finally(() => setLoading(false));
     api.getCars({ sort: 'rating_desc', limit: 6 }).then(({ cars }) => setTrending(cars));
-    // Age Rejuvenation leads: feature its top-rated therapy in the poster.
-    api.getCars({ make: 'Age Rejuvenation', sort: 'rating_desc', limit: 1 }).then(({ cars }) => setPoster(cars[0] ?? null));
+    // Feature "Exosome IV Longevity" (Age Rejuvenation) in the poster.
+    api.getCars({ search: 'Exosome IV Longevity', limit: 1 }).then(({ cars }) => setPoster(cars[0] ?? null));
   }, []);
 
   const onFind = (e: FormEvent) => {
