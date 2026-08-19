@@ -134,7 +134,17 @@ export default function Home() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    api.getCars({ sort: 'rating_desc', limit: 8 }).then(({ cars }) => setFeatured(cars)).finally(() => setLoading(false));
+    // Top-rated therapies, but with a Diabetes therapy pinned to the front.
+    Promise.all([
+      api.getCars({ sort: 'rating_desc', limit: 8 }),
+      api.getCars({ make: 'Diabetes', sort: 'rating_desc', limit: 1 }),
+    ])
+      .then(([top, dia]) => {
+        const lead = dia.cars[0];
+        const list = lead ? [lead, ...top.cars.filter((c) => c.id !== lead.id)] : top.cars;
+        setFeatured(list.slice(0, 8));
+      })
+      .finally(() => setLoading(false));
     api.getCars({ sort: 'rating_desc', limit: 6 }).then(({ cars }) => setTrending(cars));
     // Feature "Exosome IV Longevity" (Age Rejuvenation) in the poster.
     api.getCars({ search: 'Exosome IV Longevity', limit: 1 }).then(({ cars }) => setPoster(cars[0] ?? null));
