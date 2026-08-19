@@ -134,14 +134,15 @@ export default function Home() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Top-rated therapies, but with a Diabetes therapy pinned to the front.
+    // Top-rated therapies, with both Diabetes therapies (Type 1 then Type 2)
+    // pinned to the front.
     Promise.all([
       api.getCars({ sort: 'rating_desc', limit: 8 }),
-      api.getCars({ make: 'Diabetes', sort: 'rating_desc', limit: 1 }),
+      api.getCars({ make: 'Diabetes', sort: 'rating_desc', limit: 2 }),
     ])
       .then(([top, dia]) => {
-        const lead = dia.cars[0];
-        const list = lead ? [lead, ...top.cars.filter((c) => c.id !== lead.id)] : top.cars;
+        const leadIds = new Set(dia.cars.map((c) => c.id));
+        const list = [...dia.cars, ...top.cars.filter((c) => !leadIds.has(c.id))];
         setFeatured(list.slice(0, 8));
       })
       .finally(() => setLoading(false));
