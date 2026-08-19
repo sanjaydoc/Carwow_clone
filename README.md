@@ -33,7 +33,7 @@ The **full interactive app** is deployed on GitHub Pages (a backend-free build t
 
 ### 👉 **https://sanjaydoc.github.io/Stemcellsprotocol/**
 
-> All imagery is self-contained: department and therapy-category **SVG icons** rendered on soft blue/white gradients — no external image CDN, so cards always load cleanly.
+> Therapy cards use real, **bundled** stem-cell clinic & lab photography (cryo storage, cleanrooms, cell processing) — no external image CDN — with a department glyph as a fallback, so cards always load cleanly.
 
 ---
 
@@ -108,7 +108,7 @@ Each therapy is labelled **Available** (established) or **Under research** (inve
 | **Back end** | Node.js · Express |
 | **Database** | SQLite (`better-sqlite3`) |
 | **Auth** | JWT (`jsonwebtoken`) · `bcryptjs` |
-| **Imagery** | Self-contained inline **SVG** department & category icons — no external image CDN |
+| **Imagery** | **Bundled** real clinic/lab photography with an inline-SVG glyph fallback — no external image CDN |
 
 ---
 
