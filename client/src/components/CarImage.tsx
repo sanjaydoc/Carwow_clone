@@ -26,9 +26,9 @@ const LOCAL: Record<string, string> = {
   'Age Rejuvenation': 'age-rejuvenation.jpg', // IV exosome infusion
   Cardiology: 'cryo-tanks.jpg',
   Pulmonology: 'cryo-tech.jpg',
-  Neurology: 'cell-lab.jpg',
+  Neurology: 'neural-stem.jpg', // neural stem cells vial
   Orthopedics: 'cleanroom.jpg',
-  Dental: 'cleanroom.jpg',
+  Dental: 'dental-pulp.jpg', // dental pulp MSC vial
   Gastroenterology: 'cell-lab.jpg',
   Cosmetic: 'cryo-tanks.jpg',
 };
