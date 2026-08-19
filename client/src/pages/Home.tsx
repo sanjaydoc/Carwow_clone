@@ -116,9 +116,10 @@ const faqs = [
 ];
 
 const steps = [
-  { title: 'Assess & match', body: 'Share your condition and history so our specialists can match you to suitable therapies.', icon: '🔬' },
-  { title: 'Personalised protocol', body: 'Receive a tailored treatment plan with clear costs, evidence and expected outcomes.', icon: '🧬' },
-  { title: 'Treatment & follow-up', body: 'Undergo your therapy and stay supported with structured aftercare and monitoring.', icon: '🩺' },
+  { title: 'Digital DNA', body: 'A DNA test sequences your complete genome and converts it into a secure digital DNA file.', icon: '🧬' },
+  { title: 'Protocol Simulator', body: 'Your digital DNA is fed into our De novo LLM, which invents novel biomolecules to reverse cellular ageing and reawaken dormant, aged stem cells into younger ones.', icon: '🧠' },
+  { title: 'In-vitro production', body: 'The novel biomolecules are cultured and multiplied in vitro in our laboratory.', icon: '🧫' },
+  { title: 'Exosome IV therapy', body: 'Your personalised biomolecule exosomes are delivered by IV infusion — then you recover and are monitored for weeks to months during a restorative stay in Ooty.', icon: '💉' },
 ];
 
 type Tab = 'find' | 'sell' | 'reviews';
@@ -527,9 +528,9 @@ export default function Home() {
           <h2 className="font-display text-2xl font-extrabold uppercase text-ink-900 sm:text-3xl">
             How StemCells Protocol works
           </h2>
-          <p className="mt-2 text-ink-700/70">Three simple steps to personalised regenerative care.</p>
+          <p className="mt-2 text-ink-700/70">From your DNA to a personalised regenerative therapy, in four steps.</p>
         </div>
-        <div className="mt-10 grid gap-6 md:grid-cols-3">
+        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {steps.map((s, i) => (
             <div key={s.title} className="card p-7">
               <div className="flex items-center gap-3">
