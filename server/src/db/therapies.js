@@ -29,6 +29,8 @@ const NEURO = '#7c3aed';
 const PULMO = '#0ea5e9';
 const COSMETIC = '#db2777';
 const AGE = '#059669';
+const DIABETES = '#0e7490';
+const AUTOIMMUNE = '#9333ea';
 
 export const therapies = [
   // ── Age Rejuvenation ────────────────────────────────────────────────────
@@ -71,6 +73,146 @@ export const therapies = [
     engine: 'MSC + senolytic protocol', power_bhp: 59, zero_to_sixty: 4, top_speed: 2,
     economy_mpg: 12, rating: 4.0, review_count: 95, accent: AGE,
     description: 'Combines senescent-cell-clearing agents with MSC infusions to target biological ageing. Investigational research programme.'
+  },
+
+  // ── Diabetes ────────────────────────────────────────────────────────────
+  {
+    make: 'Diabetes', model: 'Type 1 Diabetes', trim: 'iPSC islet beta-cells', year: 2024,
+    price: 32000, monthly_price: 1333, body_type: 'iPSC', fuel_type: 'Allogeneic', transmission: 'IV infusion',
+    mileage: 120, color: 'Inpatient', condition: 'used', seats: 200, doors: 2,
+    engine: 'iPSC-derived pancreatic islet (beta) cells', power_bhp: 62, zero_to_sixty: 1, top_speed: 30,
+    economy_mpg: 24, rating: 4.3, review_count: 90, accent: DIABETES,
+    description: 'Replaces the insulin-producing beta cells destroyed in type 1 diabetes with lab-grown pancreatic islet cells, aiming to restore natural glucose control and reduce insulin dependence. Investigational.'
+  },
+  {
+    make: 'Diabetes', model: 'Type 2 Diabetes', trim: 'Allogeneic UC-MSC', year: 2023,
+    price: 14000, monthly_price: 583, body_type: 'MSC', fuel_type: 'Allogeneic', transmission: 'IV infusion',
+    mileage: 60, color: 'Day-case', condition: 'used', seats: 150, doors: 2,
+    engine: 'Umbilical cord-derived MSC', power_bhp: 60, zero_to_sixty: 3, top_speed: 14,
+    economy_mpg: 18, rating: 4.2, review_count: 130, accent: DIABETES,
+    description: 'Mesenchymal stem-cell infusions studied to reduce insulin resistance, calm chronic inflammation and support failing beta-cell function in type 2 diabetes. Investigational.'
+  },
+
+  // ── Autoimmune ──────────────────────────────────────────────────────────
+  {
+    make: 'Autoimmune', model: 'Ankylosing Spondylitis', trim: 'Allogeneic UC-MSC', year: 2023,
+    price: 15500, monthly_price: 646, body_type: 'MSC', fuel_type: 'Allogeneic', transmission: 'IV infusion',
+    mileage: 60, color: 'Day-case', condition: 'used', seats: 120, doors: 2,
+    engine: 'Umbilical cord-derived MSC', power_bhp: 66, zero_to_sixty: 3, top_speed: 14,
+    economy_mpg: 18, rating: 4.3, review_count: 160, accent: AUTOIMMUNE,
+    description: 'Immunomodulatory MSC infusions studied to reduce spinal inflammation, pain and stiffness in ankylosing spondylitis and slow disease progression. Investigational.'
+  },
+  {
+    make: 'Autoimmune', model: 'Rheumatoid Arthritis', trim: 'Allogeneic UC-MSC', year: 2022,
+    price: 15000, monthly_price: 625, body_type: 'MSC', fuel_type: 'Allogeneic', transmission: 'IV infusion',
+    mileage: 60, color: 'Day-case', condition: 'used', seats: 120, doors: 2,
+    engine: 'Umbilical cord-derived MSC', power_bhp: 67, zero_to_sixty: 3, top_speed: 14,
+    economy_mpg: 18, rating: 4.4, review_count: 340, accent: AUTOIMMUNE,
+    description: 'MSC therapy studied to calm the immune attack on the joints in rheumatoid arthritis, reducing pain, swelling and long-term joint damage. Investigational.'
+  },
+  {
+    make: 'Autoimmune', model: 'Systemic Lupus Erythematosus (SLE)', trim: 'Allogeneic BM-MSC', year: 2022,
+    price: 18000, monthly_price: 750, body_type: 'MSC', fuel_type: 'Allogeneic', transmission: 'IV infusion',
+    mileage: 60, color: 'Day-case', condition: 'used', seats: 150, doors: 2,
+    engine: 'Bone marrow-derived MSC', power_bhp: 63, zero_to_sixty: 3, top_speed: 21,
+    economy_mpg: 24, rating: 4.2, review_count: 210, accent: AUTOIMMUNE,
+    description: 'Immunomodulatory MSC infusions studied to re-balance an overactive immune system in lupus and protect organs such as the kidneys. Investigational.'
+  },
+  {
+    make: 'Autoimmune', model: 'Psoriasis & Psoriatic Arthritis', trim: 'Allogeneic UC-MSC', year: 2023,
+    price: 13500, monthly_price: 563, body_type: 'MSC', fuel_type: 'Allogeneic', transmission: 'IV infusion',
+    mileage: 45, color: 'Day-case', condition: 'used', seats: 100, doors: 2,
+    engine: 'Umbilical cord-derived MSC', power_bhp: 65, zero_to_sixty: 3, top_speed: 14,
+    economy_mpg: 12, rating: 4.3, review_count: 260, accent: AUTOIMMUNE,
+    description: 'MSC therapy studied to reduce the skin and joint inflammation of psoriasis and psoriatic arthritis. Investigational.'
+  },
+  {
+    make: 'Autoimmune', model: 'Systemic Sclerosis (Scleroderma)', trim: 'Autologous HSCT', year: 2019,
+    price: 42000, monthly_price: 1750, body_type: 'HSC', fuel_type: 'Autologous', transmission: 'IV infusion',
+    mileage: 240, color: 'Inpatient', condition: 'new', seats: 300, doors: 4,
+    engine: 'Autologous haematopoietic stem cells', power_bhp: 80, zero_to_sixty: 1, top_speed: 90,
+    economy_mpg: 36, rating: 4.5, review_count: 150, accent: AUTOIMMUNE,
+    description: 'Autologous stem-cell transplant that resets the immune system in severe, rapidly progressing scleroderma — an established option for carefully selected patients.'
+  },
+  {
+    make: 'Autoimmune', model: 'Sjögren’s Syndrome', trim: 'Allogeneic UC-MSC', year: 2023,
+    price: 14000, monthly_price: 583, body_type: 'MSC', fuel_type: 'Allogeneic', transmission: 'IV infusion',
+    mileage: 45, color: 'Day-case', condition: 'used', seats: 100, doors: 2,
+    engine: 'Umbilical cord-derived MSC', power_bhp: 61, zero_to_sixty: 3, top_speed: 14,
+    economy_mpg: 18, rating: 4.1, review_count: 90, accent: AUTOIMMUNE,
+    description: 'MSC infusions studied to ease dryness and systemic inflammation in Sjögren’s syndrome by modulating immune activity. Investigational.'
+  },
+  {
+    make: 'Autoimmune', model: 'Hashimoto’s Thyroiditis', trim: 'Allogeneic UC-MSC', year: 2023,
+    price: 12000, monthly_price: 500, body_type: 'MSC', fuel_type: 'Allogeneic', transmission: 'IV infusion',
+    mileage: 45, color: 'Day-case', condition: 'used', seats: 100, doors: 1,
+    engine: 'Umbilical cord-derived MSC', power_bhp: 58, zero_to_sixty: 3, top_speed: 14,
+    economy_mpg: 18, rating: 4.0, review_count: 70, accent: AUTOIMMUNE,
+    description: 'Early-stage MSC therapy studied to reduce autoimmune attack on the thyroid gland in Hashimoto’s thyroiditis. Investigational.'
+  },
+  {
+    make: 'Autoimmune', model: 'Graves’ Disease', trim: 'Allogeneic UC-MSC', year: 2023,
+    price: 12500, monthly_price: 521, body_type: 'MSC', fuel_type: 'Allogeneic', transmission: 'IV infusion',
+    mileage: 45, color: 'Day-case', condition: 'used', seats: 100, doors: 1,
+    engine: 'Umbilical cord-derived MSC', power_bhp: 57, zero_to_sixty: 3, top_speed: 14,
+    economy_mpg: 18, rating: 4.0, review_count: 60, accent: AUTOIMMUNE,
+    description: 'Investigational MSC therapy studied to calm the overactive immune response driving Graves’ disease and thyroid eye disease.'
+  },
+  {
+    make: 'Autoimmune', model: 'Myasthenia Gravis', trim: 'Allogeneic BM-MSC', year: 2022,
+    price: 17000, monthly_price: 708, body_type: 'MSC', fuel_type: 'Allogeneic', transmission: 'IV infusion',
+    mileage: 60, color: 'Day-case', condition: 'used', seats: 120, doors: 2,
+    engine: 'Bone marrow-derived MSC', power_bhp: 60, zero_to_sixty: 3, top_speed: 21,
+    economy_mpg: 24, rating: 4.1, review_count: 80, accent: AUTOIMMUNE,
+    description: 'MSC therapy studied to modulate the antibodies that disrupt nerve-to-muscle signalling in myasthenia gravis, improving muscle strength. Investigational.'
+  },
+  {
+    make: 'Autoimmune', model: 'Autoimmune Hepatitis', trim: 'Allogeneic UC-MSC', year: 2023,
+    price: 16000, monthly_price: 667, body_type: 'MSC', fuel_type: 'Allogeneic', transmission: 'IV infusion',
+    mileage: 60, color: 'Day-case', condition: 'used', seats: 120, doors: 2,
+    engine: 'Umbilical cord-derived MSC', power_bhp: 62, zero_to_sixty: 3, top_speed: 14,
+    economy_mpg: 24, rating: 4.1, review_count: 70, accent: AUTOIMMUNE,
+    description: 'MSC infusions studied to reduce immune-driven liver inflammation in autoimmune hepatitis and protect liver function. Investigational.'
+  },
+  {
+    make: 'Autoimmune', model: 'Vasculitis', trim: 'Allogeneic UC-MSC', year: 2022,
+    price: 16500, monthly_price: 688, body_type: 'MSC', fuel_type: 'Allogeneic', transmission: 'IV infusion',
+    mileage: 60, color: 'Day-case', condition: 'used', seats: 120, doors: 2,
+    engine: 'Umbilical cord-derived MSC', power_bhp: 61, zero_to_sixty: 3, top_speed: 21,
+    economy_mpg: 24, rating: 4.1, review_count: 90, accent: AUTOIMMUNE,
+    description: 'Immunomodulatory MSC therapy studied to reduce blood-vessel inflammation in autoimmune vasculitis and lower the risk of organ damage. Investigational.'
+  },
+  {
+    make: 'Autoimmune', model: 'Vitiligo', trim: 'MSC-derived exosomes', year: 2023,
+    price: 4500, monthly_price: 188, body_type: 'Exosome', fuel_type: 'Allogeneic', transmission: 'Local injection',
+    mileage: 45, color: 'Outpatient', condition: 'used', seats: null, doors: 2,
+    engine: 'MSC-derived exosomes', power_bhp: 64, zero_to_sixty: 4, top_speed: 7,
+    economy_mpg: 12, rating: 4.2, review_count: 300, accent: AUTOIMMUNE,
+    description: 'Exosome therapy studied to calm the immune attack on pigment cells and encourage repigmentation of vitiligo patches. Investigational.'
+  },
+  {
+    make: 'Autoimmune', model: 'Alopecia Areata', trim: 'Exosome + PRP', year: 2023,
+    price: 4200, monthly_price: 175, body_type: 'Exosome', fuel_type: 'Autologous', transmission: 'Local injection',
+    mileage: 45, color: 'Outpatient', condition: 'used', seats: null, doors: 2,
+    engine: 'Exosomes + platelet-rich plasma', power_bhp: 66, zero_to_sixty: 4, top_speed: 3,
+    economy_mpg: 9, rating: 4.3, review_count: 380, accent: AUTOIMMUNE,
+    description: 'Scalp exosome therapy studied to quieten the immune attack on hair follicles in alopecia areata and support regrowth. Investigational.'
+  },
+  {
+    make: 'Autoimmune', model: 'Polymyositis & Dermatomyositis', trim: 'Allogeneic BM-MSC', year: 2022,
+    price: 16000, monthly_price: 667, body_type: 'MSC', fuel_type: 'Allogeneic', transmission: 'IV infusion',
+    mileage: 60, color: 'Day-case', condition: 'used', seats: 120, doors: 2,
+    engine: 'Bone marrow-derived MSC', power_bhp: 60, zero_to_sixty: 3, top_speed: 21,
+    economy_mpg: 24, rating: 4.0, review_count: 60, accent: AUTOIMMUNE,
+    description: 'MSC therapy studied to reduce immune-driven muscle and skin inflammation in polymyositis and dermatomyositis. Investigational.'
+  },
+  {
+    make: 'Autoimmune', model: 'Behçet’s Disease', trim: 'Allogeneic UC-MSC', year: 2023,
+    price: 15500, monthly_price: 646, body_type: 'MSC', fuel_type: 'Allogeneic', transmission: 'IV infusion',
+    mileage: 60, color: 'Day-case', condition: 'used', seats: 120, doors: 2,
+    engine: 'Umbilical cord-derived MSC', power_bhp: 61, zero_to_sixty: 3, top_speed: 21,
+    economy_mpg: 24, rating: 4.1, review_count: 55, accent: AUTOIMMUNE,
+    description: 'Immunomodulatory MSC therapy studied to reduce recurrent inflammation and ulcers across the body in Behçet’s disease. Investigational.'
   },
 
   // ── Dental ──────────────────────────────────────────────────────────────

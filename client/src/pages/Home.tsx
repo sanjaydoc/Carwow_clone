@@ -64,8 +64,8 @@ const carTypes = [
 ];
 
 const BRANDS = [
-  'Age Rejuvenation', 'Dental', 'Orthopedics', 'Cardiology',
-  'Gastroenterology', 'Neurology', 'Pulmonology', 'Cosmetic',
+  'Age Rejuvenation', 'Diabetes', 'Autoimmune', 'Dental', 'Orthopedics',
+  'Cardiology', 'Gastroenterology', 'Neurology', 'Pulmonology', 'Cosmetic',
 ];
 
 const usedModels = [

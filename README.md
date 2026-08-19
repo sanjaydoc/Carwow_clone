@@ -92,7 +92,7 @@ The homepage is built **section-by-section** — a tabbed hero, featured therapy
 
 ## 🩺 Departments & therapies
 
-A curated catalogue of **35 illustrative therapies** across **8 departments** — **Dental, Orthopedics, Cardiology, Gastroenterology, Neurology, Pulmonology, Cosmetic** and **Age Rejuvenation** — spanning six regenerative **categories** (MSC, HSC, iPSC, Exosome, Immune-cell, PRP).
+A curated catalogue of **52 illustrative therapies** across **10 departments** — **Age Rejuvenation, Diabetes, Autoimmune, Dental, Orthopedics, Cardiology, Gastroenterology, Neurology, Pulmonology** and **Cosmetic** — spanning six regenerative **categories** (MSC, HSC, iPSC, Exosome, Immune-cell, PRP).
 
 Each therapy is labelled **Available** (established) or **Under research** (investigational / clinical-trial), with a cell source (autologous / allogeneic), delivery route, indicative cost, and illustrative clinical metrics.
 

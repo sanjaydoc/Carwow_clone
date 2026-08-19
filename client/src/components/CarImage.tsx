@@ -24,6 +24,8 @@ const BY_MODEL: Record<string, string> = {
 // Per-department bundled photos.
 const LOCAL: Record<string, string> = {
   'Age Rejuvenation': 'age-rejuvenation.jpg', // IV exosome infusion
+  Diabetes: 'cell-lab.jpg',
+  Autoimmune: 'cryo-tech.jpg',
   Cardiology: 'cryo-tanks.jpg',
   Pulmonology: 'cryo-tech.jpg',
   Neurology: 'neural-stem.jpg', // neural stem cells vial

@@ -4,6 +4,8 @@ import type { ReactNode } from 'react';
 
 export const DEPARTMENTS = [
   'Age Rejuvenation',
+  'Diabetes',
+  'Autoimmune',
   'Dental',
   'Orthopedics',
   'Cardiology',
@@ -73,6 +75,20 @@ function deptPaths(name: string): ReactNode {
           <line x1="8.6" y1="6.8" x2="15.4" y2="6.8" />
           <line x1="9.6" y1="12" x2="14.4" y2="12" />
           <line x1="8.6" y1="17.2" x2="15.4" y2="17.2" />
+        </>
+      );
+    case 'Diabetes':
+      return (
+        <>
+          <path d="M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z" />
+          <path d="M9.2 13.5a3 3 0 0 0 2 3" />
+        </>
+      );
+    case 'Autoimmune':
+      return (
+        <>
+          <path d="M12 3l7 3v5c0 4.6-3 7.7-7 9-4-1.3-7-4.4-7-9V6z" />
+          <path d="M9.3 12l1.9 1.9L15 10" />
         </>
       );
     default:
