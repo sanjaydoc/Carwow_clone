@@ -11,13 +11,19 @@ interface Props {
   angle?: number;
 }
 
-// Real, license-clean clinical photography from Wikimedia Commons, chosen per
-// department (operating theatres, cardiac surgery, endoscopy, lab). These load
-// in the visitor's browser via stable Special:FilePath URLs. If a photo fails,
-// we fall back to a clean accent-tinted gradient + department glyph — so a card
-// never breaks and never shows an irrelevant image.
+// Card photography, in priority order:
+//   1. a real photo the clinic supplied, bundled at public/therapy/<file>
+//   2. otherwise a license-clean Wikimedia Commons clinical photo (interim)
+//   3. otherwise a clean accent-tinted gradient + department glyph (fallback)
+// So a card never breaks and never shows an irrelevant image.
+
+// Bundled, clinic-supplied photos (added as they are provided).
+const LOCAL: Record<string, string> = {
+  'Age Rejuvenation': 'age-rejuvenation.jpg',
+};
+
+// Interim Wikimedia Commons photos for departments without a supplied image.
 const COMMONS: Record<string, string> = {
-  'Age Rejuvenation': 'Medical Laboratory Scientist US NIH.jpg',
   Dental: 'Surgeons in the operating room.jpg',
   Orthopedics: 'Operating room.jpg',
   Cardiology: 'Cardiac surgery operating room.jpg',
@@ -29,6 +35,7 @@ const COMMONS: Record<string, string> = {
 const DEFAULT_PHOTO = 'Surgeons in the operating room.jpg';
 
 function photoUrl(make: string): string {
+  if (LOCAL[make]) return `${import.meta.env.BASE_URL}therapy/${LOCAL[make]}`;
   const file = COMMONS[make] ?? DEFAULT_PHOTO;
   return `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(file)}?width=800`;
 }
