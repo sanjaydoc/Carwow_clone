@@ -11,13 +11,27 @@ interface Props {
   angle?: number;
 }
 
-// A single bundled, professional clinical photo (operating theatre) is used for
-// every therapy card when present. Drop the file at
-//   client/public/therapy/theatre.jpg
-// and it is served at `${BASE_URL}therapy/theatre.jpg`. If it is missing or
-// fails to load, we fall back to a clean accent-tinted gradient + department
-// glyph — so a card never breaks and never shows an irrelevant image.
-const CLINICAL_PHOTO = `${import.meta.env.BASE_URL}therapy/theatre.jpg`;
+// Real, license-clean clinical photography from Wikimedia Commons, chosen per
+// department (operating theatres, cardiac surgery, endoscopy, lab). These load
+// in the visitor's browser via stable Special:FilePath URLs. If a photo fails,
+// we fall back to a clean accent-tinted gradient + department glyph — so a card
+// never breaks and never shows an irrelevant image.
+const COMMONS: Record<string, string> = {
+  'Age Rejuvenation': 'Medical Laboratory Scientist US NIH.jpg',
+  Dental: 'Surgeons in the operating room.jpg',
+  Orthopedics: 'Operating room.jpg',
+  Cardiology: 'Cardiac surgery operating room.jpg',
+  Gastroenterology: 'Endoscopy Surgery.jpg',
+  Neurology: 'Surgeons in the operating room.jpg',
+  Pulmonology: 'Operating room.jpg',
+  Cosmetic: 'Surgeons in the operating room.jpg',
+};
+const DEFAULT_PHOTO = 'Surgeons in the operating room.jpg';
+
+function photoUrl(make: string): string {
+  const file = COMMONS[make] ?? DEFAULT_PHOTO;
+  return `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(file)}?width=800`;
+}
 
 export default function CarImage({ accent, className = '', make = '', model = '' }: Props) {
   const [failed, setFailed] = useState(false);
@@ -49,11 +63,11 @@ export default function CarImage({ accent, className = '', make = '', model = ''
         <DepartmentIcon name={make} className="h-11 w-11" strokeWidth={1.6} />
       </div>
 
-      {/* bundled clinical photo on top; hides itself (revealing the glyph) if absent */}
-      {!failed && (
+      {/* real clinical photo on top; hides itself (revealing the glyph) on error */}
+      {Boolean(make) && !failed && (
         <img
-          src={CLINICAL_PHOTO}
-          alt="Clinical treatment"
+          src={photoUrl(make)}
+          alt={`${make} clinical treatment`}
           loading="lazy"
           onError={() => setFailed(true)}
           className="absolute inset-0 h-full w-full object-cover"
