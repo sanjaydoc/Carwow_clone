@@ -1,0 +1,329 @@
+// Canonical stem-cell therapy catalogue (illustrative demo data).
+//
+// This is the single source of truth, imported by the DB seed AND used to
+// generate the static/Pages dataset (scripts/gen-staticdata.mjs) so the two
+// never drift apart.
+//
+// The underlying column names are inherited from the original app and REPURPOSED:
+//   make        -> Department            trim         -> Protocol / cell line
+//   model       -> Therapy name          body_type    -> Category (MSC/HSC/iPSC/…)
+//   fuel_type   -> Cell source           transmission -> Delivery route
+//   condition   -> 'new' = Available / established, 'used' = Under research
+//   price       -> Treatment cost (£)    monthly_price-> Financing per month (£)
+//   year        -> Offered since         mileage      -> Procedure time (min)
+//   color       -> Treatment setting     engine       -> Cell source detail
+//   power_bhp   -> Reported success (%)  zero_to_sixty-> Typical sessions
+//   top_speed   -> Recovery (days)       economy_mpg  -> Follow-up (months)
+//   seats       -> Cell dose (M cells)   doors        -> Trial phase (4 = established)
+//   rating      -> Outcome score         review_count -> Patients treated
+//   accent      -> Department colour
+//
+// ⚕️ Everything here is ILLUSTRATIVE sample data for a portfolio demo — not
+// medical advice, not real clinical outcomes, and not a real treatment offer.
+
+const DENTAL = '#0891b2';
+const ORTHO = '#2563eb';
+const CARDIO = '#dc2626';
+const GASTRO = '#d97706';
+const NEURO = '#7c3aed';
+const PULMO = '#0ea5e9';
+const COSMETIC = '#db2777';
+const AGE = '#059669';
+
+export const therapies = [
+  // ── Dental ──────────────────────────────────────────────────────────────
+  {
+    make: 'Dental', model: 'Dental Pulp Regeneration', trim: 'Autologous DPSC', year: 2021,
+    price: 6500, monthly_price: 271, body_type: 'MSC', fuel_type: 'Autologous', transmission: 'Local injection',
+    mileage: 90, color: 'Outpatient day case', condition: 'new', seats: 30, doors: 4,
+    engine: 'Dental pulp-derived MSC (DPSC)', power_bhp: 84, zero_to_sixty: 1, top_speed: 14,
+    economy_mpg: 12, rating: 4.6, review_count: 420, accent: DENTAL,
+    description: 'Regenerative endodontics that uses a patient’s own dental pulp stem cells to revitalise a damaged tooth, restoring living pulp tissue rather than removing it.'
+  },
+  {
+    make: 'Dental', model: 'Periodontal Ligament Repair', trim: 'Autologous PDLSC', year: 2022,
+    price: 5400, monthly_price: 225, body_type: 'MSC', fuel_type: 'Autologous', transmission: 'Local injection',
+    mileage: 60, color: 'Outpatient day case', condition: 'used', seats: 25, doors: 2,
+    engine: 'Periodontal ligament stem cells (PDLSC)', power_bhp: 71, zero_to_sixty: 2, top_speed: 21,
+    economy_mpg: 18, rating: 4.3, review_count: 130, accent: DENTAL,
+    description: 'Investigational cell therapy aiming to rebuild the periodontal ligament and supporting bone lost to gum disease. Currently offered within clinical-trial settings only.'
+  },
+  {
+    make: 'Dental', model: 'Alveolar Bone Regeneration', trim: 'BM-MSC + scaffold', year: 2020,
+    price: 8900, monthly_price: 371, body_type: 'MSC', fuel_type: 'Autologous', transmission: 'Surgical implant',
+    mileage: 120, color: 'Day-case surgery', condition: 'new', seats: 50, doors: 4,
+    engine: 'Bone marrow-derived MSC', power_bhp: 80, zero_to_sixty: 1, top_speed: 42,
+    economy_mpg: 12, rating: 4.5, review_count: 310, accent: DENTAL,
+    description: 'Rebuilds jaw-bone volume ahead of implants using bone-marrow MSCs seeded onto a resorbable scaffold, improving graft take versus conventional augmentation.'
+  },
+  {
+    make: 'Dental', model: 'Whole-Tooth Bioengineering', trim: 'iPSC tooth germ', year: 2024,
+    price: 24000, monthly_price: 1000, body_type: 'iPSC', fuel_type: 'Allogeneic', transmission: 'Surgical implant',
+    mileage: 180, color: 'Inpatient', condition: 'used', seats: 100, doors: 1,
+    engine: 'iPSC-derived odontogenic cells', power_bhp: 58, zero_to_sixty: 3, top_speed: 60,
+    economy_mpg: 24, rating: 4.1, review_count: 22, accent: DENTAL,
+    description: 'Early-stage research growing a biological replacement tooth from induced pluripotent stem cells. Pre-clinical / first-in-human research only.'
+  },
+
+  // ── Orthopedics ─────────────────────────────────────────────────────────
+  {
+    make: 'Orthopedics', model: 'Knee Osteoarthritis MSC Therapy', trim: 'Autologous BM-MSC', year: 2019,
+    price: 7800, monthly_price: 325, body_type: 'MSC', fuel_type: 'Autologous', transmission: 'Intra-articular',
+    mileage: 45, color: 'Outpatient day case', condition: 'new', seats: 40, doors: 4,
+    engine: 'Bone marrow-derived MSC', power_bhp: 82, zero_to_sixty: 1, top_speed: 21,
+    economy_mpg: 12, rating: 4.6, review_count: 1240, accent: ORTHO,
+    description: 'A single intra-articular injection of bone-marrow MSCs to reduce pain and inflammation in mild-to-moderate knee osteoarthritis and support cartilage health.'
+  },
+  {
+    make: 'Orthopedics', model: 'Cartilage Repair', trim: 'Chondrocyte + MSC', year: 2018,
+    price: 12500, monthly_price: 521, body_type: 'MSC', fuel_type: 'Autologous', transmission: 'Intra-articular',
+    mileage: 90, color: 'Day-case surgery', condition: 'new', seats: 60, doors: 4,
+    engine: 'Cultured chondrocytes + MSC', power_bhp: 78, zero_to_sixty: 2, top_speed: 42,
+    economy_mpg: 18, rating: 4.5, review_count: 640, accent: ORTHO,
+    description: 'Matrix-assisted autologous cell implantation that resurfaces focal cartilage defects, delaying or avoiding joint replacement in younger patients.'
+  },
+  {
+    make: 'Orthopedics', model: 'Non-union Fracture Repair', trim: 'BM-MSC + scaffold', year: 2020,
+    price: 9800, monthly_price: 408, body_type: 'MSC', fuel_type: 'Autologous', transmission: 'Surgical implant',
+    mileage: 120, color: 'Inpatient', condition: 'new', seats: 80, doors: 4,
+    engine: 'Bone marrow-derived MSC', power_bhp: 85, zero_to_sixty: 1, top_speed: 56,
+    economy_mpg: 12, rating: 4.6, review_count: 380, accent: ORTHO,
+    description: 'Delivers concentrated osteogenic stem cells to fractures that have failed to heal, stimulating new bone formation and union.'
+  },
+  {
+    make: 'Orthopedics', model: 'Intervertebral Disc Regeneration', trim: 'Autologous MSC intradiscal', year: 2022,
+    price: 11200, monthly_price: 467, body_type: 'MSC', fuel_type: 'Autologous', transmission: 'Local injection',
+    mileage: 60, color: 'Outpatient day case', condition: 'used', seats: 45, doors: 2,
+    engine: 'Bone marrow-derived MSC', power_bhp: 66, zero_to_sixty: 1, top_speed: 28,
+    economy_mpg: 24, rating: 4.2, review_count: 150, accent: ORTHO,
+    description: 'Investigational injection of MSCs into a degenerated spinal disc to restore disc height and reduce chronic low-back pain. Clinical-trial stage.'
+  },
+  {
+    make: 'Orthopedics', model: 'Tendon & Ligament PRP-MSC', trim: 'PRP + adipose MSC', year: 2019,
+    price: 3500, monthly_price: 146, body_type: 'PRP', fuel_type: 'Autologous', transmission: 'Local injection',
+    mileage: 40, color: 'Outpatient', condition: 'new', seats: 20, doors: 4,
+    engine: 'Platelet-rich plasma + adipose MSC', power_bhp: 74, zero_to_sixty: 3, top_speed: 14,
+    economy_mpg: 6, rating: 4.4, review_count: 890, accent: ORTHO,
+    description: 'Combines platelet-rich plasma with adipose-derived stem cells to accelerate healing of stubborn tendon and ligament injuries such as tennis elbow or Achilles tendinopathy.'
+  },
+
+  // ── Cardiology ──────────────────────────────────────────────────────────
+  {
+    make: 'Cardiology', model: 'Post-MI Cardiac Repair', trim: 'Autologous BM-MNC', year: 2021,
+    price: 18500, monthly_price: 771, body_type: 'MSC', fuel_type: 'Autologous', transmission: 'Intracoronary',
+    mileage: 120, color: 'Inpatient', condition: 'used', seats: 100, doors: 3,
+    engine: 'Bone marrow mononuclear cells', power_bhp: 64, zero_to_sixty: 1, top_speed: 30,
+    economy_mpg: 12, rating: 4.2, review_count: 210, accent: CARDIO,
+    description: 'Intracoronary delivery of bone-marrow cells after a heart attack, aiming to limit scar formation and preserve pumping function. Investigational.'
+  },
+  {
+    make: 'Cardiology', model: 'Heart Failure MSC Therapy', trim: 'Allogeneic MSC', year: 2022,
+    price: 22000, monthly_price: 917, body_type: 'MSC', fuel_type: 'Allogeneic', transmission: 'Intramyocardial',
+    mileage: 90, color: 'Inpatient', condition: 'used', seats: 150, doors: 2,
+    engine: 'Umbilical cord-derived MSC', power_bhp: 61, zero_to_sixty: 2, top_speed: 45,
+    economy_mpg: 24, rating: 4.1, review_count: 140, accent: CARDIO,
+    description: 'Catheter-based injection of donor MSCs into the heart muscle to reduce inflammation and improve function in chronic heart failure. Clinical-trial stage.'
+  },
+  {
+    make: 'Cardiology', model: 'Cardiosphere-derived Cell Therapy', trim: 'Allogeneic CDC', year: 2023,
+    price: 24500, monthly_price: 1021, body_type: 'MSC', fuel_type: 'Allogeneic', transmission: 'Intracoronary',
+    mileage: 100, color: 'Inpatient', condition: 'used', seats: 75, doors: 2,
+    engine: 'Cardiosphere-derived cells', power_bhp: 60, zero_to_sixty: 1, top_speed: 30,
+    economy_mpg: 18, rating: 4.0, review_count: 60, accent: CARDIO,
+    description: 'Heart-derived progenitor cells studied for their anti-fibrotic, regenerative signalling in cardiomyopathy. Investigational research therapy.'
+  },
+  {
+    make: 'Cardiology', model: 'Critical Limb Ischaemia', trim: 'Autologous BM-MNC', year: 2020,
+    price: 14500, monthly_price: 604, body_type: 'HSC', fuel_type: 'Autologous', transmission: 'Intramuscular',
+    mileage: 80, color: 'Day-case', condition: 'new', seats: 90, doors: 4,
+    engine: 'Bone marrow mononuclear cells', power_bhp: 70, zero_to_sixty: 1, top_speed: 28,
+    economy_mpg: 12, rating: 4.3, review_count: 260, accent: CARDIO,
+    description: 'Stem-cell injections that promote new blood-vessel growth in poorly perfused limbs, helping avoid amputation in no-option critical limb ischaemia.'
+  },
+
+  // ── Gastroenterology ────────────────────────────────────────────────────
+  {
+    make: 'Gastroenterology', model: 'Crohn’s Perianal Fistula', trim: 'Allogeneic adipose MSC', year: 2019,
+    price: 16500, monthly_price: 688, body_type: 'MSC', fuel_type: 'Allogeneic', transmission: 'Local injection',
+    mileage: 60, color: 'Day-case surgery', condition: 'new', seats: 120, doors: 4,
+    engine: 'Adipose-derived MSC', power_bhp: 76, zero_to_sixty: 1, top_speed: 42,
+    economy_mpg: 12, rating: 4.5, review_count: 430, accent: GASTRO,
+    description: 'Local injection of donor adipose stem cells to heal complex perianal fistulas in Crohn’s disease — one of the first approved MSC therapies of its kind.'
+  },
+  {
+    make: 'Gastroenterology', model: 'Gut GvHD MSC Therapy', trim: 'Allogeneic BM-MSC', year: 2018,
+    price: 19500, monthly_price: 813, body_type: 'MSC', fuel_type: 'Allogeneic', transmission: 'IV infusion',
+    mileage: 45, color: 'Inpatient', condition: 'new', seats: 200, doors: 4,
+    engine: 'Bone marrow-derived MSC', power_bhp: 72, zero_to_sixty: 3, top_speed: 21,
+    economy_mpg: 12, rating: 4.4, review_count: 320, accent: GASTRO,
+    description: 'Intravenous MSCs that calm the immune attack of steroid-refractory graft-versus-host disease affecting the gut, used after bone-marrow transplant.'
+  },
+  {
+    make: 'Gastroenterology', model: 'Liver Cirrhosis MSC Therapy', trim: 'Allogeneic UC-MSC', year: 2022,
+    price: 17800, monthly_price: 742, body_type: 'MSC', fuel_type: 'Allogeneic', transmission: 'IV infusion',
+    mileage: 60, color: 'Day-case', condition: 'used', seats: 150, doors: 2,
+    engine: 'Umbilical cord-derived MSC', power_bhp: 63, zero_to_sixty: 3, top_speed: 14,
+    economy_mpg: 24, rating: 4.1, review_count: 110, accent: GASTRO,
+    description: 'Investigational MSC infusions aiming to reduce fibrosis and improve liver function in decompensated cirrhosis. Clinical-trial stage.'
+  },
+  {
+    make: 'Gastroenterology', model: 'Ulcerative Colitis MSC', trim: 'Allogeneic MSC', year: 2023,
+    price: 15500, monthly_price: 646, body_type: 'MSC', fuel_type: 'Allogeneic', transmission: 'IV infusion',
+    mileage: 45, color: 'Day-case', condition: 'used', seats: 120, doors: 2,
+    engine: 'Umbilical cord-derived MSC', power_bhp: 60, zero_to_sixty: 4, top_speed: 14,
+    economy_mpg: 18, rating: 4.0, review_count: 80, accent: GASTRO,
+    description: 'Immunomodulatory MSC therapy under study for inducing remission in moderate-to-severe ulcerative colitis. Investigational.'
+  },
+
+  // ── Neurology ───────────────────────────────────────────────────────────
+  {
+    make: 'Neurology', model: 'Multiple Sclerosis aHSCT', trim: 'Autologous HSCT', year: 2017,
+    price: 45000, monthly_price: 1875, body_type: 'HSC', fuel_type: 'Autologous', transmission: 'IV infusion',
+    mileage: 240, color: 'Inpatient', condition: 'new', seats: 300, doors: 4,
+    engine: 'Autologous haematopoietic stem cells', power_bhp: 83, zero_to_sixty: 1, top_speed: 90,
+    economy_mpg: 36, rating: 4.7, review_count: 540, accent: NEURO,
+    description: 'Autologous haematopoietic stem-cell transplant that “reboots” the immune system, halting disease activity in aggressive relapsing multiple sclerosis.'
+  },
+  {
+    make: 'Neurology', model: 'Spinal Cord Injury NSC', trim: 'Allogeneic NSC', year: 2023,
+    price: 28000, monthly_price: 1167, body_type: 'iPSC', fuel_type: 'Allogeneic', transmission: 'Intrathecal',
+    mileage: 120, color: 'Inpatient', condition: 'used', seats: 40, doors: 2,
+    engine: 'Neural stem cells', power_bhp: 57, zero_to_sixty: 2, top_speed: 60,
+    economy_mpg: 24, rating: 4.1, review_count: 70, accent: NEURO,
+    description: 'Neural stem cells delivered into the spinal fluid to support remyelination and recovery after spinal cord injury. Early clinical research.'
+  },
+  {
+    make: 'Neurology', model: 'Stroke Recovery MSC', trim: 'Allogeneic MSC', year: 2022,
+    price: 21000, monthly_price: 875, body_type: 'MSC', fuel_type: 'Allogeneic', transmission: 'IV infusion',
+    mileage: 60, color: 'Day-case', condition: 'used', seats: 100, doors: 2,
+    engine: 'Bone marrow-derived MSC', power_bhp: 62, zero_to_sixty: 1, top_speed: 30,
+    economy_mpg: 12, rating: 4.2, review_count: 160, accent: NEURO,
+    description: 'Investigational MSC infusion in the sub-acute phase after ischaemic stroke, studied to enhance neurological recovery and reduce disability.'
+  },
+  {
+    make: 'Neurology', model: 'Parkinson’s iPSC Dopaminergic', trim: 'Allogeneic iPSC-DA', year: 2024,
+    price: 38000, monthly_price: 1583, body_type: 'iPSC', fuel_type: 'Allogeneic', transmission: 'Surgical implant',
+    mileage: 180, color: 'Inpatient', condition: 'used', seats: 5, doors: 1,
+    engine: 'iPSC-derived dopaminergic neurons', power_bhp: 55, zero_to_sixty: 1, top_speed: 90,
+    economy_mpg: 36, rating: 4.0, review_count: 30, accent: NEURO,
+    description: 'Lab-grown dopamine neurons transplanted into the brain to replace those lost in Parkinson’s disease. First-in-human research stage.'
+  },
+  {
+    make: 'Neurology', model: 'ALS / MND MSC Therapy', trim: 'Autologous MSC-NTF', year: 2023,
+    price: 26000, monthly_price: 1083, body_type: 'MSC', fuel_type: 'Autologous', transmission: 'Intrathecal',
+    mileage: 90, color: 'Day-case', condition: 'used', seats: 100, doors: 2,
+    engine: 'MSC-neurotrophic factor cells', power_bhp: 54, zero_to_sixty: 3, top_speed: 21,
+    economy_mpg: 18, rating: 3.9, review_count: 90, accent: NEURO,
+    description: 'MSCs engineered to secrete neurotrophic factors, delivered intrathecally to slow motor-neuron loss in ALS. Investigational.'
+  },
+
+  // ── Pulmonology ─────────────────────────────────────────────────────────
+  {
+    make: 'Pulmonology', model: 'COPD MSC Therapy', trim: 'Allogeneic MSC', year: 2022,
+    price: 16800, monthly_price: 700, body_type: 'MSC', fuel_type: 'Allogeneic', transmission: 'IV infusion',
+    mileage: 45, color: 'Day-case', condition: 'used', seats: 100, doors: 2,
+    engine: 'Bone marrow-derived MSC', power_bhp: 61, zero_to_sixty: 3, top_speed: 14,
+    economy_mpg: 18, rating: 4.1, review_count: 130, accent: PULMO,
+    description: 'Anti-inflammatory MSC infusions studied to slow lung decline and improve quality of life in chronic obstructive pulmonary disease. Clinical-trial stage.'
+  },
+  {
+    make: 'Pulmonology', model: 'Pulmonary Fibrosis (IPF) MSC', trim: 'Allogeneic UC-MSC', year: 2023,
+    price: 18500, monthly_price: 771, body_type: 'MSC', fuel_type: 'Allogeneic', transmission: 'IV infusion',
+    mileage: 60, color: 'Day-case', condition: 'used', seats: 120, doors: 2,
+    engine: 'Umbilical cord-derived MSC', power_bhp: 58, zero_to_sixty: 2, top_speed: 14,
+    economy_mpg: 24, rating: 4.0, review_count: 85, accent: PULMO,
+    description: 'Investigational cord-tissue MSC therapy aiming to dampen the scarring process of idiopathic pulmonary fibrosis. Research use only.'
+  },
+  {
+    make: 'Pulmonology', model: 'ARDS MSC Therapy', trim: 'Allogeneic MSC', year: 2021,
+    price: 14500, monthly_price: 604, body_type: 'MSC', fuel_type: 'Allogeneic', transmission: 'IV infusion',
+    mileage: 30, color: 'Inpatient', condition: 'used', seats: 150, doors: 3,
+    engine: 'Bone marrow-derived MSC', power_bhp: 63, zero_to_sixty: 1, top_speed: 21,
+    economy_mpg: 6, rating: 4.1, review_count: 200, accent: PULMO,
+    description: 'Intravenous MSCs studied for acute respiratory distress syndrome, including viral pneumonia, to reduce lung inflammation and injury. Investigational.'
+  },
+  {
+    make: 'Pulmonology', model: 'Airway Epithelial Regeneration', trim: 'Autologous basal cell', year: 2024,
+    price: 20000, monthly_price: 833, body_type: 'iPSC', fuel_type: 'Autologous', transmission: 'Surgical implant',
+    mileage: 120, color: 'Inpatient', condition: 'used', seats: 40, doors: 1,
+    engine: 'Airway basal stem cells', power_bhp: 56, zero_to_sixty: 2, top_speed: 30,
+    economy_mpg: 24, rating: 3.9, review_count: 25, accent: PULMO,
+    description: 'Early research using a patient’s own airway stem cells to regenerate damaged bronchial lining. Pre-clinical / first-in-human.'
+  },
+
+  // ── Cosmetic ────────────────────────────────────────────────────────────
+  {
+    make: 'Cosmetic', model: 'Facial Fat Grafting + SVF', trim: 'Autologous SVF', year: 2018,
+    price: 6800, monthly_price: 283, body_type: 'MSC', fuel_type: 'Autologous', transmission: 'Local injection',
+    mileage: 120, color: 'Day-case surgery', condition: 'new', seats: 80, doors: 4,
+    engine: 'Adipose-derived SVF / MSC', power_bhp: 86, zero_to_sixty: 1, top_speed: 14,
+    economy_mpg: 12, rating: 4.6, review_count: 980, accent: COSMETIC,
+    description: 'Enriches transferred facial fat with the stromal vascular fraction, improving graft survival for natural, long-lasting volume restoration.'
+  },
+  {
+    make: 'Cosmetic', model: 'Hair Restoration Exosome', trim: 'Exosome + PRP', year: 2021,
+    price: 2900, monthly_price: 121, body_type: 'Exosome', fuel_type: 'Autologous', transmission: 'Local injection',
+    mileage: 60, color: 'Outpatient', condition: 'new', seats: null, doors: 4,
+    engine: 'Exosomes + platelet-rich plasma', power_bhp: 73, zero_to_sixty: 4, top_speed: 3,
+    economy_mpg: 9, rating: 4.4, review_count: 1200, accent: COSMETIC,
+    description: 'Scalp injections of regenerative exosomes and PRP that stimulate dormant follicles to thicken hair and slow early-stage hair loss.'
+  },
+  {
+    make: 'Cosmetic', model: 'Skin Rejuvenation Exosomes', trim: 'Exosome microneedling', year: 2022,
+    price: 1800, monthly_price: 75, body_type: 'Exosome', fuel_type: 'Allogeneic', transmission: 'Topical',
+    mileage: 45, color: 'Outpatient', condition: 'new', seats: null, doors: 4,
+    engine: 'MSC-derived exosomes', power_bhp: 78, zero_to_sixty: 3, top_speed: 2,
+    economy_mpg: 6, rating: 4.5, review_count: 1500, accent: COSMETIC,
+    description: 'Exosome serums driven into the skin with microneedling to boost collagen, calm redness and brighten tone with minimal downtime.'
+  },
+  {
+    make: 'Cosmetic', model: 'Scar & Wound MSC Therapy', trim: 'Autologous MSC', year: 2020,
+    price: 5200, monthly_price: 217, body_type: 'MSC', fuel_type: 'Autologous', transmission: 'Local injection',
+    mileage: 60, color: 'Outpatient', condition: 'new', seats: 40, doors: 4,
+    engine: 'Adipose-derived MSC', power_bhp: 80, zero_to_sixty: 2, top_speed: 14,
+    economy_mpg: 12, rating: 4.4, review_count: 540, accent: COSMETIC,
+    description: 'Targeted stem-cell injections that soften scars and accelerate healing of difficult wounds by remodelling collagen and improving blood supply.'
+  },
+
+  // ── Age Rejuvenation ────────────────────────────────────────────────────
+  {
+    make: 'Age Rejuvenation', model: 'Systemic MSC Infusion', trim: 'Allogeneic UC-MSC', year: 2022,
+    price: 12000, monthly_price: 500, body_type: 'MSC', fuel_type: 'Allogeneic', transmission: 'IV infusion',
+    mileage: 90, color: 'Day-case', condition: 'used', seats: 150, doors: 2,
+    engine: 'Umbilical cord-derived MSC', power_bhp: 60, zero_to_sixty: 3, top_speed: 2,
+    economy_mpg: 12, rating: 4.2, review_count: 260, accent: AGE,
+    description: 'A wellness-oriented programme of donor MSC infusions promoted for immune modulation and vitality. Investigational — benefits are not established.'
+  },
+  {
+    make: 'Age Rejuvenation', model: 'Exosome IV Longevity', trim: 'MSC exosome IV', year: 2023,
+    price: 6500, monthly_price: 271, body_type: 'Exosome', fuel_type: 'Allogeneic', transmission: 'IV infusion',
+    mileage: 60, color: 'Day-case', condition: 'used', seats: null, doors: 1,
+    engine: 'MSC-derived exosomes', power_bhp: 57, zero_to_sixty: 3, top_speed: 1,
+    economy_mpg: 6, rating: 4.1, review_count: 180, accent: AGE,
+    description: 'Intravenous MSC-derived exosomes marketed for anti-ageing and recovery. Investigational; efficacy and safety remain under study.'
+  },
+  {
+    make: 'Age Rejuvenation', model: 'NK Cell Immune Boost', trim: 'Allogeneic NK cells', year: 2021,
+    price: 9800, monthly_price: 408, body_type: 'Immune cell', fuel_type: 'Allogeneic', transmission: 'IV infusion',
+    mileage: 60, color: 'Day-case', condition: 'new', seats: 200, doors: 4,
+    engine: 'Natural killer (NK) cells', power_bhp: 68, zero_to_sixty: 3, top_speed: 1,
+    economy_mpg: 6, rating: 4.3, review_count: 320, accent: AGE,
+    description: 'Expanded natural-killer cell infusions used to top up immune surveillance, part of a monitored immune-health programme.'
+  },
+  {
+    make: 'Age Rejuvenation', model: 'Immune (Thymic) Rejuvenation', trim: 'Autologous progenitor', year: 2024,
+    price: 15000, monthly_price: 625, body_type: 'Immune cell', fuel_type: 'Autologous', transmission: 'IV infusion',
+    mileage: 90, color: 'Day-case', condition: 'used', seats: 100, doors: 1,
+    engine: 'Thymic epithelial progenitors', power_bhp: 54, zero_to_sixty: 2, top_speed: 7,
+    economy_mpg: 24, rating: 3.9, review_count: 40, accent: AGE,
+    description: 'Experimental approach aiming to restore thymus function and a more youthful immune repertoire. Early research only.'
+  },
+  {
+    make: 'Age Rejuvenation', model: 'Senolytic + MSC Program', trim: 'MSC + senolytic', year: 2023,
+    price: 11500, monthly_price: 479, body_type: 'MSC', fuel_type: 'Allogeneic', transmission: 'IV infusion',
+    mileage: 60, color: 'Day-case', condition: 'used', seats: 120, doors: 2,
+    engine: 'MSC + senolytic protocol', power_bhp: 59, zero_to_sixty: 4, top_speed: 2,
+    economy_mpg: 12, rating: 4.0, review_count: 95, accent: AGE,
+    description: 'Combines senescent-cell-clearing agents with MSC infusions to target biological ageing. Investigational research programme.'
+  },
+];

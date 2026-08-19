@@ -4,30 +4,29 @@ import { optionalAuth } from '../middleware/auth.js';
 
 const router = Router();
 
-const DEALERS = [
-  'Motorpoint', 'Arnold Clark', 'Big Motoring World', 'Cazoo Direct', 'Sytner Select',
-  'Evans Halshaw', 'Marshall Motors', 'Lookers', 'Vertu Motors', 'Peter Vardy',
+// Partner specialist clinics (fictional) that return indicative quotes.
+const CLINICS = [
+  'Regenix Clinic', 'CellRenew Centre', 'Vitalis Regenerative', 'NovaStem Institute',
+  'Orthobiologics UK', 'Meridian Cell Therapy', 'Albion Stem Centre', 'Helix Regenerative',
+  'Pioneer Cell Clinic', 'Aeon Longevity Clinic',
 ];
 
-const CONDITION_FACTOR = { excellent: 1.06, good: 1.0, fair: 0.9, poor: 0.78 };
+// Urgency of the enquiry nudges the indicative starting estimate.
+const CONDITION_FACTOR = { excellent: 0.9, good: 1.0, fair: 1.08, poor: 1.18 };
 
-// A lightweight, deterministic-ish valuation model.
-function estimateValue({ year, mileage, condition }) {
-  const age = Math.max(0, 2026 - Number(year));
-  // Start from a nominal base and depreciate.
-  let value = 34000;
-  value *= Math.pow(0.86, age); // ~14% depreciation per year
-  value -= Number(mileage) * 0.08; // 8p per mile
+// A lightweight, illustrative indicative-cost model (NOT a real quote).
+function estimateValue({ condition }) {
+  let value = 9000;
   value *= CONDITION_FACTOR[condition] ?? 1.0;
   return Math.max(500, Math.round(value / 50) * 50);
 }
 
 function makeOffers(submissionId, estimate) {
-  const shuffled = [...DEALERS].sort(() => Math.random() - 0.5).slice(0, 4);
+  const shuffled = [...CLINICS].sort(() => Math.random() - 0.5).slice(0, 4);
   return shuffled.map((name, i) => {
-    // Offers cluster around the estimate, best one slightly above.
+    // Indicative quotes cluster around the estimate, best one slightly below.
     const spread = 0.94 + Math.random() * 0.12; // 0.94 – 1.06
-    const bump = i === 0 ? 0.03 : 0;
+    const bump = i === 0 ? -0.03 : 0;
     const amount = Math.round((estimate * (spread + bump)) / 25) * 25;
     return {
       submission_id: submissionId,

@@ -6,11 +6,16 @@ export default function NotFound() {
       <p className="font-display text-7xl font-extrabold text-clay-500">404</p>
       <h1 className="mt-4 font-display text-2xl font-bold text-ink-900">Page not found</h1>
       <p className="mt-2 max-w-sm text-ink-700/70">
-        The page you're looking for has driven off. Let's get you back on the road.
+        The page you're looking for can't be found. Let's get you back on track.
       </p>
-      <Link to="/" className="btn-primary mt-6">
-        Back to home
-      </Link>
+      <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+        <Link to="/" className="btn-primary">
+          Back to home
+        </Link>
+        <Link to="/browse" className="btn rounded-full border border-ink-900/15 bg-white px-6 py-3 font-semibold text-ink-900 transition hover:border-clay-400">
+          Browse therapies
+        </Link>
+      </div>
     </div>
   );
 }

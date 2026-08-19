@@ -10,7 +10,7 @@ if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
 }
 
-const db = new Database(join(dataDir, 'carwow.db'));
+const db = new Database(join(dataDir, 'stemcells.db'));
 db.pragma('journal_mode = WAL');
 db.pragma('foreign_keys = ON');
 

@@ -4,15 +4,16 @@ import { api } from '../api/client';
 import type { Car, Filters, Pagination } from '../types';
 import CarCard from '../components/CarCard';
 import Spinner from '../components/Spinner';
+import { statusLabel } from '../utils/format';
 
 const sorts = [
   { value: 'relevance', label: 'Most relevant' },
-  { value: 'price_asc', label: 'Price: low to high' },
-  { value: 'price_desc', label: 'Price: high to low' },
-  { value: 'monthly_asc', label: 'Monthly: low to high' },
-  { value: 'year_desc', label: 'Newest first' },
-  { value: 'rating_desc', label: 'Top rated' },
-  { value: 'mileage_asc', label: 'Lowest mileage' },
+  { value: 'price_asc', label: 'Cost low→high' },
+  { value: 'price_desc', label: 'Cost high→low' },
+  { value: 'monthly_asc', label: 'Financing: low to high' },
+  { value: 'year_desc', label: 'Newest' },
+  { value: 'rating_desc', label: 'Best outcomes' },
+  { value: 'mileage_asc', label: 'Fewest sessions' },
 ];
 
 export default function Browse() {
@@ -84,9 +85,9 @@ export default function Browse() {
     <div className="container-x py-8">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="font-display text-3xl font-extrabold text-ink-900">Browse cars</h1>
+          <h1 className="font-display text-3xl font-extrabold text-ink-900">Browse therapies</h1>
           <p className="mt-1 text-ink-700/70">
-            {pagination ? `${pagination.total} cars available` : 'Loading…'}
+            {pagination ? `${pagination.total} therapies` : 'Loading…'}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -128,21 +129,35 @@ export default function Browse() {
               <input
                 value={get('search')}
                 onChange={(e) => update('search', e.target.value)}
-                placeholder="Make or model"
+                placeholder="Department or therapy"
                 className="input"
               />
             </div>
 
             {filters && (
               <>
-                <Select label="Make" k="make" options={filters.makes} />
-                <Select label="Body type" k="body_type" options={filters.body_types} />
-                <Select label="Fuel type" k="fuel_type" options={filters.fuel_types} />
-                <Select label="Transmission" k="transmission" options={filters.transmissions} />
-                <Select label="Condition" k="condition" options={filters.conditions} />
+                <Select label="Department" k="make" options={filters.makes} />
+                <Select label="Category" k="body_type" options={filters.body_types} />
+                <Select label="Cell source" k="fuel_type" options={filters.fuel_types} />
+                <Select label="Delivery route" k="transmission" options={filters.transmissions} />
+                <div>
+                  <label className="label">Status</label>
+                  <select
+                    value={get('condition')}
+                    onChange={(e) => update('condition', e.target.value)}
+                    className="input"
+                  >
+                    <option value="">Any</option>
+                    {filters.conditions.map((o) => (
+                      <option key={o} value={o}>
+                        {statusLabel(o)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
                 <div>
                   <label className="label">
-                    Max price: {get('max_price') ? `£${Number(get('max_price')).toLocaleString()}` : 'Any'}
+                    Max cost: {get('max_price') ? `£${Number(get('max_price')).toLocaleString()}` : 'Any'}
                   </label>
                   <input
                     type="range"
@@ -162,11 +177,11 @@ export default function Browse() {
         {/* Results */}
         <div>
           {loading ? (
-            <Spinner label="Finding cars…" />
+            <Spinner label="Finding therapies…" />
           ) : cars.length === 0 ? (
             <div className="card p-12 text-center">
-              <p className="text-4xl">🚗</p>
-              <h3 className="mt-3 font-display text-xl font-bold">No cars match your filters</h3>
+              <p className="text-4xl">🧬</p>
+              <h3 className="mt-3 font-display text-xl font-bold">No therapies match your filters</h3>
               <p className="mt-1 text-ink-700/70">Try widening your search or clearing filters.</p>
               <button onClick={clearAll} className="btn-primary mt-5">
                 Clear filters

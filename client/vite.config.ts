@@ -5,11 +5,11 @@ import react from '@vitejs/plugin-react';
 // In dev, `npm run dev` proxies /api to the backend for a smooth workflow.
 //
 // For the static GitHub Pages build we set VITE_STATIC=true and a base path
-// matching the project site (https://<user>.github.io/Carwow_clone/).
+// matching the project site (https://<user>.github.io/Stemcellsprotocol/).
 const isStatic = process.env.VITE_STATIC === 'true';
 
 export default defineConfig({
-  base: isStatic ? '/Carwow_clone/' : '/',
+  base: isStatic ? '/Stemcellsprotocol/' : '/',
   plugins: [react()],
   server: {
     port: 5173,

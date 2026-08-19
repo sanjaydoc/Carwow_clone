@@ -26,7 +26,7 @@ app.use((req, _res, next) => {
   next();
 });
 
-app.get('/api/health', (_req, res) => res.json({ status: 'ok', service: 'carwow-clone-api' }));
+app.get('/api/health', (_req, res) => res.json({ status: 'ok', service: 'stemcells-protocol-api' }));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/cars', carRoutes);
@@ -53,5 +53,5 @@ app.use((err, _req, res, _next) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`🚗 Carwow clone API running on http://localhost:${PORT}`);
+  console.log(`🧬 StemCells Protocol API running on http://localhost:${PORT}`);
 });

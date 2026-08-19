@@ -3,17 +3,17 @@ import { Link } from 'react-router-dom';
 const linkCols = [
   [
     { label: 'About us', to: '/' },
+    { label: 'Our specialists', to: '/' },
+    { label: 'Research & trials', to: '/research' },
+    { label: 'Patient stories', to: '/' },
     { label: 'Contact us', to: '/' },
-    { label: 'Authors and experts', to: '/' },
-    { label: 'Carwow newsroom', to: '/' },
-    { label: 'Official merchandise', to: '/' },
   ],
   [
-    { label: 'Careers', to: '/' },
-    { label: 'Dealer & brand partners', to: '/' },
-    { label: 'Buy a car', to: '/browse' },
-    { label: 'Sell my car', to: '/sell' },
-    { label: 'Compare cars', to: '/compare' },
+    { label: 'Safety & accreditation', to: '/' },
+    { label: 'Care packages', to: '/care' },
+    { label: 'Browse therapies', to: '/browse' },
+    { label: 'Book a consultation', to: '/consultation' },
+    { label: 'Compare therapies', to: '/compare' },
   ],
 ];
 
@@ -26,7 +26,7 @@ export default function Footer() {
           <div>
             <div className="mb-5 flex items-center gap-2">
               <span className="font-display text-2xl font-extrabold">
-                car<span className="text-clay-400">wow</span>
+                StemCells <span className="text-clay-400">Protocol</span>
               </span>
             </div>
             <h4 className="font-display text-lg font-bold underline decoration-clay-400 decoration-2 underline-offset-4">
@@ -69,11 +69,11 @@ export default function Footer() {
           ))}
         </div>
 
-        {/* Trustpilot */}
+        {/* Patient rating */}
         <div className="mt-12 flex flex-col items-center gap-2 border-t border-white/10 pt-8 text-center">
           <p className="text-lg">
-            Rated <span className="font-bold">4.4/5</span> from{' '}
-            <span className="font-bold">82,486</span> reviews
+            Rated <span className="font-bold">4.6/5</span> from{' '}
+            <span className="font-bold">4,800+</span> patient reviews
           </p>
           <div className="flex items-center gap-2">
             <span className="text-green-400">★</span>
@@ -89,9 +89,20 @@ export default function Footer() {
           </div>
         </div>
 
+        {/* Medical disclaimer */}
+        <div className="mt-10 rounded-2xl border border-white/10 bg-white/5 p-5 text-sm text-white/70">
+          <p>
+            <span className="font-semibold text-white">⚕️ Medical disclaimer.</span> StemCells Protocol
+            is an illustrative demo / portfolio project — not a real clinic. Departments, therapies,
+            costs, success rates, trial phases and patient reviews are sample data for demonstration
+            only. Nothing here is medical advice or a treatment offer. Many stem-cell therapies shown
+            are investigational; always consult a qualified clinician.
+          </p>
+        </div>
+
         {/* Legal */}
         <div className="mt-10 border-t border-white/10 pt-6 text-sm text-white/60">
-          <p>© {new Date().getFullYear()} Carwow clone. A demo project — not affiliated with Carwow.</p>
+          <p>© {new Date().getFullYear()} StemCells Protocol — a demo project, not affiliated with any real clinic.</p>
           <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2">
             {legal.map((l) => (
               <a key={l} href="#" onClick={(e) => e.preventDefault()} className="underline-offset-4 hover:text-white hover:underline">
@@ -116,13 +127,13 @@ export default function Footer() {
 const legal = [
   'Terms & conditions',
   'Manage cookies & privacy',
-  'Fraud disclaimer',
-  'ESG policy',
+  'Medical disclaimer',
+  'Patient data & GDPR',
   'Privacy policy',
-  'Fake reviews policy',
-  'Modern slavery statement',
+  'Complaints procedure',
+  'Safeguarding policy',
   'Accessibility notice',
-  'Code of car changing',
+  'Code of practice',
 ];
 
 const countries = [

@@ -3,7 +3,7 @@ import { api } from '../api/client';
 import type { Car } from '../types';
 import CarImage from '../components/CarImage';
 import StarRating from '../components/StarRating';
-import { gbp, num } from '../utils/format';
+import { gbp } from '../utils/format';
 import { Link } from 'react-router-dom';
 
 const MAX = 3;
@@ -34,30 +34,33 @@ export default function Compare() {
   const remove = (id: number) => setSelected((s) => s.filter((c) => c.id !== id));
 
   const rows: { label: string; get: (c: Car) => string; highlight?: 'min' | 'max' }[] = [
-    { label: 'Price', get: (c) => gbp(c.price), highlight: 'min' },
-    { label: 'Monthly finance', get: (c) => `${gbp(c.monthly_price)}/mo`, highlight: 'min' },
-    { label: 'Rating', get: (c) => `${c.rating.toFixed(1)} / 5`, highlight: 'max' },
-    { label: 'Fuel type', get: (c) => c.fuel_type },
-    { label: 'Transmission', get: (c) => c.transmission },
-    { label: 'Body type', get: (c) => c.body_type },
-    { label: 'Year', get: (c) => String(c.year) },
-    { label: 'Mileage', get: (c) => (c.mileage === 0 ? 'New' : `${num(c.mileage)} mi`) },
-    { label: 'Power', get: (c) => (c.power_bhp ? `${c.power_bhp} bhp` : '—'), highlight: 'max' },
-    { label: '0–60 mph', get: (c) => (c.zero_to_sixty ? `${c.zero_to_sixty}s` : '—'), highlight: 'min' },
-    { label: 'Top speed', get: (c) => (c.top_speed ? `${c.top_speed} mph` : '—'), highlight: 'max' },
-    { label: 'Economy', get: (c) => (c.economy_mpg ? `${c.economy_mpg} mpg` : 'Electric') },
-    { label: 'Seats', get: (c) => (c.seats ? String(c.seats) : '—') },
+    { label: 'Treatment cost', get: (c) => gbp(c.price), highlight: 'min' },
+    { label: 'Financing /mo', get: (c) => `${gbp(c.monthly_price)}/mo`, highlight: 'min' },
+    { label: 'Outcome score', get: (c) => `${c.rating.toFixed(1)} / 5`, highlight: 'max' },
+    { label: 'Cell source', get: (c) => c.fuel_type },
+    { label: 'Delivery route', get: (c) => c.transmission },
+    { label: 'Category', get: (c) => c.body_type },
+    { label: 'Offered since', get: (c) => String(c.year) },
+    {
+      label: 'Trial phase',
+      get: (c) => (c.condition === 'new' || c.doors === 4 ? 'Established' : `Phase ${c.doors}`),
+    },
+    { label: 'Reported success', get: (c) => (c.power_bhp ? `${c.power_bhp}%` : '—'), highlight: 'max' },
+    { label: 'Typical sessions', get: (c) => (c.zero_to_sixty ? String(c.zero_to_sixty) : '—'), highlight: 'min' },
+    { label: 'Recovery (days)', get: (c) => (c.top_speed ? `${c.top_speed} days` : '—'), highlight: 'max' },
+    { label: 'Follow-up (months)', get: (c) => (c.economy_mpg ? `${c.economy_mpg} months` : '—') },
+    { label: 'Cell dose', get: (c) => (c.seats ? `${c.seats}M cells` : '—') },
   ];
 
   // Compute which cell wins for numeric highlight rows.
   const numericValue = (c: Car, label: string): number | null => {
     switch (label) {
-      case 'Price': return c.price;
-      case 'Monthly finance': return c.monthly_price;
-      case 'Rating': return c.rating;
-      case 'Power': return c.power_bhp;
-      case '0–60 mph': return c.zero_to_sixty;
-      case 'Top speed': return c.top_speed;
+      case 'Treatment cost': return c.price;
+      case 'Financing /mo': return c.monthly_price;
+      case 'Outcome score': return c.rating;
+      case 'Reported success': return c.power_bhp;
+      case 'Typical sessions': return c.zero_to_sixty;
+      case 'Recovery (days)': return c.top_speed;
       default: return null;
     }
   };
@@ -75,9 +78,9 @@ export default function Compare() {
   return (
     <div className="container-x py-8">
       <div className="max-w-2xl">
-        <h1 className="font-display text-3xl font-extrabold text-ink-900">Compare cars</h1>
+        <h1 className="font-display text-3xl font-extrabold text-ink-900">Compare therapies</h1>
         <p className="mt-1 text-ink-700/70">
-          Add up to {MAX} cars side by side to see how they stack up on price, performance and specs.
+          Add up to {MAX} therapies side by side to see how they stack up on cost, outcomes and protocol.
         </p>
       </div>
 
@@ -87,13 +90,13 @@ export default function Compare() {
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Add a car to compare…"
+            placeholder="Add a therapy to compare…"
             className="input"
           />
           {query && (
             <div className="card mt-2 divide-y divide-cream-300 overflow-hidden">
               {results.length === 0 && (
-                <p className="p-4 text-sm text-ink-700/60">No cars found.</p>
+                <p className="p-4 text-sm text-ink-700/60">No therapies found.</p>
               )}
               {results.map((c) => (
                 <button
@@ -120,8 +123,8 @@ export default function Compare() {
       {selected.length === 0 ? (
         <div className="card mt-8 p-12 text-center">
           <p className="text-4xl">⚖️</p>
-          <h3 className="mt-3 font-display text-xl font-bold">Nothing to compare yet</h3>
-          <p className="mt-1 text-ink-700/70">Search above to add your first car.</p>
+          <h3 className="mt-3 font-display text-xl font-bold">No therapies to compare yet</h3>
+          <p className="mt-1 text-ink-700/70">Search above to add your first therapy.</p>
         </div>
       ) : (
         <div className="mt-8 overflow-x-auto">
@@ -146,7 +149,7 @@ export default function Compare() {
                       </div>
                       <div className="p-3">
                         <Link
-                          to={`/cars/${c.id}`}
+                          to={`/therapies/${c.id}`}
                           className="font-display font-bold text-ink-900 hover:text-clay-600"
                         >
                           {c.make} {c.model}

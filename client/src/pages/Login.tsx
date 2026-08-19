@@ -30,7 +30,7 @@ export default function Login() {
     <div className="container-x max-w-lg py-10">
       <Link to="/" className="mb-8 flex justify-center">
         <span className="font-display text-3xl font-extrabold text-ink-900">
-          car<span className="text-clay-500">wow</span>
+          StemCells <span className="text-clay-500">Protocol</span>
         </span>
       </Link>
 
@@ -94,9 +94,9 @@ export default function Login() {
           </Link>
         </p>
         <p className="text-ink-800">
-          Are you a carwow dealer?{' '}
+          Are you a partner specialist?{' '}
           <Link to="/login" className="font-bold text-ink-900 underline underline-offset-4 hover:text-clay-600">
-            Log in as a dealer
+            Clinic login
           </Link>
         </p>
       </div>

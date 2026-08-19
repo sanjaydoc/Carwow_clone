@@ -1,7 +1,7 @@
 {
-  "name": "carwow-clone-server",
+  "name": "stemcells-protocol-server",
   "version": "1.0.0",
-  "description": "Backend API for the Carwow clone",
+  "description": "Backend API for StemCells Protocol",
   "type": "module",
   "main": "src/index.js",
   "scripts": {

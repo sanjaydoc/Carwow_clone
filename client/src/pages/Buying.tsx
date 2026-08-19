@@ -1,10 +1,10 @@
 import { Link, useNavigate } from 'react-router-dom';
 
 const options = [
-  { label: 'Build a new car', to: '/browse?condition=new' },
-  { label: 'New in-stock', to: '/browse?condition=new&sort=price_asc' },
-  { label: 'Used', to: '/browse?condition=used' },
-  { label: 'Leasing deals', to: '/browse?sort=monthly_asc' },
+  { label: 'By department', to: '/browse' },
+  { label: 'Established therapies', to: '/browse?condition=new' },
+  { label: 'Clinical trials & research', to: '/research' },
+  { label: 'Compare therapies', to: '/compare' },
 ];
 
 export default function Buying() {
@@ -42,13 +42,13 @@ export default function Buying() {
       </div>
 
       <h2 className="mt-12 font-display text-2xl font-extrabold text-ink-900">
-        Not sure what you're looking for?
+        Not sure where to start?
       </h2>
       <Link
-        to="/browse?sort=rating_desc"
+        to="/consultation"
         className="mt-4 flex items-center justify-center rounded-2xl border border-ink-900/15 bg-white px-6 py-5 font-display text-lg font-bold text-ink-900 transition hover:border-clay-400 hover:text-clay-600 hover:shadow-card"
       >
-        Take the quiz
+        Book a consultation
       </Link>
     </div>
   );

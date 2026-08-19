@@ -4,24 +4,26 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Claude-inspired warm orange / clay palette
+        // Medical red palette (kept under the `clay` token name so the whole
+        // app re-themes from this one place). 500 is the primary brand red.
         clay: {
-          50: '#FBF3EF',
-          100: '#F7E4DB',
-          200: '#EFC8B6',
-          300: '#E6AA90',
-          400: '#DE8F6E',
-          500: '#D97757', // primary
-          600: '#C15F3C',
-          700: '#9E4B2E',
-          800: '#7C3B25',
-          900: '#5D2D1D',
+          50: '#FEF2F2',
+          100: '#FDE1E1',
+          200: '#F9C4C4',
+          300: '#F09A9A',
+          400: '#E86A6A',
+          500: '#DC2626', // primary
+          600: '#BE1B1B',
+          700: '#991B1B',
+          800: '#7A1616',
+          900: '#5A1111',
         },
+        // Clinical whites (kept under the `cream` token name).
         cream: {
-          50: '#FDFCFA',
-          100: '#FAF9F5',
-          200: '#F0EEE6',
-          300: '#E8E5DA',
+          50: '#FFFFFF',
+          100: '#FDFDFC',
+          200: '#F4F5F6',
+          300: '#E7E8EA',
         },
         ink: {
           700: '#3A3733',

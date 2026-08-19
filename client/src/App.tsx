@@ -31,13 +31,13 @@ export default function App() {
       <main className="flex-1 pb-36 md:pb-0">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/buy" element={<Buying />} />
-          <Route path="/ev-deals" element={<EvDeals />} />
-          <Route path="/car-insurance" element={<CarInsurance />} />
+          <Route path="/therapies" element={<Buying />} />
+          <Route path="/research" element={<EvDeals />} />
+          <Route path="/care" element={<CarInsurance />} />
           <Route path="/browse" element={<Browse />} />
-          <Route path="/cars/:id" element={<CarDetail />} />
+          <Route path="/therapies/:id" element={<CarDetail />} />
           <Route path="/compare" element={<Compare />} />
-          <Route path="/sell" element={<Sell />} />
+          <Route path="/consultation" element={<Sell />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route

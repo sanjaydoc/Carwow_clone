@@ -1,62 +1,63 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const whyBlocks = [
-  { icon: '💷', title: 'Save money', body: "Drivers could save up to £518* a year by comparing quotes — money back in your pocket, not your insurer's." },
-  { icon: '📝', title: 'A few quick questions', body: 'Enter your reg, answer a few quick questions, and get tailored quotes in minutes.' },
-  { icon: '🛡️', title: '140+ trusted insurers', body: 'Compare quotes from major names and specialist providers all in one place — no calling around.' },
+  { icon: '💷', title: 'Transparent pricing', body: 'Clear, itemised care-package costs up front — no surprises, with flexible financing options where you need them.' },
+  { icon: '🤝', title: 'Coordinated care', body: 'One team coordinates your consultations, imaging, and treatment across every department involved.' },
+  { icon: '🩺', title: 'Ongoing follow-up', body: 'Structured follow-up and aftercare are built into every package, so your recovery is supported long after treatment.' },
 ];
 
 const steps = [
-  { n: '01', title: 'Enter your reg', body: 'Pop in your registration and a few quick details about you and your driving.' },
-  { n: '02', title: 'Compare quotes', body: 'We search 140+ UK insurers and show you tailored prices.' },
-  { n: '03', title: 'Buy and drive', body: "Choose the cover that suits you, buy directly with the insurer, and you're sorted." },
+  { n: '01', title: 'Assess', body: 'A specialist reviews your condition and history to understand what care is right for you.' },
+  { n: '02', title: 'Plan & fund', body: 'We build a personalised care plan with transparent costs and financing options that suit you.' },
+  { n: '03', title: 'Treat & follow up', body: 'You receive treatment from the right specialists, with structured follow-up and aftercare throughout.' },
 ];
 
 const covers = [
   {
-    tab: 'Third Party Only',
-    badge: 'Minimum cover',
+    tab: 'Essential',
+    badge: 'Entry package',
     badgeClass: 'bg-cream-300 text-ink-800',
-    title: 'Third Party Only',
-    body: 'The minimum level of cover required by UK law. Covers damage you cause to other people, their vehicles, or their property — but not your own car.',
-    included: ['Damage to other vehicles', 'Damage to other property', 'Injury to other people'],
-    not: ['Damage to your own car', 'Theft', 'Fire damage'],
+    title: 'Essential',
+    body: 'The core package for exploring treatment. Covers your initial specialist consultation and assessment, with a clear plan and costs for any next steps.',
+    included: ['Initial specialist consultation', 'Condition assessment', 'Personalised care plan'],
+    not: ['Follow-up consultations', 'Diagnostic imaging', 'Priority scheduling'],
   },
   {
-    tab: 'Third Party, Fire & Theft',
-    badge: 'Mid-tier',
+    tab: 'Standard',
+    badge: 'Most chosen',
     badgeClass: 'bg-ink-900 text-white',
-    title: 'Third Party, Fire & Theft',
-    body: 'Includes everything in third party only, plus cover if your car is stolen or damaged by fire.',
-    included: ['Damage to other vehicles', 'Damage to other property', 'Theft of your car', 'Fire damage to your car'],
-    not: ['Accidental damage', 'Vandalism (sometimes)'],
+    title: 'Standard',
+    body: 'Everything in Essential, plus the imaging and follow-up care most treatment plans need — with financing available to spread the cost.',
+    included: ['Initial specialist consultation', 'Diagnostic imaging', 'Two follow-up consultations', 'Financing options'],
+    not: ['Priority scheduling', 'Extended aftercare programme'],
   },
   {
-    tab: 'Comprehensive',
-    badge: 'Highest cover',
+    tab: 'Premium',
+    badge: 'Full support',
     badgeClass: 'bg-clay-500 text-white',
-    title: 'Comprehensive',
-    body: 'The highest level of cover. Protects you, other drivers, and your own vehicle — including accidental damage. Often surprisingly affordable.',
-    included: ['Everything in TPFT', 'Accidental damage', 'Windscreen cover (often)'],
-    not: ['Mechanical breakdown', 'Wear and tear'],
+    title: 'Premium',
+    body: 'Our most complete package. Coordinated care across departments with priority scheduling and an extended aftercare programme for your full recovery.',
+    included: ['Everything in Standard', 'Priority scheduling', 'Extended aftercare programme', 'Dedicated care coordinator'],
+    not: ['Unrelated conditions', 'Travel and accommodation'],
   },
 ];
 
 const tips = [
-  { title: 'Shop around at renewal', body: 'Loyalty rarely pays — comparing quotes is the single biggest lever on price.' },
-  { title: 'Pay annually if you can', body: 'Monthly instalments usually carry interest, making your cover more expensive overall.' },
-  { title: 'Increase your voluntary excess', body: 'A higher excess typically lowers your premium, but only commit to what you can comfortably pay.' },
-  { title: 'Build up your no-claims discount', body: 'Every claim-free year can knock more off your premium.' },
-  { title: 'Improve security', body: 'Approved alarms, immobilisers, and parking off-road can all bring premiums down.' },
+  { title: 'Start with an assessment', body: 'A specialist assessment is the single biggest lever on getting the right plan — and avoiding paying for care you do not need.' },
+  { title: 'Ask about financing early', body: 'Spreading the cost over monthly instalments can make the right package affordable from day one.' },
+  { title: 'Bundle related treatments', body: 'Combining consultations, imaging, and follow-up in one package is usually better value than paying for each separately.' },
+  { title: 'Keep your records together', body: 'Bringing prior scans and notes to your consultation can reduce repeat imaging and lower your overall cost.' },
+  { title: 'Use your follow-ups', body: 'Every included follow-up is part of what you have paid for — use them to get the most from your care and recovery.' },
 ];
 
 const faqs = [
-  { q: 'How much can I save by comparing car insurance?', a: 'Many drivers save hundreds a year — 51% of consumers could save £518.14* by comparing quotes.' },
-  { q: 'Is the comparison service really free?', a: 'Yes, comparing quotes is completely free to use.' },
-  { q: 'Will comparing affect my credit score?', a: 'No — getting quotes uses a soft search that does not affect your credit score.' },
-  { q: 'How long does it take to get quotes?', a: 'Usually just a few minutes once you enter your reg and a few details.' },
-  { q: 'Which insurers will I see?', a: 'You’ll see quotes from 140+ UK insurers, from major names to specialists.' },
-  { q: 'Can I buy a policy on the same day?', a: 'Yes — you can choose a quote and buy directly with the insurer straight away.' },
+  { q: 'What is included in a care package?', a: 'Each package bundles consultations, and depending on the tier, imaging, follow-ups, and aftercare — all priced transparently up front.' },
+  { q: 'Is choosing a package free?', a: 'Yes, comparing packages and getting an indicative quote is completely free, with no obligation to proceed.' },
+  { q: 'Can I spread the cost?', a: 'Yes — financing options are available on our Standard and Premium packages to spread the cost over monthly instalments.' },
+  { q: 'How long does it take to get a quote?', a: 'Usually just a few minutes once you share a few details about your condition and preferred care.' },
+  { q: 'Can I upgrade my package later?', a: 'Yes — you can move to a higher tier at any point, and we will apply what you have already paid towards it.' },
+  { q: 'Can I start treatment straight away?', a: 'Once a specialist confirms suitability at your consultation, treatment can often be scheduled quickly, with priority scheduling on Premium.' },
 ];
 
 export default function CarInsurance() {
@@ -69,7 +70,7 @@ export default function CarInsurance() {
       <section className="bg-cream-200 py-14">
         <div className="container-x">
           <h1 className="text-center font-display text-3xl font-extrabold uppercase leading-tight text-ink-900 sm:text-5xl">
-            Why compare car insurance through carwow
+            Why choose StemCells <span className="text-clay-500">Protocol</span> care
           </h1>
           <div className="mt-10 grid gap-6 md:grid-cols-3">
             {whyBlocks.map((b) => (
@@ -88,7 +89,7 @@ export default function CarInsurance() {
         <div className="container-x">
           <p className="font-display text-lg font-bold text-clay-400">How it works</p>
           <h2 className="mt-1 font-display text-3xl font-extrabold uppercase sm:text-4xl">
-            Get insurance in three simple steps
+            Your care in three simple steps
           </h2>
           <div className="mt-8 divide-y divide-white/10">
             {steps.map((s) => (
@@ -100,7 +101,7 @@ export default function CarInsurance() {
             ))}
           </div>
           <a href="#quote" className="btn-primary mt-6 w-full justify-center py-4 text-base sm:w-auto sm:px-10">
-            Get quotes
+            Get a care-package quote
           </a>
         </div>
       </section>
@@ -108,13 +109,13 @@ export default function CarInsurance() {
       {/* Types of cover */}
       <section className="bg-cream-200 py-14">
         <div className="container-x">
-          <p className="font-display font-bold text-ink-700/60">Types of cover</p>
+          <p className="font-display font-bold text-ink-700/60">Care packages</p>
           <h2 className="mt-1 font-display text-3xl font-extrabold uppercase text-ink-900 sm:text-4xl">
-            What kind of car insurance do you need?
+            Which care package is right for you?
           </h2>
           <p className="mt-3 max-w-2xl text-ink-700/70">
-            Three levels of cover, defined by what they protect. Comprehensive is the most common — and often
-            the cheapest, surprisingly enough.
+            Three levels of support, defined by what they include. Standard is the most chosen — most treatment
+            plans need imaging and follow-up care.
           </p>
 
           <div className="mt-8 flex gap-6 overflow-x-auto border-b border-ink-900/10 pb-px [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -167,13 +168,13 @@ export default function CarInsurance() {
 
       {/* Tips */}
       <section className="container-x py-14">
-        <p className="font-display font-bold text-ink-700/60">Save more</p>
+        <p className="font-display font-bold text-ink-700/60">Get more from your package</p>
         <h2 className="mt-1 font-display text-3xl font-extrabold uppercase text-ink-900 sm:text-4xl">
-          Tips for a cheaper quote
+          Making the most of your care & financing
         </h2>
         <p className="mt-3 max-w-2xl text-ink-700/70">
-          Five quick levers we’d pull if we were you. Some are common sense, some less obvious — all of them
-          could work.
+          Five simple ways to get the best value and outcome from your care package. Some are common sense, some
+          less obvious — all of them can help.
         </p>
         <div className="mt-8 divide-y divide-cream-300">
           {tips.map((t, i) => (
@@ -193,19 +194,22 @@ export default function CarInsurance() {
         <div className="container-x max-w-2xl text-center">
           <p className="font-display text-lg font-bold text-clay-400">Ready when you are</p>
           <h2 className="mt-1 font-display text-3xl font-extrabold uppercase sm:text-4xl">
-            Ready to see what you could save?
+            Ready to plan your care?
           </h2>
           <p className="mt-3 text-white/70">
-            Enter your reg and compare quotes from 140+ UK car insurance providers in minutes.
+            Tell us a little about your condition and get an indicative care-package quote in minutes.
           </p>
           <div className="mx-auto mt-7 max-w-md rounded-3xl bg-gradient-to-b from-clay-100 to-cream-200 p-4">
             <input
-              placeholder="ENTER REG"
+              placeholder="AREA OF CONCERN"
               className="w-full rounded-xl bg-white px-6 py-4 text-center text-lg font-bold tracking-widest text-ink-900 placeholder:text-ink-700/40 focus:outline-none"
             />
-            <button className="mt-3 w-full rounded-xl bg-ink-900 py-4 font-display text-lg font-bold text-clay-400">
-              Get quotes
-            </button>
+            <Link
+              to="/consultation"
+              className="mt-3 flex w-full items-center justify-center rounded-xl bg-ink-900 py-4 font-display text-lg font-bold text-clay-400"
+            >
+              Get a care-package quote
+            </Link>
           </div>
         </div>
       </section>
@@ -213,7 +217,7 @@ export default function CarInsurance() {
       {/* FAQs */}
       <section className="container-x py-14">
         <h2 className="text-center font-display text-3xl font-extrabold uppercase text-ink-900 sm:text-4xl">
-          Car insurance FAQs
+          Care & financing FAQs
         </h2>
         <div className="mx-auto mt-8 max-w-3xl space-y-3">
           {faqs.map((f) => (
@@ -228,11 +232,10 @@ export default function CarInsurance() {
             </details>
           ))}
         </div>
-        <p className="mx-auto mt-8 max-w-3xl text-sm text-ink-700/60">
-          *51% of consumers could save £518.14 on their car insurance. The saving was calculated by comparing
-          the cheapest price found with the average of the next four cheapest prices quoted by insurance
-          providers. Based on representative cost savings from June 2025 data. Savings depend on your individual
-          circumstances.
+        <p className="mx-auto mt-8 max-w-3xl text-sm italic text-ink-700/60">
+          Illustrative demo — not medical advice. Costs and outcomes are sample data. Care-package prices shown
+          are examples only; your actual plan and cost depend on your individual condition and are confirmed by a
+          specialist at consultation.
         </p>
       </section>
     </div>

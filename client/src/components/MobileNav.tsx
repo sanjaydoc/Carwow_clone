@@ -16,64 +16,53 @@ interface MenuSection {
 
 const menuSections: MenuSection[] = [
   {
-    title: 'New car reviews',
+    title: 'Therapies by department',
     links: [
-      ['Car reviews', '/browse?condition=new&sort=rating_desc'],
-      ['By make', '/browse?condition=new'],
-      ['By type', '/browse?condition=new'],
-      ['By popular models', '/browse?sort=rating_desc'],
-      ['How we test cars', '/browse'],
+      ['All therapies', '/browse'],
+      ['Established therapies', '/browse?condition=new'],
+      ['By department', '/therapies'],
+      ['Compare therapies', '/compare'],
+      ['How it works', '/therapies'],
     ],
   },
   {
-    title: 'Used cars',
+    title: 'Conditions we treat',
     links: [
-      ['Used cars', '/browse?condition=used'],
-      ['By make', '/browse?condition=used'],
-      ['By type', '/browse?condition=used'],
-      ['By popular models', '/browse?condition=used&sort=rating_desc'],
-      ['By popular location', '/browse?condition=used'],
-      ['Car history checker', '/browse?condition=used'],
+      ['Dental', '/browse?make=Dental'],
+      ['Orthopedics', '/browse?make=Orthopedics'],
+      ['Cardiology', '/browse?make=Cardiology'],
+      ['Neurology', '/browse?make=Neurology'],
+      ['Pulmonology', '/browse?make=Pulmonology'],
+      ['All departments', '/browse'],
     ],
   },
   {
-    title: 'Car leasing',
+    title: 'Regenerative categories',
     links: [
-      ['Carwow Leasey', '/browse?sort=monthly_asc'],
-      ['Car leasing', '/browse?sort=monthly_asc'],
-      ['Business car leasing', '/browse?sort=monthly_asc'],
-      ['By make', '/browse?sort=monthly_asc'],
-      ['By type', '/browse?sort=monthly_asc'],
-      ['By popular models', '/browse?sort=monthly_asc'],
+      ['Mesenchymal (MSC)', '/browse?body_type=MSC'],
+      ['Haematopoietic (HSC)', '/browse?body_type=HSC'],
+      ['iPSC therapies', '/browse?body_type=iPSC'],
+      ['Exosome therapies', '/browse?body_type=Exosome'],
+      ['Immune-cell therapies', '/browse?body_type=Immune cell'],
+    ],
+  },
+  { title: 'Clinical trials & research', to: '/research' },
+  { title: 'Care packages & financing', to: '/care' },
+  {
+    title: 'Book a consultation',
+    links: [
+      ['Book a consultation', '/consultation'],
+      ['Check candidacy', '/consultation'],
+      ['Talk to a specialist', '/consultation'],
     ],
   },
   {
-    title: 'Car deals',
+    title: 'Patient guides & news',
     links: [
-      ['New car deals', '/browse?condition=new&sort=price_asc'],
-      ['By make', '/browse?condition=new'],
-      ['By popular models', '/browse?condition=new&sort=rating_desc'],
-      ['By latest deals', '/ev-deals'],
+      ['Guides & advice', '/'],
+      ['Compare therapies', '/compare'],
     ],
   },
-  {
-    title: 'Sell my car',
-    links: [
-      ['Sell my car', '/sell'],
-      ['By popular location', '/sell'],
-      ['By popular makes', '/sell'],
-      ['Value my car', '/sell'],
-      ['Sell my van', '/sell'],
-    ],
-  },
-  {
-    title: 'Car guides and news',
-    links: [
-      ['Car news and advice', '/'],
-      ['Car tools', '/compare'],
-    ],
-  },
-  { title: 'Car insurance', to: '/car-insurance' },
 ];
 
 export default function MobileNav() {
@@ -91,7 +80,7 @@ export default function MobileNav() {
         <div className="fixed inset-0 z-50 flex flex-col bg-cream-100 md:hidden">
           <div className="flex items-center justify-between border-b border-cream-300 px-4 py-4">
             <span className="font-display text-xl font-extrabold text-ink-900">
-              car<span className="text-clay-500">wow</span>
+              StemCells <span className="text-clay-500">Protocol</span>
             </span>
             <button
               onClick={close}
@@ -175,37 +164,37 @@ export default function MobileNav() {
         </div>
       )}
 
-      {/* Floating "sell your car" banner */}
+      {/* Floating "book a consultation" banner */}
       <Link
-        to="/sell"
+        to="/consultation"
         className="fixed inset-x-3 bottom-[84px] z-40 block rounded-full bg-clay-500 py-2.5 text-center text-sm font-bold text-white shadow-lg underline decoration-2 underline-offset-2 md:hidden"
       >
-        Sell your car fast, fair, and totally free
+        Book a free, no-obligation consultation
       </Link>
 
       {/* Floating bottom navigation */}
       <nav className="fixed inset-x-3 bottom-3 z-40 flex h-[64px] items-stretch overflow-hidden rounded-2xl border border-cream-300 bg-white/95 shadow-[0_8px_30px_rgba(20,20,19,0.18)] backdrop-blur md:hidden">
-        <NavLink to="/buy" className={itemClass} onClick={close}>
+        <NavLink to="/therapies" className={itemClass} onClick={close}>
+          <CellIcon />
+          Therapies
+        </NavLink>
+        <NavLink to="/consultation" className={itemClass} onClick={close}>
+          <CalendarIcon />
+          Consult
+        </NavLink>
+        <NavLink to="/research" className={itemClass} onClick={close}>
+          <FlaskIcon />
+          Research
+        </NavLink>
+        <NavLink to={user ? '/saved' : '/login'} className={itemClass} onClick={close}>
           <span className="relative">
-            <HeartIcon />
+            <UserIcon />
             {count > 0 && (
               <span className="absolute -right-2 -top-1 grid h-4 min-w-[16px] place-items-center rounded-full bg-clay-500 px-1 text-[9px] font-bold text-white">
                 {count}
               </span>
             )}
           </span>
-          Buying
-        </NavLink>
-        <NavLink to="/sell" className={itemClass} onClick={close}>
-          <PoundIcon />
-          Selling
-        </NavLink>
-        <NavLink to="/ev-deals" className={itemClass} onClick={close}>
-          <BoltIcon />
-          EV Deals
-        </NavLink>
-        <NavLink to={user ? '/saved' : '/login'} className={itemClass} onClick={close}>
-          <UserIcon />
           {user ? 'Account' : 'Log in'}
         </NavLink>
         <button
@@ -232,25 +221,31 @@ const iconProps = {
   viewBox: '0 0 24 24',
 };
 
-function PoundIcon() {
+function CellIcon() {
+  // Stem cell: membrane, nucleus and a small budding daughter cell.
   return (
-    <svg viewBox="0 0 24 24" className="h-6 w-6">
-      <circle cx="12" cy="12" r="10" fill="currentColor" />
-      <path
-        d="M13.8 8.6c-.6-.6-1.6-.7-2.3-.2-.6.4-.9 1.2-.7 2l.4 1.8c.2.8-.1 1.6-.7 2.1M9.3 12.3h3.4M8.9 16h5.8"
-        fill="none"
-        stroke="#fff"
-        strokeWidth="1.7"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+    <svg {...iconProps}>
+      <circle cx="11" cy="13" r="6.5" />
+      <circle cx="11" cy="13" r="2.4" fill="currentColor" stroke="none" />
+      <circle cx="18.5" cy="6.5" r="2" />
     </svg>
   );
 }
-function BoltIcon() {
+function CalendarIcon() {
   return (
-    <svg {...iconProps} fill="currentColor" stroke="none">
-      <path d="M13 2L4.5 13.5H11l-1 8.5L19.5 10H13l0-8z" />
+    <svg {...iconProps}>
+      <rect x="4" y="5" width="16" height="16" rx="2.5" />
+      <path d="M4 9.5h16M8 3.5v3M16 3.5v3" />
+      <path d="M12 12.5v4M10 14.5h4" />
+    </svg>
+  );
+}
+function FlaskIcon() {
+  return (
+    <svg {...iconProps}>
+      <path d="M9 3h6" />
+      <path d="M10 3v6l-4.4 8c-.6 1 .1 2.3 1.3 2.3h10.2c1.2 0 1.9-1.3 1.3-2.3L14 9V3" />
+      <path d="M7.6 14h8.8" />
     </svg>
   );
 }
@@ -259,19 +254,6 @@ function UserIcon() {
     <svg {...iconProps}>
       <circle cx="12" cy="8" r="3.5" />
       <path d="M5 20c1.5-3.5 4-5 7-5s5.5 1.5 7 5" />
-    </svg>
-  );
-}
-function HeartIcon() {
-  // A bold filled car silhouette with a heart knocked out of the centre
-  // (carwow "Buying"). A solid shape reads clearly as a car at this size.
-  return (
-    <svg viewBox="0 0 24 24" className="h-6 w-6" fill="currentColor">
-      <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z" />
-      <path
-        fill="#fff"
-        d="M12 15.1c-.13 0-.26-.05-.36-.14l-1.74-1.6c-.78-.72-.28-1.96.77-1.96.5 0 .96.3 1.16.73h.34c.2-.43.66-.73 1.16-.73 1.05 0 1.55 1.24.77 1.96l-1.74 1.6c-.1.09-.23.14-.36.14z"
-      />
     </svg>
   );
 }

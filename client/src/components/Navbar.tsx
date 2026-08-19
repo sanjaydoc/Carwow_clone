@@ -4,8 +4,8 @@ import { useAuth } from '../context/AuthContext';
 import { useSaved } from '../context/SavedContext';
 
 const links = [
-  { to: '/buy', label: 'Buy a car' },
-  { to: '/sell', label: 'Sell my car' },
+  { to: '/therapies', label: 'Therapies' },
+  { to: '/research', label: 'Research' },
   { to: '/compare', label: 'Compare' },
 ];
 
@@ -25,8 +25,8 @@ export default function Navbar() {
       <div className="container-x flex h-16 items-center justify-between gap-4">
         <Link to="/" className="flex items-center gap-2" onClick={() => setOpen(false)}>
           <Logo />
-          <span className="font-display text-xl font-extrabold tracking-tight text-ink-900">
-            car<span className="text-clay-500">wow</span>
+          <span className="font-display text-lg font-extrabold tracking-tight text-ink-900 sm:text-xl">
+            StemCells <span className="text-clay-500">Protocol</span>
           </span>
         </Link>
 
@@ -143,13 +143,11 @@ export default function Navbar() {
 function Logo() {
   return (
     <svg viewBox="0 0 64 64" className="h-8 w-8">
-      <rect width="64" height="64" rx="14" fill="#D97757" />
-      <path
-        d="M12 38c0-2 1-3 3-3l3-8c1-3 3-4 6-4h16c3 0 5 1 6 4l3 8c2 0 3 1 3 3v7c0 1-1 2-2 2h-3c-1 0-2-1-2-2v-2H19v2c0 1-1 2-2 2h-3c-1 0-2-1-2-2z"
-        fill="#fff"
-      />
-      <circle cx="20" cy="41" r="3" fill="#D97757" />
-      <circle cx="44" cy="41" r="3" fill="#D97757" />
+      <rect width="64" height="64" rx="14" fill="#DC2626" />
+      {/* stem cell: membrane, nucleus and a budding daughter cell */}
+      <circle cx="29" cy="34" r="15" fill="none" stroke="#fff" strokeWidth="3.6" />
+      <circle cx="29" cy="34" r="6" fill="#fff" />
+      <circle cx="47" cy="18" r="4.5" fill="#fff" />
     </svg>
   );
 }

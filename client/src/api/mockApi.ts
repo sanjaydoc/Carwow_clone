@@ -50,16 +50,16 @@ const SORTS: Record<string, (a: Car, b: Car) => number> = {
   mileage_asc: (a, b) => a.mileage - b.mileage,
 };
 
-const CONDITION_FACTOR: Record<string, number> = { excellent: 1.06, good: 1.0, fair: 0.9, poor: 0.78 };
-const DEALERS = [
-  'Motorpoint', 'Arnold Clark', 'Big Motoring World', 'Cazoo Direct', 'Sytner Select',
-  'Evans Halshaw', 'Marshall Motors', 'Lookers', 'Vertu Motors', 'Peter Vardy',
+const CONDITION_FACTOR: Record<string, number> = { excellent: 0.9, good: 1.0, fair: 1.08, poor: 1.18 };
+const CLINICS = [
+  'Regenix Clinic', 'CellRenew Centre', 'Vitalis Regenerative', 'NovaStem Institute',
+  'Orthobiologics UK', 'Meridian Cell Therapy', 'Albion Stem Centre', 'Helix Regenerative',
+  'Pioneer Cell Clinic', 'Aeon Longevity Clinic',
 ];
 
-function estimateValue(year: number, mileage: number, condition: string): number {
-  const age = Math.max(0, 2026 - year);
-  let value = 34000 * Math.pow(0.86, age);
-  value -= mileage * 0.08;
+// Illustrative indicative-cost model (NOT a real quote).
+function estimateValue(_year: number, _mileage: number, condition: string): number {
+  let value = 9000;
   value *= CONDITION_FACTOR[condition] ?? 1;
   return Math.max(500, Math.round(value / 50) * 50);
 }
@@ -160,12 +160,12 @@ export const mockApi = {
     mileage: number; condition: string; name: string; email: string;
   }): Promise<SellResult> {
     const estimate = estimateValue(Number(data.year), Number(data.mileage), data.condition);
-    const dealers = [...DEALERS].sort(() => Math.random() - 0.5).slice(0, 4);
+    const clinics = [...CLINICS].sort(() => Math.random() - 0.5).slice(0, 4);
     const submissions = read<SellResult[]>(LS.submissions, []);
     const id = submissions.length + 1;
-    const offers: DealerOffer[] = dealers
+    const offers: DealerOffer[] = clinics
       .map((name, i) => {
-        const spread = 0.94 + Math.random() * 0.12 + (i === 0 ? 0.03 : 0);
+        const spread = 0.94 + Math.random() * 0.12 + (i === 0 ? -0.03 : 0);
         return {
           id: id * 100 + i,
           submission_id: id,

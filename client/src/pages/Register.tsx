@@ -27,7 +27,7 @@ export default function Register() {
   };
 
   return (
-    <AuthLayout title="Create your account" subtitle="Join thousands of drivers finding their next car.">
+    <AuthLayout title="Create your account" subtitle="Join thousands of patients exploring regenerative care.">
       <form onSubmit={submit} className="space-y-4">
         <div>
           <label className="label">Full name</label>
