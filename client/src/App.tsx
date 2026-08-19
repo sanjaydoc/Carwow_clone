@@ -12,6 +12,7 @@ import Browse from './pages/Browse';
 import CarDetail from './pages/CarDetail';
 import Compare from './pages/Compare';
 import Sell from './pages/Sell';
+import Simulator from './pages/Simulator';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Saved from './pages/Saved';
@@ -38,6 +39,7 @@ export default function App() {
           <Route path="/therapies/:id" element={<CarDetail />} />
           <Route path="/compare" element={<Compare />} />
           <Route path="/consultation" element={<Sell />} />
+          <Route path="/simulator" element={<Simulator />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route

@@ -529,6 +529,9 @@ export default function Home() {
             How StemCells Protocol works
           </h2>
           <p className="mt-2 text-ink-700/70">From your DNA to a personalised regenerative therapy, in four steps.</p>
+          <Link to="/simulator" className="btn-primary mt-5 inline-flex px-6 py-3">
+            🧠 Try the Protocol Simulator
+          </Link>
         </div>
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {steps.map((s, i) => (

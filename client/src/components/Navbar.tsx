@@ -5,6 +5,7 @@ import { useSaved } from '../context/SavedContext';
 
 const links = [
   { to: '/therapies', label: 'Therapies' },
+  { to: '/simulator', label: 'Simulator' },
   { to: '/research', label: 'Research' },
   { to: '/compare', label: 'Compare' },
 ];
