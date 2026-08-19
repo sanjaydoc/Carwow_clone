@@ -1,19 +1,52 @@
+import { useEffect, useState } from 'react';
 import { DepartmentIcon } from './icons';
 
 interface Props {
   accent: string;
   className?: string;
-  bodyType?: string; // therapy category (unused decoratively here)
+  bodyType?: string; // therapy category
   make?: string; // department
   model?: string; // therapy name
   year?: number;
   angle?: number;
 }
 
-// Self-contained therapy illustration: a soft accent-tinted gradient with a
-// large department glyph and faint "cell" motifs. No external image CDN, so it
-// always renders cleanly (no watermarks) and stays on-brand.
-export default function CarImage({ accent, className = '', make = '' }: Props) {
+// Real clinical photography per department (loads in the visitor's browser),
+// layered over an accent-tinted gradient. If the photo fails to load we fall
+// back to a clean department glyph — so a card never breaks.
+//
+// Photos come from a keyword image service, keyed to the department and made
+// stable per-therapy via a deterministic `lock` seed.
+const DEPT_TAGS: Record<string, string> = {
+  'Age Rejuvenation': 'laboratory,science',
+  Dental: 'dentist,dental',
+  Orthopedics: 'orthopedic,knee',
+  Cardiology: 'cardiology,heart',
+  Gastroenterology: 'gastroenterology,medical',
+  Neurology: 'neurology,brain',
+  Pulmonology: 'lungs,respiratory',
+  Cosmetic: 'skincare,cosmetic',
+};
+
+// Stable small integer from a string, so each therapy keeps the same photo.
+function seed(s: string): number {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 100000;
+  return h;
+}
+
+function photoUrl(make: string, model: string): string {
+  const tags = DEPT_TAGS[make] ?? 'medical,hospital';
+  return `https://loremflickr.com/640/420/${tags}?lock=${seed(make + model)}`;
+}
+
+export default function CarImage({ accent, className = '', make = '', model = '' }: Props) {
+  const [failed, setFailed] = useState(false);
+  // Reset the error state if the therapy changes (component reuse across routes).
+  useEffect(() => setFailed(false), [make, model]);
+
+  const showPhoto = Boolean(make && model) && !failed;
+
   return (
     <div
       className={`relative flex items-center justify-center overflow-hidden ${className}`}
@@ -21,7 +54,7 @@ export default function CarImage({ accent, className = '', make = '' }: Props) {
         background: `linear-gradient(160deg, #ffffff 0%, ${hexA(accent, 0.1)} 60%, ${hexA(accent, 0.2)} 100%)`,
       }}
     >
-      {/* faint decorative cells */}
+      {/* branded gradient + glyph — always present as the backdrop / fallback */}
       <svg
         viewBox="0 0 320 176"
         className="absolute inset-0 h-full w-full"
@@ -33,13 +66,24 @@ export default function CarImage({ accent, className = '', make = '' }: Props) {
         <circle cx="286" cy="40" r="10" fill={accent} opacity="0.12" />
         <circle cx="40" cy="150" r="7" fill={accent} opacity="0.14" />
       </svg>
-
       <div
         className="relative grid h-20 w-20 place-items-center rounded-2xl bg-white/80 shadow-sm backdrop-blur"
         style={{ color: accent }}
       >
         <DepartmentIcon name={make} className="h-11 w-11" strokeWidth={1.6} />
       </div>
+
+      {/* real clinical photo on top; hides itself (revealing the glyph) on error */}
+      {showPhoto && (
+        <img
+          src={photoUrl(make, model)}
+          alt={`${make} — ${model}`}
+          loading="lazy"
+          onError={() => setFailed(true)}
+          className="absolute inset-0 h-full w-full object-cover"
+          draggable={false}
+        />
+      )}
     </div>
   );
 }

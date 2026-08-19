@@ -126,6 +126,7 @@ type Tab = 'find' | 'sell' | 'reviews';
 export default function Home() {
   const [featured, setFeatured] = useState<Car[]>([]);
   const [trending, setTrending] = useState<Car[]>([]);
+  const [poster, setPoster] = useState<Car | null>(null);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<Tab>('find');
   const [search, setSearch] = useState('');
@@ -135,6 +136,8 @@ export default function Home() {
   useEffect(() => {
     api.getCars({ sort: 'rating_desc', limit: 8 }).then(({ cars }) => setFeatured(cars)).finally(() => setLoading(false));
     api.getCars({ sort: 'rating_desc', limit: 6 }).then(({ cars }) => setTrending(cars));
+    // Age Rejuvenation leads: feature its top-rated therapy in the poster.
+    api.getCars({ make: 'Age Rejuvenation', sort: 'rating_desc', limit: 1 }).then(({ cars }) => setPoster(cars[0] ?? null));
   }, []);
 
   const onFind = (e: FormEvent) => {
@@ -148,7 +151,7 @@ export default function Home() {
     navigate(`/browse?search=${encodeURIComponent(reg.trim())}`);
   };
 
-  const posterCar = featured.find((c) => c.body_type === 'MSC') ?? featured[0];
+  const posterCar = poster ?? featured.find((c) => c.body_type === 'MSC') ?? featured[0];
 
   return (
     <div>
@@ -275,7 +278,7 @@ export default function Home() {
               <div>
                 <span className="chip bg-white/10 text-white/80">Featured therapy</span>
                 <h2 className="mt-4 font-display text-3xl font-extrabold uppercase leading-none sm:text-5xl">
-                  {posterCar.make} {posterCar.model}
+                  {posterCar.model}
                 </h2>
                 <p className="mt-3 max-w-sm text-white/70">
                   {posterCar.description}
@@ -374,7 +377,7 @@ export default function Home() {
                 className="group w-[300px] shrink-0 snap-start rounded-3xl bg-cream-200 p-5 transition hover:shadow-card-hover"
               >
                 <h3 className="font-display text-xl font-bold text-ink-900">
-                  {car.make} {car.model}
+                  {car.model}
                 </h3>
                 <p className="text-sm text-ink-700/70">{car.trim}</p>
                 <span
@@ -635,7 +638,7 @@ export default function Home() {
                 />
                 <div className="p-4">
                   <h3 className="font-display text-lg font-bold text-ink-900 underline-offset-4 group-hover:underline">
-                    {car.make} {car.model}
+                    {car.model}
                   </h3>
                   <span className="mt-2 inline-block rounded-lg bg-clay-100 px-2.5 py-1 text-sm font-extrabold text-clay-700">
                     {Math.round(car.rating * 2)}/10

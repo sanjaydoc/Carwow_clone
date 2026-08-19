@@ -16,7 +16,7 @@ function EvDealCard({ car, wide = false }: { car: Car; wide?: boolean }) {
     >
       <div className="flex items-start justify-between gap-2">
         <h3 className="font-display text-xl font-extrabold text-ink-900">
-          {car.make} {car.model}
+          {car.model}
         </h3>
         <span className="chip bg-clay-100 text-clay-700">🔬 {statusLabel(car.condition)}</span>
       </div>
@@ -45,7 +45,7 @@ function EvDealCard({ car, wide = false }: { car: Car; wide?: boolean }) {
 
       <div className="mt-4 flex items-end justify-between rounded-2xl bg-white p-4">
         <div>
-          <p className="text-sm text-ink-700/70">{car.make} {car.model}</p>
+          <p className="text-sm text-ink-700/70">{car.model}</p>
           <p className="font-display font-extrabold text-ink-900">
             Indicative from {gbp(car.price)}{' '}
             <span className="font-semibold text-ink-700/70">(Finance from {gbp(car.monthly_price)}/mo)</span>

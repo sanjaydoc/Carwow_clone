@@ -81,7 +81,7 @@ export default function CarDetail() {
         <Link to="/browse" className="hover:text-clay-600">
           Browse
         </Link>{' '}
-        / <span className="text-ink-800">{car.make} {car.model}</span>
+        / <span className="text-ink-800">{car.model}</span>
       </nav>
 
       <div className="grid gap-8 lg:grid-cols-[1.4fr_1fr]">
@@ -129,8 +129,9 @@ export default function CarDetail() {
               <StarRating rating={car.rating} count={car.review_count} />
             </div>
 
-            <h1 className="mt-3 font-display text-3xl font-extrabold leading-tight text-ink-900">
-              {car.make} {car.model}
+            <p className="mt-3 text-xs font-bold uppercase tracking-wide text-clay-600">{car.make}</p>
+            <h1 className="mt-1 font-display text-3xl font-extrabold leading-tight text-ink-900">
+              {car.model}
             </h1>
             {car.trim && <p className="text-ink-700/70">Protocol: {car.trim}</p>}
 

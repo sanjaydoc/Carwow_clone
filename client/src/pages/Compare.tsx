@@ -107,7 +107,7 @@ export default function Compare() {
                   <CarImage accent={c.accent} bodyType={c.body_type} make={c.make} model={c.model} year={c.year} className="h-12 w-20 rounded-lg" />
                   <div>
                     <p className="font-semibold text-ink-900">
-                      {c.make} {c.model}
+                      {c.model}
                     </p>
                     <p className="text-sm text-ink-700/60">
                       {c.trim} · {gbp(c.price)}
@@ -152,7 +152,7 @@ export default function Compare() {
                           to={`/therapies/${c.id}`}
                           className="font-display font-bold text-ink-900 hover:text-clay-600"
                         >
-                          {c.make} {c.model}
+                          {c.model}
                         </Link>
                         <div className="mt-1">
                           <StarRating rating={c.rating} size={12} />

@@ -69,8 +69,9 @@ export default function CarCard({ car }: { car: Car }) {
       <div className="p-4">
         <div className="flex items-start justify-between gap-2">
           <div>
+            <p className="text-[11px] font-bold uppercase tracking-wide text-clay-600">{car.make}</p>
             <h3 className="font-display text-lg font-bold leading-tight text-ink-900">
-              {car.make} {car.model}
+              {car.model}
             </h3>
             <p className="text-sm text-ink-700/70">{car.trim}</p>
           </div>
