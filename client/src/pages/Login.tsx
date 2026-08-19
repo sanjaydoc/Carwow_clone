@@ -40,7 +40,7 @@ export default function Login() {
 
       <button
         type="button"
-        onClick={() => setError('Google sign-in is not available in this demo — use your email below.')}
+        onClick={() => setError('Google sign-in is not available yet — please use your email below.')}
         className="mt-8 flex w-full items-center justify-center gap-3 rounded-xl bg-[#4285F4] py-4 font-display text-lg font-bold text-white transition hover:brightness-95"
       >
         <span className="grid h-7 w-7 place-items-center rounded bg-white text-lg font-bold text-[#4285F4]">G</span>

@@ -107,10 +107,10 @@ const reviews = [
 ];
 
 const faqs = [
-  { q: 'What is stem-cell therapy?', a: 'Stem-cell and regenerative therapies use living cells — such as mesenchymal stem cells, exosomes or platelet-rich plasma — to help repair or modulate damaged tissue. This site is an illustrative demo and not medical advice.' },
-  { q: 'Are these therapies approved or experimental?', a: 'Some are established and offered routinely; many remain investigational and are only available within clinical research. Anything under research is clearly labelled throughout this demo.' },
+  { q: 'What is stem-cell therapy?', a: 'Stem-cell and regenerative therapies use living cells — such as mesenchymal stem cells, exosomes or platelet-rich plasma — to help repair or modulate damaged tissue.' },
+  { q: 'Are these therapies approved or experimental?', a: 'Some are established and offered routinely; many remain investigational and are only available within clinical research. Anything under research is clearly labelled throughout the site.' },
   { q: 'How do I know if I’m a candidate?', a: 'Candidacy depends on your condition, health history and the specific protocol. Book a free, no-obligation consultation and a specialist team will assess your suitability.' },
-  { q: 'What does treatment cost?', a: 'Costs vary by department, cell source and delivery route. Indicative prices and monthly financing are shown alongside each therapy; all figures here are sample data.' },
+  { q: 'What does treatment cost?', a: 'Costs vary by department, cell source and delivery route. Indicative prices and monthly financing are shown alongside each therapy, and confirmed by a specialist at consultation.' },
   { q: 'Is it safe?', a: 'Safety depends on the therapy, its evidence base and how it is delivered. Established treatments follow strict clinical governance; investigational ones carry additional uncertainty, which we discuss openly.' },
   { q: 'Can I join a clinical trial?', a: 'Yes — many investigational therapies recruit through our research programme. Visit the clinical-trials section to see what is currently open.' },
 ];
@@ -260,9 +260,6 @@ export default function Home() {
             <span className="flex items-center gap-1.5"><Check /> Rated 4.6/5 by 4,800+ patients</span>
             <span className="flex items-center gap-1.5"><Check /> Free &amp; no-obligation consultation</span>
           </div>
-          <p className="mt-3 max-w-2xl text-sm italic text-white/50">
-            Illustrative demo — not medical advice. Therapies, costs and outcomes shown are sample data; investigational therapies are labelled.
-          </p>
         </div>
       </section>
 

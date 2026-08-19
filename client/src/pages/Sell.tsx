@@ -266,9 +266,6 @@ export default function Sell() {
           <p className="text-center text-xs text-ink-700/50">
             No obligation. We'll never sell your details.
           </p>
-          <p className="text-center text-xs italic text-ink-700/50">
-            Illustrative demo — not medical advice. Costs and outcomes are sample data.
-          </p>
         </form>
       </div>
 

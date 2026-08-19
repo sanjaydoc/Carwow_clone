@@ -233,9 +233,8 @@ export default function CarInsurance() {
           ))}
         </div>
         <p className="mx-auto mt-8 max-w-3xl text-sm italic text-ink-700/60">
-          Illustrative demo — not medical advice. Costs and outcomes are sample data. Care-package prices shown
-          are examples only; your actual plan and cost depend on your individual condition and are confirmed by a
-          specialist at consultation.
+          Care-package prices shown are examples only; your actual plan and cost depend on your individual
+          condition and are confirmed by a specialist at consultation.
         </p>
       </section>
     </div>

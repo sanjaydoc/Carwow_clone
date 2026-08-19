@@ -91,7 +91,7 @@ export default function Footer() {
 
         {/* Legal */}
         <div className="mt-10 border-t border-white/10 pt-6 text-sm text-white/60">
-          <p>© {new Date().getFullYear()} StemCells Protocol — a demo project, not affiliated with any real clinic.</p>
+          <p>© {new Date().getFullYear()} StemCells Protocol. All rights reserved.</p>
           <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2">
             {legal.map((l) => (
               <a key={l} href="#" onClick={(e) => e.preventDefault()} className="underline-offset-4 hover:text-white hover:underline">

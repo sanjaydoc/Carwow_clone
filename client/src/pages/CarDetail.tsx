@@ -192,10 +192,6 @@ export default function CarDetail() {
           </div>
         </section>
       )}
-
-      <p className="mt-12 text-sm italic text-ink-700/50">
-        Illustrative demo — not medical advice; figures are sample data.
-      </p>
     </div>
   );
 }

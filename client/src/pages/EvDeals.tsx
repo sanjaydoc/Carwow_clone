@@ -151,8 +151,7 @@ export default function EvDeals() {
             </div>
 
             <p className="mt-6 text-sm italic text-ink-700/70">
-              Investigational therapies are experimental and offered within clinical-trial settings; this is an
-              illustrative demo, not medical advice.
+              Investigational therapies are experimental and offered within clinical-trial settings.
             </p>
           </section>
 
