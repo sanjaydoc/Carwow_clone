@@ -89,17 +89,6 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Medical disclaimer */}
-        <div className="mt-10 rounded-2xl border border-white/10 bg-white/5 p-5 text-sm text-white/70">
-          <p>
-            <span className="font-semibold text-white">⚕️ Medical disclaimer.</span> StemCells Protocol
-            is an illustrative demo / portfolio project — not a real clinic. Departments, therapies,
-            costs, success rates, trial phases and patient reviews are sample data for demonstration
-            only. Nothing here is medical advice or a treatment offer. Many stem-cell therapies shown
-            are investigational; always consult a qualified clinician.
-          </p>
-        </div>
-
         {/* Legal */}
         <div className="mt-10 border-t border-white/10 pt-6 text-sm text-white/60">
           <p>© {new Date().getFullYear()} StemCells Protocol — a demo project, not affiliated with any real clinic.</p>
