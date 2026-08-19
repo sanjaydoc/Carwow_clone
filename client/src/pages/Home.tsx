@@ -752,20 +752,24 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="-mx-4 mt-6 flex snap-x gap-5 overflow-x-auto px-4 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="mt-6 flex snap-x snap-mandatory scroll-smooth gap-5 overflow-x-auto pb-4 [scrollbar-width:none] sm:grid sm:grid-cols-2 sm:gap-6 sm:overflow-visible lg:grid-cols-4 [&::-webkit-scrollbar]:hidden">
             {evTools.map((t, i) => {
               const car = trending[i % trending.length];
               return (
-                <Link key={t.label} to={t.to} className="group w-[300px] shrink-0 snap-start">
+                <Link
+                  key={t.label}
+                  to={t.to}
+                  className="group w-[82%] shrink-0 snap-center sm:w-auto sm:shrink"
+                >
                   <CarImage
                     accent={car.accent}
                     bodyType={car.body_type}
                     make={car.make}
                     model={car.model}
                     year={car.year}
-                    className="h-44 w-full rounded-2xl"
+                    className="aspect-[4/3] w-full rounded-2xl"
                   />
-                  <h3 className="mt-3 font-display text-lg font-bold text-ink-900 underline-offset-4 group-hover:underline">
+                  <h3 className="mt-3 font-display text-lg font-bold leading-snug text-ink-900 underline-offset-4 group-hover:underline">
                     {t.label}
                   </h3>
                 </Link>

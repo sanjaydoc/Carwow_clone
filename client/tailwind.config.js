@@ -45,9 +45,14 @@ export default {
           '0%': { opacity: '0', transform: 'translateY(12px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
+        'dna-spin': {
+          '0%': { transform: 'rotateY(0deg)' },
+          '100%': { transform: 'rotateY(360deg)' },
+        },
       },
       animation: {
         'fade-up': 'fade-up 0.5s ease-out both',
+        'dna-spin': 'dna-spin 2s linear infinite',
       },
     },
   },

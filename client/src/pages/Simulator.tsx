@@ -263,21 +263,26 @@ export default function Simulator() {
           </div>
 
           {!report ? (
-            <div className="mt-8 grid place-items-center rounded-2xl bg-cream-100 py-20 text-center">
-              <span className="text-5xl">{status === 'running' ? '🧠' : '🧬'}</span>
-              <p className="mt-4 max-w-xs text-ink-700/60">
-                {status === 'running'
-                  ? 'The De novo LLM is inventing your biomolecules…'
-                  : 'Upload your digital DNA and run the simulator to generate your protocol.'}
-              </p>
-              {log.length > 0 && (
-                <div className="mt-6 w-full max-w-sm space-y-1 rounded-xl bg-ink-900 p-4 text-left font-mono text-xs text-clay-300">
-                  {log.map((l, i) => (
-                    <div key={i}>{l}</div>
-                  ))}
-                </div>
-              )}
-            </div>
+            status === 'running' ? (
+              <div className="mt-8 grid place-items-center rounded-2xl bg-ink-900 py-14 text-center">
+                <DnaHelix />
+                <p className="mt-8 max-w-xs text-white/70">The De novo LLM is inventing your biomolecules…</p>
+                {log.length > 0 && (
+                  <div className="mt-6 w-full max-w-sm space-y-1 rounded-xl bg-black/40 p-4 text-left font-mono text-xs text-clay-300 ring-1 ring-white/10">
+                    {log.map((l, i) => (
+                      <div key={i}>{l}</div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="mt-8 grid place-items-center rounded-2xl bg-cream-100 py-20 text-center">
+                <span className="text-5xl">🧬</span>
+                <p className="mt-4 max-w-xs text-ink-700/60">
+                  Upload your digital DNA and run the simulator to generate your protocol.
+                </p>
+              </div>
+            )
           ) : (
             <div className="mt-6 space-y-6 animate-fade-up">
               {/* Summary */}
@@ -339,6 +344,28 @@ export default function Simulator() {
           )}
         </div>
       </section>
+    </div>
+  );
+}
+
+// Animated spinning DNA double-helix (pure CSS/Tailwind, no libraries).
+function DnaHelix() {
+  const bars = Array.from({ length: 16 });
+  return (
+    <div className="flex h-24 items-center justify-center gap-[7px] [perspective:900px]">
+      {bars.map((_, i) => (
+        <div
+          key={i}
+          className="animate-dna-spin relative h-full w-[3px] [transform-style:preserve-3d]"
+          style={{ animationDelay: `${i * -0.13}s` }}
+        >
+          {/* the base-pair rung */}
+          <span className="absolute left-1/2 top-1/2 h-full w-px -translate-x-1/2 -translate-y-1/2 bg-white/20" />
+          {/* the two backbone nodes */}
+          <span className="absolute left-1/2 top-0 h-2.5 w-2.5 -translate-x-1/2 rounded-full bg-clay-500 shadow-[0_0_8px] shadow-clay-500/60" />
+          <span className="absolute bottom-0 left-1/2 h-2.5 w-2.5 -translate-x-1/2 rounded-full bg-cyan-400 shadow-[0_0_8px] shadow-cyan-400/60" />
+        </div>
+      ))}
     </div>
   );
 }
