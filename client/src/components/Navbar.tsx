@@ -143,7 +143,7 @@ export default function Navbar() {
 function Logo() {
   return (
     <svg viewBox="0 0 64 64" className="h-8 w-8">
-      <rect width="64" height="64" rx="14" fill="#DC2626" />
+      <rect width="64" height="64" rx="14" fill="#4285F4" />
       {/* stem cell: membrane, nucleus and a budding daughter cell */}
       <circle cx="29" cy="34" r="15" fill="none" stroke="#fff" strokeWidth="3.6" />
       <circle cx="29" cy="34" r="6" fill="#fff" />

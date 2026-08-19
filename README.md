@@ -4,15 +4,15 @@
 
 ### A full-stack stem-cell & regenerative-therapies hospital site — explore, compare & book advanced cell therapies across every department
 
-*A modern marketplace-style experience reimagined for regenerative medicine: browse therapies by department, compare protocols, review clinical-trial research and book a consultation — in a clean clinical red-and-white theme.*
+*A modern marketplace-style experience reimagined for regenerative medicine: browse therapies by department, compare protocols, review clinical-trial research and book a consultation — in a clean clinical blue-and-white theme.*
 
 <br/>
 
 ### 🌐 Website: **[sanjaydoc.github.io/Stemcellsprotocol](https://sanjaydoc.github.io/Stemcellsprotocol/)**
 
-[![Live demo](https://img.shields.io/badge/▶_Live_demo-sanjaydoc.github.io%2FStemcellsprotocol-DC2626?style=for-the-badge)](https://sanjaydoc.github.io/Stemcellsprotocol/)
+[![Live demo](https://img.shields.io/badge/▶_Live_demo-sanjaydoc.github.io%2FStemcellsprotocol-4285F4?style=for-the-badge)](https://sanjaydoc.github.io/Stemcellsprotocol/)
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-DC2626.svg?style=flat-square)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-4285F4.svg?style=flat-square)](LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org)
 [![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
@@ -33,7 +33,7 @@ The **full interactive app** is deployed on GitHub Pages (a backend-free build t
 
 ### 👉 **https://sanjaydoc.github.io/Stemcellsprotocol/**
 
-> All imagery is self-contained: department and therapy-category **SVG icons** rendered on soft red/white gradients — no external image CDN, so cards always load cleanly.
+> All imagery is self-contained: department and therapy-category **SVG icons** rendered on soft blue/white gradients — no external image CDN, so cards always load cleanly.
 
 ---
 

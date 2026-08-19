@@ -156,8 +156,8 @@ export default function CarDetail() {
               <svg
                 viewBox="0 0 24 24"
                 className="h-5 w-5"
-                fill={saved ? '#DC2626' : 'none'}
-                stroke={saved ? '#DC2626' : 'currentColor'}
+                fill={saved ? '#4285F4' : 'none'}
+                stroke={saved ? '#4285F4' : 'currentColor'}
                 strokeWidth="2"
               >
                 <path d="M12 21s-7.5-4.6-10-9.2C.3 8.4 2 4.9 5.3 4.9c2 0 3.4 1.1 4.2 2.4h.9c.8-1.3 2.2-2.4 4.2-2.4 3.3 0 5 3.5 3.3 6.9C19.5 16.4 12 21 12 21z" />

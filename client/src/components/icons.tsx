@@ -3,6 +3,7 @@
 import type { ReactNode } from 'react';
 
 export const DEPARTMENTS = [
+  'Age Rejuvenation',
   'Dental',
   'Orthopedics',
   'Cardiology',
@@ -10,7 +11,6 @@ export const DEPARTMENTS = [
   'Neurology',
   'Pulmonology',
   'Cosmetic',
-  'Age Rejuvenation',
 ] as const;
 
 export const CATEGORIES = ['MSC', 'HSC', 'iPSC', 'Exosome', 'Immune cell', 'PRP'] as const;

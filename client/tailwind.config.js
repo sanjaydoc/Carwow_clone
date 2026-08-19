@@ -4,19 +4,20 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Medical red palette (kept under the `clay` token name so the whole
-        // app re-themes from this one place). 500 is the primary brand red.
+        // Medical blue palette (kept under the `clay` token name so the whole
+        // app re-themes from this one place). 500 is the primary brand blue
+        // (the Google-button blue #4285F4).
         clay: {
-          50: '#FEF2F2',
-          100: '#FDE1E1',
-          200: '#F9C4C4',
-          300: '#F09A9A',
-          400: '#E86A6A',
-          500: '#DC2626', // primary
-          600: '#BE1B1B',
-          700: '#991B1B',
-          800: '#7A1616',
-          900: '#5A1111',
+          50: '#EAF1FE',
+          100: '#D6E4FD',
+          200: '#AFC9FB',
+          300: '#83A9F8',
+          400: '#5B90F6',
+          500: '#4285F4', // primary
+          600: '#2F6FE0',
+          700: '#1F59C2',
+          800: '#1A4A9E',
+          900: '#153A7C',
         },
         // Clinical whites (kept under the `cream` token name).
         cream: {

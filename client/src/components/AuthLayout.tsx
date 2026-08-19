@@ -28,7 +28,7 @@ export default function AuthLayout({
         <div className="relative overflow-hidden rounded-3xl bg-ink-900 p-10 text-white">
           <div className="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-clay-500/30 blur-3xl" />
           <CarImage
-            accent="#DC2626"
+            accent="#4285F4"
             bodyType="MSC"
             make="Age Rejuvenation"
             model="Regenerative Therapy"

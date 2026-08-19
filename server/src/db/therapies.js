@@ -31,6 +31,48 @@ const COSMETIC = '#db2777';
 const AGE = '#059669';
 
 export const therapies = [
+  // ── Age Rejuvenation ────────────────────────────────────────────────────
+  {
+    make: 'Age Rejuvenation', model: 'Systemic MSC Infusion', trim: 'Allogeneic UC-MSC', year: 2022,
+    price: 12000, monthly_price: 500, body_type: 'MSC', fuel_type: 'Allogeneic', transmission: 'IV infusion',
+    mileage: 90, color: 'Day-case', condition: 'used', seats: 150, doors: 2,
+    engine: 'Umbilical cord-derived MSC', power_bhp: 60, zero_to_sixty: 3, top_speed: 2,
+    economy_mpg: 12, rating: 4.2, review_count: 260, accent: AGE,
+    description: 'A wellness-oriented programme of donor MSC infusions promoted for immune modulation and vitality. Investigational — benefits are not established.'
+  },
+  {
+    make: 'Age Rejuvenation', model: 'Exosome IV Longevity', trim: 'MSC exosome IV', year: 2023,
+    price: 6500, monthly_price: 271, body_type: 'Exosome', fuel_type: 'Allogeneic', transmission: 'IV infusion',
+    mileage: 60, color: 'Day-case', condition: 'used', seats: null, doors: 1,
+    engine: 'MSC-derived exosomes', power_bhp: 57, zero_to_sixty: 3, top_speed: 1,
+    economy_mpg: 6, rating: 4.1, review_count: 180, accent: AGE,
+    description: 'Intravenous MSC-derived exosomes marketed for anti-ageing and recovery. Investigational; efficacy and safety remain under study.'
+  },
+  {
+    make: 'Age Rejuvenation', model: 'NK Cell Immune Boost', trim: 'Allogeneic NK cells', year: 2021,
+    price: 9800, monthly_price: 408, body_type: 'Immune cell', fuel_type: 'Allogeneic', transmission: 'IV infusion',
+    mileage: 60, color: 'Day-case', condition: 'new', seats: 200, doors: 4,
+    engine: 'Natural killer (NK) cells', power_bhp: 68, zero_to_sixty: 3, top_speed: 1,
+    economy_mpg: 6, rating: 4.3, review_count: 320, accent: AGE,
+    description: 'Expanded natural-killer cell infusions used to top up immune surveillance, part of a monitored immune-health programme.'
+  },
+  {
+    make: 'Age Rejuvenation', model: 'Immune (Thymic) Rejuvenation', trim: 'Autologous progenitor', year: 2024,
+    price: 15000, monthly_price: 625, body_type: 'Immune cell', fuel_type: 'Autologous', transmission: 'IV infusion',
+    mileage: 90, color: 'Day-case', condition: 'used', seats: 100, doors: 1,
+    engine: 'Thymic epithelial progenitors', power_bhp: 54, zero_to_sixty: 2, top_speed: 7,
+    economy_mpg: 24, rating: 3.9, review_count: 40, accent: AGE,
+    description: 'Experimental approach aiming to restore thymus function and a more youthful immune repertoire. Early research only.'
+  },
+  {
+    make: 'Age Rejuvenation', model: 'Senolytic + MSC Program', trim: 'MSC + senolytic', year: 2023,
+    price: 11500, monthly_price: 479, body_type: 'MSC', fuel_type: 'Allogeneic', transmission: 'IV infusion',
+    mileage: 60, color: 'Day-case', condition: 'used', seats: 120, doors: 2,
+    engine: 'MSC + senolytic protocol', power_bhp: 59, zero_to_sixty: 4, top_speed: 2,
+    economy_mpg: 12, rating: 4.0, review_count: 95, accent: AGE,
+    description: 'Combines senescent-cell-clearing agents with MSC infusions to target biological ageing. Investigational research programme.'
+  },
+
   // ── Dental ──────────────────────────────────────────────────────────────
   {
     make: 'Dental', model: 'Dental Pulp Regeneration', trim: 'Autologous DPSC', year: 2021,
@@ -285,45 +327,4 @@ export const therapies = [
     description: 'Targeted stem-cell injections that soften scars and accelerate healing of difficult wounds by remodelling collagen and improving blood supply.'
   },
 
-  // ── Age Rejuvenation ────────────────────────────────────────────────────
-  {
-    make: 'Age Rejuvenation', model: 'Systemic MSC Infusion', trim: 'Allogeneic UC-MSC', year: 2022,
-    price: 12000, monthly_price: 500, body_type: 'MSC', fuel_type: 'Allogeneic', transmission: 'IV infusion',
-    mileage: 90, color: 'Day-case', condition: 'used', seats: 150, doors: 2,
-    engine: 'Umbilical cord-derived MSC', power_bhp: 60, zero_to_sixty: 3, top_speed: 2,
-    economy_mpg: 12, rating: 4.2, review_count: 260, accent: AGE,
-    description: 'A wellness-oriented programme of donor MSC infusions promoted for immune modulation and vitality. Investigational — benefits are not established.'
-  },
-  {
-    make: 'Age Rejuvenation', model: 'Exosome IV Longevity', trim: 'MSC exosome IV', year: 2023,
-    price: 6500, monthly_price: 271, body_type: 'Exosome', fuel_type: 'Allogeneic', transmission: 'IV infusion',
-    mileage: 60, color: 'Day-case', condition: 'used', seats: null, doors: 1,
-    engine: 'MSC-derived exosomes', power_bhp: 57, zero_to_sixty: 3, top_speed: 1,
-    economy_mpg: 6, rating: 4.1, review_count: 180, accent: AGE,
-    description: 'Intravenous MSC-derived exosomes marketed for anti-ageing and recovery. Investigational; efficacy and safety remain under study.'
-  },
-  {
-    make: 'Age Rejuvenation', model: 'NK Cell Immune Boost', trim: 'Allogeneic NK cells', year: 2021,
-    price: 9800, monthly_price: 408, body_type: 'Immune cell', fuel_type: 'Allogeneic', transmission: 'IV infusion',
-    mileage: 60, color: 'Day-case', condition: 'new', seats: 200, doors: 4,
-    engine: 'Natural killer (NK) cells', power_bhp: 68, zero_to_sixty: 3, top_speed: 1,
-    economy_mpg: 6, rating: 4.3, review_count: 320, accent: AGE,
-    description: 'Expanded natural-killer cell infusions used to top up immune surveillance, part of a monitored immune-health programme.'
-  },
-  {
-    make: 'Age Rejuvenation', model: 'Immune (Thymic) Rejuvenation', trim: 'Autologous progenitor', year: 2024,
-    price: 15000, monthly_price: 625, body_type: 'Immune cell', fuel_type: 'Autologous', transmission: 'IV infusion',
-    mileage: 90, color: 'Day-case', condition: 'used', seats: 100, doors: 1,
-    engine: 'Thymic epithelial progenitors', power_bhp: 54, zero_to_sixty: 2, top_speed: 7,
-    economy_mpg: 24, rating: 3.9, review_count: 40, accent: AGE,
-    description: 'Experimental approach aiming to restore thymus function and a more youthful immune repertoire. Early research only.'
-  },
-  {
-    make: 'Age Rejuvenation', model: 'Senolytic + MSC Program', trim: 'MSC + senolytic', year: 2023,
-    price: 11500, monthly_price: 479, body_type: 'MSC', fuel_type: 'Allogeneic', transmission: 'IV infusion',
-    mileage: 60, color: 'Day-case', condition: 'used', seats: 120, doors: 2,
-    engine: 'MSC + senolytic protocol', power_bhp: 59, zero_to_sixty: 4, top_speed: 2,
-    economy_mpg: 12, rating: 4.0, review_count: 95, accent: AGE,
-    description: 'Combines senescent-cell-clearing agents with MSC infusions to target biological ageing. Investigational research programme.'
-  },
 ];

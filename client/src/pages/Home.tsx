@@ -48,7 +48,7 @@ function ChipIcon({ name }: { name: string }) {
 }
 
 const budgets = [
-  { label: 'Under £5k', to: '/browse?max_price=5000&sort=price_desc', accent: '#DC2626', make: 'Orthopedics', model: 'PRP Knee', year: 2024 },
+  { label: 'Under £5k', to: '/browse?max_price=5000&sort=price_desc', accent: '#4285F4', make: 'Orthopedics', model: 'PRP Knee', year: 2024 },
   { label: 'Under £10k', to: '/browse?max_price=10000&sort=price_desc', accent: '#0ea5e9', make: 'Dental', model: 'Dental Pulp MSC', year: 2024 },
   { label: 'Under £20k', to: '/browse?max_price=20000&sort=price_desc', accent: '#0891b2', make: 'Cardiology', model: 'Cardiac MSC', year: 2024 },
   { label: 'Under £40k', to: '/browse?max_price=40000&sort=price_desc', accent: '#c0392b', make: 'Neurology', model: 'Intrathecal MSC', year: 2024 },
@@ -64,8 +64,8 @@ const carTypes = [
 ];
 
 const BRANDS = [
-  'Dental', 'Orthopedics', 'Cardiology', 'Gastroenterology',
-  'Neurology', 'Pulmonology', 'Cosmetic', 'Age Rejuvenation',
+  'Age Rejuvenation', 'Dental', 'Orthopedics', 'Cardiology',
+  'Gastroenterology', 'Neurology', 'Pulmonology', 'Cosmetic',
 ];
 
 const usedModels = [
