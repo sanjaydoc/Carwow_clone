@@ -17,7 +17,12 @@ interface Props {
 //   3. otherwise a clean accent-tinted gradient + department glyph (fallback)
 // So a card never breaks and never shows an irrelevant image.
 
-// Bundled, clinic-supplied photos (added as they are provided).
+// Per-therapy bundled photos (checked first, keyed by therapy name).
+const BY_MODEL: Record<string, string> = {
+  'Hair Restoration Exosome': 'hair-exosome.jpg',
+};
+
+// Per-department bundled, clinic-supplied photos (added as they are provided).
 const LOCAL: Record<string, string> = {
   'Age Rejuvenation': 'age-rejuvenation.jpg',
 };
@@ -34,8 +39,10 @@ const COMMONS: Record<string, string> = {
 };
 const DEFAULT_PHOTO = 'Surgeons in the operating room.jpg';
 
-function photoUrl(make: string): string {
-  if (LOCAL[make]) return `${import.meta.env.BASE_URL}therapy/${LOCAL[make]}`;
+function photoUrl(make: string, model: string): string {
+  const base = import.meta.env.BASE_URL;
+  if (BY_MODEL[model]) return `${base}therapy/${BY_MODEL[model]}`;
+  if (LOCAL[make]) return `${base}therapy/${LOCAL[make]}`;
   const file = COMMONS[make] ?? DEFAULT_PHOTO;
   return `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(file)}?width=800`;
 }
@@ -73,7 +80,7 @@ export default function CarImage({ accent, className = '', make = '', model = ''
       {/* real clinical photo on top; hides itself (revealing the glyph) on error */}
       {Boolean(make) && !failed && (
         <img
-          src={photoUrl(make)}
+          src={photoUrl(make, model)}
           alt={`${make} clinical treatment`}
           loading="lazy"
           onError={() => setFailed(true)}
