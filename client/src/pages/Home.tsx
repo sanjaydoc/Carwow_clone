@@ -156,20 +156,20 @@ export default function Home() {
   return (
     <div>
       {/* ---------- HERO ---------- */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-clay-50 to-cream-200">
-        <div className="absolute -right-24 top-0 h-96 w-96 rounded-full bg-clay-200/50 blur-3xl" />
+      <section className="relative overflow-hidden bg-ink-900">
+        <div className="absolute -right-24 top-0 h-96 w-96 rounded-full bg-clay-500/20 blur-3xl" />
         <div className="container-x relative py-10 sm:py-14">
-          <h1 className="font-display text-4xl font-extrabold uppercase leading-[0.95] tracking-tight text-ink-900 sm:text-6xl">
+          <h1 className="font-display text-4xl font-extrabold uppercase leading-[0.95] tracking-tight text-white sm:text-6xl">
             Regenerate. Restore.
             <br />
             <span className="text-clay-500">Renew.</span>
           </h1>
-          <p className="mt-4 max-w-xl text-lg text-ink-700/70">
+          <p className="mt-4 max-w-xl text-lg text-white/70">
             Advanced stem-cell &amp; regenerative therapies from specialist clinical teams — matched to your condition.
           </p>
 
           {/* Tabbed search card */}
-          <div className="mt-7 max-w-2xl overflow-hidden rounded-3xl bg-ink-900 p-5 shadow-card sm:p-7">
+          <div className="mt-7 max-w-2xl overflow-hidden rounded-3xl bg-white/5 p-5 shadow-card ring-1 ring-white/10 backdrop-blur sm:p-7">
             <div className="flex gap-5 border-b border-white/10 sm:gap-8">
               {[
                 { id: 'find' as Tab, label: 'Find a therapy' },
@@ -244,10 +244,10 @@ export default function Home() {
               <Link
                 key={c.label}
                 to={c.to}
-                className="flex shrink-0 items-center gap-2 rounded-full bg-neutral-200 px-5 py-3 font-semibold text-ink-900 transition hover:bg-neutral-300"
+                className="flex shrink-0 items-center gap-2 rounded-full bg-white/10 px-5 py-3 font-semibold text-white transition hover:bg-white/20"
               >
                 {c.carType ? (
-                  <CarTypeIcon type={c.carType} className="h-5 w-5 text-ink-900" />
+                  <CarTypeIcon type={c.carType} className="h-5 w-5 text-white" />
                 ) : (
                   <ChipIcon name={c.icon} />
                 )}
@@ -256,11 +256,11 @@ export default function Home() {
             ))}
           </div>
 
-          <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-ink-700/70">
+          <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-white/70">
             <span className="flex items-center gap-1.5"><Check /> Rated 4.6/5 by 4,800+ patients</span>
             <span className="flex items-center gap-1.5"><Check /> Free &amp; no-obligation consultation</span>
           </div>
-          <p className="mt-3 max-w-2xl text-sm italic text-ink-700/50">
+          <p className="mt-3 max-w-2xl text-sm italic text-white/50">
             Illustrative demo — not medical advice. Therapies, costs and outcomes shown are sample data; investigational therapies are labelled.
           </p>
         </div>
