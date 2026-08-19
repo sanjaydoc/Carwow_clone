@@ -40,6 +40,7 @@ The **full interactive app** is deployed on GitHub Pages (a backend-free build t
 ## 📋 Table of contents
 
 - [✨ Overview](#-overview)
+- [🧪 How the platform works](#-how-the-platform-works)
 - [🧩 Pages & features](#-pages--features)
 - [🩺 Departments & therapies](#-departments--therapies)
 - [🛠 Tech stack](#-tech-stack)
@@ -60,6 +61,19 @@ The **full interactive app** is deployed on GitHub Pages (a backend-free build t
 The homepage is built **section-by-section** — a tabbed hero, featured therapy, browse-by-category & by-department, "regenerative therapies trending", patient reviews, guides, videos and a dark footer — and the primary journeys each have their own page: **Therapies**, **Research & Trials**, **Care Packages** and **Book a Consultation**, plus therapy detail, compare and auth.
 
 > 💡 A portfolio / learning project. All therapy data, costs, outcomes and quotes are illustrative, generated from sample data.
+
+---
+
+## 🧪 How the platform works
+
+The StemCells Protocol platform turns a patient's own genome into a personalised, age-reversing exosome therapy in **four steps**:
+
+| Step | Stage | What happens |
+|:---:|---|---|
+| **1** | 🧬 **Digital DNA** | A DNA test sequences the patient's complete genome and converts it into a secure **digital DNA** file. |
+| **2** | 🧠 **Protocol Simulator** | The digital DNA is fed into the StemCells Protocol **De novo LLM**, which invents **novel biomolecules** to reverse cellular ageing — and reawaken dormant, aged stem cells into younger ones. |
+| **3** | 🧫 **In-vitro production** | The novel biomolecules are cultured and **multiplied in vitro** in the laboratory. |
+| **4** | 💉 **Exosome IV therapy** | The personalised **biomolecule exosomes** are delivered to the patient by **IV infusion**, who is then monitored for weeks to months during a restorative stay in **Ooty**. |
 
 ---
 
