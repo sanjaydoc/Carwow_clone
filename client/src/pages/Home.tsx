@@ -316,7 +316,7 @@ export default function Home() {
                       <h2 className="mt-4 font-display text-3xl font-extrabold uppercase leading-none sm:text-5xl">
                         {p.make === 'HIV' ? 'HIV Cure' : p.model}
                       </h2>
-                      <p className="mt-3 max-w-sm text-white/70">{p.description}</p>
+                      <p className="mt-3 line-clamp-3 max-w-sm text-white/70">{p.description}</p>
                       <div className="mt-5 flex flex-wrap items-center gap-4">
                         <span className="rounded-full bg-white px-6 py-3 font-display font-bold text-ink-900 transition group-hover:bg-clay-500 group-hover:text-white">
                           Learn more
