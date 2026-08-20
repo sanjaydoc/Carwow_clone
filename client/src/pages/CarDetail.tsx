@@ -70,6 +70,8 @@ export default function CarDetail() {
     },
   ];
 
+  const isER100 = /ER-100/i.test(car.model);
+
   return (
     <div className="container-x py-8">
       {/* Breadcrumb */}
@@ -113,6 +115,61 @@ export default function CarDetail() {
               ))}
             </dl>
           </div>
+
+          {isER100 && (
+            <div className="mt-6 card p-6">
+              <h2 className="font-display text-xl font-bold text-ink-900">Genome vs. epigenome</h2>
+              <p className="mt-2 text-ink-700/80">
+                ER-100 works on the <b>epigenome</b>, not the genome — here's the difference, and why that
+                matters.
+              </p>
+
+              <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                <div className="rounded-2xl border border-cream-300 bg-cream-100 p-5">
+                  <div className="flex items-center gap-2">
+                    <span className="grid h-9 w-9 place-items-center rounded-xl bg-clay-100 text-lg">🧬</span>
+                    <h3 className="font-display font-bold text-ink-900">Genome</h3>
+                  </div>
+                  <p className="mt-3 text-sm text-ink-700/80">
+                    The full <b>DNA sequence</b> — the actual letters A, T, G, C (~3&nbsp;billion base pairs,
+                    ~20,000 genes). It's the <b>hardware</b>: the same in every cell of your body, and largely
+                    fixed for life.
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-cream-300 bg-cream-100 p-5">
+                  <div className="flex items-center gap-2">
+                    <span className="grid h-9 w-9 place-items-center rounded-xl bg-clay-100 text-lg">🏷️</span>
+                    <h3 className="font-display font-bold text-ink-900">Epigenome</h3>
+                  </div>
+                  <p className="mt-3 text-sm text-ink-700/80">
+                    A layer of <b>chemical marks on top of</b> the DNA (methylation, histone modifications,
+                    chromatin). It's the <b>software</b>: it decides which genes are switched <b>on or off</b>,
+                    differs between cell types, shifts with age — and is <b>reversible</b>.
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-4 rounded-2xl bg-ink-900 p-5 text-white">
+                <p className="text-sm">
+                  <b className="text-clay-300">The key idea:</b> your genome is identical in every cell — what
+                  makes a brain cell different from a skin cell is the <b>epigenome</b> telling each one which
+                  genes to use.
+                </p>
+              </div>
+
+              <h3 className="mt-5 font-display font-bold text-ink-900">Why this matters for ER-100</h3>
+              <p className="mt-2 text-ink-700/80">
+                As we age, the epigenome gets "noisy" — genes drift on and off incorrectly even though the DNA
+                sequence is fine. ER-100's partial reprogramming (OSK: OCT4, SOX2, KLF4) <b>re-writes those
+                marks back toward a youthful pattern — without editing a single letter of DNA</b>. It changes
+                the <i>settings</i>, not the <i>code</i>, which is the crucial safety point.
+              </p>
+              <p className="mt-3 text-sm italic text-ink-700/60">
+                Think of it as: <b>genome = the piano; epigenome = which keys are played, and how.</b> Ageing
+                plays the wrong notes; reprogramming retunes the performance without rebuilding the piano.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Right: purchase panel */}
