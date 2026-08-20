@@ -129,6 +129,7 @@ export default function Home() {
   const [trending, setTrending] = useState<Car[]>([]);
   const [posters, setPosters] = useState<Car[]>([]);
   const [slide, setSlide] = useState(0);
+  const [paused, setPaused] = useState(false);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<Tab>('find');
   const [search, setSearch] = useState('');
@@ -157,12 +158,15 @@ export default function Home() {
     ]).then((res) => setPosters(res.map((r) => r.cars[0]).filter(Boolean) as Car[]));
   }, []);
 
-  // Auto-advance the featured slider.
+  // Auto-advance the featured slider (paused on hover).
   useEffect(() => {
-    if (posters.length < 2) return;
+    if (posters.length < 2 || paused) return;
     const t = window.setInterval(() => setSlide((s) => (s + 1) % posters.length), 4500);
     return () => clearInterval(t);
-  }, [posters.length]);
+  }, [posters.length, paused]);
+
+  const goSlide = (dir: number) =>
+    setSlide((s) => (s + dir + posters.length) % posters.length);
 
   const onFind = (e: FormEvent) => {
     e.preventDefault();
@@ -289,7 +293,11 @@ export default function Home() {
       {/* ---------- FEATURED THERAPIES SLIDER ---------- */}
       {posters.length > 0 && (
         <section className="container-x pt-10">
-          <div className="relative overflow-hidden rounded-3xl bg-ink-900">
+          <div
+            className="relative overflow-hidden rounded-3xl bg-ink-900"
+            onMouseEnter={() => setPaused(true)}
+            onMouseLeave={() => setPaused(false)}
+          >
             <div
               className="flex transition-transform duration-700 ease-out"
               style={{ transform: `translateX(-${slide * 100}%)` }}
@@ -331,6 +339,30 @@ export default function Home() {
                 </Link>
               ))}
             </div>
+
+            {/* arrows */}
+            {posters.length > 1 && (
+              <>
+                <button
+                  onClick={() => goSlide(-1)}
+                  aria-label="Previous featured therapy"
+                  className="absolute left-2 top-1/2 z-10 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/15 text-white backdrop-blur transition hover:bg-white/30 sm:left-4"
+                >
+                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M15 6l-6 6 6 6" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => goSlide(1)}
+                  aria-label="Next featured therapy"
+                  className="absolute right-2 top-1/2 z-10 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/15 text-white backdrop-blur transition hover:bg-white/30 sm:right-4"
+                >
+                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+              </>
+            )}
 
             {/* dots */}
             {posters.length > 1 && (
