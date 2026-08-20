@@ -6,6 +6,32 @@ export const CARS: Car[] = [
   {
     "id": 1,
     "make": "Age Rejuvenation",
+    "model": "ER-100 Epigenetic Reprogramming",
+    "trim": "OSK partial reprogramming (OCT4 · SOX2 · KLF4)",
+    "year": 2026,
+    "price": 48000,
+    "monthly_price": 2000,
+    "body_type": "iPSC",
+    "fuel_type": "Autologous",
+    "transmission": "Intravitreal injection",
+    "mileage": 60,
+    "color": "Day-case",
+    "condition": "used",
+    "seats": null,
+    "doors": 1,
+    "engine": "AAV-delivered inducible OSK (OCT4, SOX2, KLF4)",
+    "power_bhp": 57,
+    "zero_to_sixty": 1,
+    "top_speed": 7,
+    "economy_mpg": 12,
+    "rating": 4.3,
+    "review_count": 20,
+    "accent": "#059669",
+    "description": "Built on the Partial Epigenetic Reprogramming platform, ER-100 uses controlled, transient expression of three classic Yamanaka transcription factors — OCT4, SOX2 and KLF4 (“OSK”) — to reset the epigenome of aged or damaged cells toward a younger, healthier state, without changing the underlying DNA sequence. Delivered as a single intravitreal gene therapy, it is being studied to rejuvenate retinal ganglion cells and restore vision in optic neuropathies such as open-angle glaucoma and NAION. First-in-human Phase 1 (investigational)."
+  },
+  {
+    "id": 2,
+    "make": "Age Rejuvenation",
     "model": "Systemic MSC Infusion",
     "trim": "Allogeneic UC-MSC",
     "year": 2022,
@@ -30,7 +56,7 @@ export const CARS: Car[] = [
     "description": "A wellness-oriented programme of donor MSC infusions promoted for immune modulation and vitality. Investigational — benefits are not established."
   },
   {
-    "id": 2,
+    "id": 3,
     "make": "Age Rejuvenation",
     "model": "Exosome IV Longevity",
     "trim": "MSC exosome IV",
@@ -56,7 +82,7 @@ export const CARS: Car[] = [
     "description": "Intravenous MSC-derived exosomes marketed for anti-ageing and recovery. Investigational; efficacy and safety remain under study."
   },
   {
-    "id": 3,
+    "id": 4,
     "make": "Age Rejuvenation",
     "model": "NK Cell Immune Boost",
     "trim": "Allogeneic NK cells",
@@ -82,7 +108,7 @@ export const CARS: Car[] = [
     "description": "Expanded natural-killer cell infusions used to top up immune surveillance, part of a monitored immune-health programme."
   },
   {
-    "id": 4,
+    "id": 5,
     "make": "Age Rejuvenation",
     "model": "Immune (Thymic) Rejuvenation",
     "trim": "Autologous progenitor",
@@ -108,7 +134,7 @@ export const CARS: Car[] = [
     "description": "Experimental approach aiming to restore thymus function and a more youthful immune repertoire. Early research only."
   },
   {
-    "id": 5,
+    "id": 6,
     "make": "Age Rejuvenation",
     "model": "Senolytic + MSC Program",
     "trim": "MSC + senolytic",
@@ -134,7 +160,7 @@ export const CARS: Car[] = [
     "description": "Combines senescent-cell-clearing agents with MSC infusions to target biological ageing. Investigational research programme."
   },
   {
-    "id": 6,
+    "id": 7,
     "make": "Diabetes",
     "model": "Type 1 Diabetes",
     "trim": "iPSC islet beta-cells",
@@ -160,7 +186,7 @@ export const CARS: Car[] = [
     "description": "Replaces the insulin-producing beta cells destroyed in type 1 diabetes with lab-grown pancreatic islet cells, aiming to restore natural glucose control and reduce insulin dependence. Investigational."
   },
   {
-    "id": 7,
+    "id": 8,
     "make": "Diabetes",
     "model": "Type 2 Diabetes",
     "trim": "Allogeneic UC-MSC",
@@ -186,7 +212,7 @@ export const CARS: Car[] = [
     "description": "Mesenchymal stem-cell infusions studied to reduce insulin resistance, calm chronic inflammation and support failing beta-cell function in type 2 diabetes. Investigational."
   },
   {
-    "id": 8,
+    "id": 9,
     "make": "HIV",
     "model": "CCR5-Δ32 Stem-Cell Transplant",
     "trim": "Allogeneic CCR5-Δ32 HSCT",
@@ -212,7 +238,7 @@ export const CARS: Car[] = [
     "description": "An allogeneic stem-cell transplant from a donor with the rare CCR5-Δ32 mutation rebuilds an immune system that HIV cannot infect. This is the approach behind the documented HIV cures — currently reserved for patients who also need a transplant for a blood cancer."
   },
   {
-    "id": 9,
+    "id": 10,
     "make": "HIV",
     "model": "Cord-Blood CCR5-Δ32 Transplant",
     "trim": "CCR5-Δ32 cord blood",
@@ -238,7 +264,7 @@ export const CARS: Car[] = [
     "description": "A cord-blood transplant carrying the CCR5-Δ32 mutation needs a less strict donor match, broadening access to HIV-resistant transplants — the approach that cured the New York patient."
   },
   {
-    "id": 10,
+    "id": 11,
     "make": "HIV",
     "model": "CCR5 Gene-Edited HSC Therapy",
     "trim": "Autologous CRISPR CCR5-KO",
@@ -264,7 +290,7 @@ export const CARS: Car[] = [
     "description": "The patient’s own blood stem cells are gene-edited to remove the CCR5 receptor, so the new T cells they produce resist HIV — an investigational route that aims to avoid the need for a matched donor."
   },
   {
-    "id": 11,
+    "id": 12,
     "make": "HIV",
     "model": "Anti-HIV Gene Therapy in HSCs",
     "trim": "Lentiviral CCR5/C46",
@@ -290,7 +316,7 @@ export const CARS: Car[] = [
     "description": "Blood stem cells are engineered with anti-HIV genes (CCR5 knockdown plus a fusion inhibitor) so they produce immune cells protected from the virus. Investigational."
   },
   {
-    "id": 12,
+    "id": 13,
     "make": "HIV",
     "model": "CCR5-Disrupted CD4 T-cell Therapy",
     "trim": "ZFN CCR5-edited CD4 T cells",
@@ -316,7 +342,7 @@ export const CARS: Car[] = [
     "description": "The patient’s CD4 T-helper cells are edited to remove CCR5 and reinfused, expanding a population of HIV-resistant T cells. Investigational."
   },
   {
-    "id": 13,
+    "id": 14,
     "make": "Autoimmune",
     "model": "Ankylosing Spondylitis",
     "trim": "Allogeneic UC-MSC",
@@ -342,7 +368,7 @@ export const CARS: Car[] = [
     "description": "Immunomodulatory MSC infusions studied to reduce spinal inflammation, pain and stiffness in ankylosing spondylitis and slow disease progression. Investigational."
   },
   {
-    "id": 14,
+    "id": 15,
     "make": "Autoimmune",
     "model": "Rheumatoid Arthritis",
     "trim": "Allogeneic UC-MSC",
@@ -368,7 +394,7 @@ export const CARS: Car[] = [
     "description": "MSC therapy studied to calm the immune attack on the joints in rheumatoid arthritis, reducing pain, swelling and long-term joint damage. Investigational."
   },
   {
-    "id": 15,
+    "id": 16,
     "make": "Autoimmune",
     "model": "Systemic Lupus Erythematosus (SLE)",
     "trim": "Allogeneic BM-MSC",
@@ -394,7 +420,7 @@ export const CARS: Car[] = [
     "description": "Immunomodulatory MSC infusions studied to re-balance an overactive immune system in lupus and protect organs such as the kidneys. Investigational."
   },
   {
-    "id": 16,
+    "id": 17,
     "make": "Autoimmune",
     "model": "Psoriasis & Psoriatic Arthritis",
     "trim": "Allogeneic UC-MSC",
@@ -420,7 +446,7 @@ export const CARS: Car[] = [
     "description": "MSC therapy studied to reduce the skin and joint inflammation of psoriasis and psoriatic arthritis. Investigational."
   },
   {
-    "id": 17,
+    "id": 18,
     "make": "Autoimmune",
     "model": "Systemic Sclerosis (Scleroderma)",
     "trim": "Autologous HSCT",
@@ -446,7 +472,7 @@ export const CARS: Car[] = [
     "description": "Autologous stem-cell transplant that resets the immune system in severe, rapidly progressing scleroderma — an established option for carefully selected patients."
   },
   {
-    "id": 18,
+    "id": 19,
     "make": "Autoimmune",
     "model": "Sjögren’s Syndrome",
     "trim": "Allogeneic UC-MSC",
@@ -472,7 +498,7 @@ export const CARS: Car[] = [
     "description": "MSC infusions studied to ease dryness and systemic inflammation in Sjögren’s syndrome by modulating immune activity. Investigational."
   },
   {
-    "id": 19,
+    "id": 20,
     "make": "Autoimmune",
     "model": "Hashimoto’s Thyroiditis",
     "trim": "Allogeneic UC-MSC",
@@ -498,7 +524,7 @@ export const CARS: Car[] = [
     "description": "Early-stage MSC therapy studied to reduce autoimmune attack on the thyroid gland in Hashimoto’s thyroiditis. Investigational."
   },
   {
-    "id": 20,
+    "id": 21,
     "make": "Autoimmune",
     "model": "Graves’ Disease",
     "trim": "Allogeneic UC-MSC",
@@ -524,7 +550,7 @@ export const CARS: Car[] = [
     "description": "Investigational MSC therapy studied to calm the overactive immune response driving Graves’ disease and thyroid eye disease."
   },
   {
-    "id": 21,
+    "id": 22,
     "make": "Autoimmune",
     "model": "Myasthenia Gravis",
     "trim": "Allogeneic BM-MSC",
@@ -550,7 +576,7 @@ export const CARS: Car[] = [
     "description": "MSC therapy studied to modulate the antibodies that disrupt nerve-to-muscle signalling in myasthenia gravis, improving muscle strength. Investigational."
   },
   {
-    "id": 22,
+    "id": 23,
     "make": "Autoimmune",
     "model": "Autoimmune Hepatitis",
     "trim": "Allogeneic UC-MSC",
@@ -576,7 +602,7 @@ export const CARS: Car[] = [
     "description": "MSC infusions studied to reduce immune-driven liver inflammation in autoimmune hepatitis and protect liver function. Investigational."
   },
   {
-    "id": 23,
+    "id": 24,
     "make": "Autoimmune",
     "model": "Vasculitis",
     "trim": "Allogeneic UC-MSC",
@@ -602,7 +628,7 @@ export const CARS: Car[] = [
     "description": "Immunomodulatory MSC therapy studied to reduce blood-vessel inflammation in autoimmune vasculitis and lower the risk of organ damage. Investigational."
   },
   {
-    "id": 24,
+    "id": 25,
     "make": "Autoimmune",
     "model": "Vitiligo",
     "trim": "MSC-derived exosomes",
@@ -628,7 +654,7 @@ export const CARS: Car[] = [
     "description": "Exosome therapy studied to calm the immune attack on pigment cells and encourage repigmentation of vitiligo patches. Investigational."
   },
   {
-    "id": 25,
+    "id": 26,
     "make": "Autoimmune",
     "model": "Alopecia Areata",
     "trim": "Exosome + PRP",
@@ -654,7 +680,7 @@ export const CARS: Car[] = [
     "description": "Scalp exosome therapy studied to quieten the immune attack on hair follicles in alopecia areata and support regrowth. Investigational."
   },
   {
-    "id": 26,
+    "id": 27,
     "make": "Autoimmune",
     "model": "Polymyositis & Dermatomyositis",
     "trim": "Allogeneic BM-MSC",
@@ -680,7 +706,7 @@ export const CARS: Car[] = [
     "description": "MSC therapy studied to reduce immune-driven muscle and skin inflammation in polymyositis and dermatomyositis. Investigational."
   },
   {
-    "id": 27,
+    "id": 28,
     "make": "Autoimmune",
     "model": "Behçet’s Disease",
     "trim": "Allogeneic UC-MSC",
@@ -706,7 +732,7 @@ export const CARS: Car[] = [
     "description": "Immunomodulatory MSC therapy studied to reduce recurrent inflammation and ulcers across the body in Behçet’s disease. Investigational."
   },
   {
-    "id": 28,
+    "id": 29,
     "make": "Dental",
     "model": "Dental Pulp Regeneration",
     "trim": "Autologous DPSC",
@@ -732,7 +758,7 @@ export const CARS: Car[] = [
     "description": "Regenerative endodontics that uses a patient’s own dental pulp stem cells to revitalise a damaged tooth, restoring living pulp tissue rather than removing it."
   },
   {
-    "id": 29,
+    "id": 30,
     "make": "Dental",
     "model": "Periodontal Ligament Repair",
     "trim": "Autologous PDLSC",
@@ -758,7 +784,7 @@ export const CARS: Car[] = [
     "description": "Investigational cell therapy aiming to rebuild the periodontal ligament and supporting bone lost to gum disease. Currently offered within clinical-trial settings only."
   },
   {
-    "id": 30,
+    "id": 31,
     "make": "Dental",
     "model": "Alveolar Bone Regeneration",
     "trim": "BM-MSC + scaffold",
@@ -784,7 +810,7 @@ export const CARS: Car[] = [
     "description": "Rebuilds jaw-bone volume ahead of implants using bone-marrow MSCs seeded onto a resorbable scaffold, improving graft take versus conventional augmentation."
   },
   {
-    "id": 31,
+    "id": 32,
     "make": "Dental",
     "model": "Whole-Tooth Bioengineering",
     "trim": "iPSC tooth germ",
@@ -810,7 +836,7 @@ export const CARS: Car[] = [
     "description": "Early-stage research growing a biological replacement tooth from induced pluripotent stem cells. Pre-clinical / first-in-human research only."
   },
   {
-    "id": 32,
+    "id": 33,
     "make": "Orthopedics",
     "model": "Knee Osteoarthritis MSC Therapy",
     "trim": "Autologous BM-MSC",
@@ -836,7 +862,7 @@ export const CARS: Car[] = [
     "description": "A single intra-articular injection of bone-marrow MSCs to reduce pain and inflammation in mild-to-moderate knee osteoarthritis and support cartilage health."
   },
   {
-    "id": 33,
+    "id": 34,
     "make": "Orthopedics",
     "model": "Cartilage Repair",
     "trim": "Chondrocyte + MSC",
@@ -862,7 +888,7 @@ export const CARS: Car[] = [
     "description": "Matrix-assisted autologous cell implantation that resurfaces focal cartilage defects, delaying or avoiding joint replacement in younger patients."
   },
   {
-    "id": 34,
+    "id": 35,
     "make": "Orthopedics",
     "model": "Non-union Fracture Repair",
     "trim": "BM-MSC + scaffold",
@@ -888,7 +914,7 @@ export const CARS: Car[] = [
     "description": "Delivers concentrated osteogenic stem cells to fractures that have failed to heal, stimulating new bone formation and union."
   },
   {
-    "id": 35,
+    "id": 36,
     "make": "Orthopedics",
     "model": "Intervertebral Disc Regeneration",
     "trim": "Autologous MSC intradiscal",
@@ -914,7 +940,7 @@ export const CARS: Car[] = [
     "description": "Investigational injection of MSCs into a degenerated spinal disc to restore disc height and reduce chronic low-back pain. Clinical-trial stage."
   },
   {
-    "id": 36,
+    "id": 37,
     "make": "Orthopedics",
     "model": "Tendon & Ligament PRP-MSC",
     "trim": "PRP + adipose MSC",
@@ -940,7 +966,7 @@ export const CARS: Car[] = [
     "description": "Combines platelet-rich plasma with adipose-derived stem cells to accelerate healing of stubborn tendon and ligament injuries such as tennis elbow or Achilles tendinopathy."
   },
   {
-    "id": 37,
+    "id": 38,
     "make": "Cardiology",
     "model": "Post-MI Cardiac Repair",
     "trim": "Autologous BM-MNC",
@@ -966,7 +992,7 @@ export const CARS: Car[] = [
     "description": "Intracoronary delivery of bone-marrow cells after a heart attack, aiming to limit scar formation and preserve pumping function. Investigational."
   },
   {
-    "id": 38,
+    "id": 39,
     "make": "Cardiology",
     "model": "Heart Failure MSC Therapy",
     "trim": "Allogeneic MSC",
@@ -992,7 +1018,7 @@ export const CARS: Car[] = [
     "description": "Catheter-based injection of donor MSCs into the heart muscle to reduce inflammation and improve function in chronic heart failure. Clinical-trial stage."
   },
   {
-    "id": 39,
+    "id": 40,
     "make": "Cardiology",
     "model": "Cardiosphere-derived Cell Therapy",
     "trim": "Allogeneic CDC",
@@ -1018,7 +1044,7 @@ export const CARS: Car[] = [
     "description": "Heart-derived progenitor cells studied for their anti-fibrotic, regenerative signalling in cardiomyopathy. Investigational research therapy."
   },
   {
-    "id": 40,
+    "id": 41,
     "make": "Cardiology",
     "model": "Critical Limb Ischaemia",
     "trim": "Autologous BM-MNC",
@@ -1044,7 +1070,7 @@ export const CARS: Car[] = [
     "description": "Stem-cell injections that promote new blood-vessel growth in poorly perfused limbs, helping avoid amputation in no-option critical limb ischaemia."
   },
   {
-    "id": 41,
+    "id": 42,
     "make": "Gastroenterology",
     "model": "Crohn’s Perianal Fistula",
     "trim": "Allogeneic adipose MSC",
@@ -1070,7 +1096,7 @@ export const CARS: Car[] = [
     "description": "Local injection of donor adipose stem cells to heal complex perianal fistulas in Crohn’s disease — one of the first approved MSC therapies of its kind."
   },
   {
-    "id": 42,
+    "id": 43,
     "make": "Gastroenterology",
     "model": "Gut GvHD MSC Therapy",
     "trim": "Allogeneic BM-MSC",
@@ -1096,7 +1122,7 @@ export const CARS: Car[] = [
     "description": "Intravenous MSCs that calm the immune attack of steroid-refractory graft-versus-host disease affecting the gut, used after bone-marrow transplant."
   },
   {
-    "id": 43,
+    "id": 44,
     "make": "Gastroenterology",
     "model": "Liver Cirrhosis MSC Therapy",
     "trim": "Allogeneic UC-MSC",
@@ -1122,7 +1148,7 @@ export const CARS: Car[] = [
     "description": "Investigational MSC infusions aiming to reduce fibrosis and improve liver function in decompensated cirrhosis. Clinical-trial stage."
   },
   {
-    "id": 44,
+    "id": 45,
     "make": "Gastroenterology",
     "model": "Ulcerative Colitis MSC",
     "trim": "Allogeneic MSC",
@@ -1148,7 +1174,7 @@ export const CARS: Car[] = [
     "description": "Immunomodulatory MSC therapy under study for inducing remission in moderate-to-severe ulcerative colitis. Investigational."
   },
   {
-    "id": 45,
+    "id": 46,
     "make": "Neurology",
     "model": "Multiple Sclerosis aHSCT",
     "trim": "Autologous HSCT",
@@ -1174,7 +1200,7 @@ export const CARS: Car[] = [
     "description": "Autologous haematopoietic stem-cell transplant that “reboots” the immune system, halting disease activity in aggressive relapsing multiple sclerosis."
   },
   {
-    "id": 46,
+    "id": 47,
     "make": "Neurology",
     "model": "Spinal Cord Injury NSC",
     "trim": "Allogeneic NSC",
@@ -1200,7 +1226,7 @@ export const CARS: Car[] = [
     "description": "Neural stem cells delivered into the spinal fluid to support remyelination and recovery after spinal cord injury. Early clinical research."
   },
   {
-    "id": 47,
+    "id": 48,
     "make": "Neurology",
     "model": "Stroke Recovery MSC",
     "trim": "Allogeneic MSC",
@@ -1226,7 +1252,7 @@ export const CARS: Car[] = [
     "description": "Investigational MSC infusion in the sub-acute phase after ischaemic stroke, studied to enhance neurological recovery and reduce disability."
   },
   {
-    "id": 48,
+    "id": 49,
     "make": "Neurology",
     "model": "Parkinson’s iPSC Dopaminergic",
     "trim": "Allogeneic iPSC-DA",
@@ -1252,7 +1278,7 @@ export const CARS: Car[] = [
     "description": "Lab-grown dopamine neurons transplanted into the brain to replace those lost in Parkinson’s disease. First-in-human research stage."
   },
   {
-    "id": 49,
+    "id": 50,
     "make": "Neurology",
     "model": "ALS / MND MSC Therapy",
     "trim": "Autologous MSC-NTF",
@@ -1278,7 +1304,7 @@ export const CARS: Car[] = [
     "description": "MSCs engineered to secrete neurotrophic factors, delivered intrathecally to slow motor-neuron loss in ALS. Investigational."
   },
   {
-    "id": 50,
+    "id": 51,
     "make": "Pulmonology",
     "model": "COPD MSC Therapy",
     "trim": "Allogeneic MSC",
@@ -1304,7 +1330,7 @@ export const CARS: Car[] = [
     "description": "Anti-inflammatory MSC infusions studied to slow lung decline and improve quality of life in chronic obstructive pulmonary disease. Clinical-trial stage."
   },
   {
-    "id": 51,
+    "id": 52,
     "make": "Pulmonology",
     "model": "Pulmonary Fibrosis (IPF) MSC",
     "trim": "Allogeneic UC-MSC",
@@ -1330,7 +1356,7 @@ export const CARS: Car[] = [
     "description": "Investigational cord-tissue MSC therapy aiming to dampen the scarring process of idiopathic pulmonary fibrosis. Research use only."
   },
   {
-    "id": 52,
+    "id": 53,
     "make": "Pulmonology",
     "model": "ARDS MSC Therapy",
     "trim": "Allogeneic MSC",
@@ -1356,7 +1382,7 @@ export const CARS: Car[] = [
     "description": "Intravenous MSCs studied for acute respiratory distress syndrome, including viral pneumonia, to reduce lung inflammation and injury. Investigational."
   },
   {
-    "id": 53,
+    "id": 54,
     "make": "Pulmonology",
     "model": "Airway Epithelial Regeneration",
     "trim": "Autologous basal cell",
@@ -1382,7 +1408,7 @@ export const CARS: Car[] = [
     "description": "Early research using a patient’s own airway stem cells to regenerate damaged bronchial lining. Pre-clinical / first-in-human."
   },
   {
-    "id": 54,
+    "id": 55,
     "make": "Cosmetic",
     "model": "Facial Fat Grafting + SVF",
     "trim": "Autologous SVF",
@@ -1408,7 +1434,7 @@ export const CARS: Car[] = [
     "description": "Enriches transferred facial fat with the stromal vascular fraction, improving graft survival for natural, long-lasting volume restoration."
   },
   {
-    "id": 55,
+    "id": 56,
     "make": "Cosmetic",
     "model": "Hair Restoration Exosome",
     "trim": "Exosome + PRP",
@@ -1434,7 +1460,7 @@ export const CARS: Car[] = [
     "description": "Scalp injections of regenerative exosomes and PRP that stimulate dormant follicles to thicken hair and slow early-stage hair loss."
   },
   {
-    "id": 56,
+    "id": 57,
     "make": "Cosmetic",
     "model": "Skin Rejuvenation Exosomes",
     "trim": "Exosome microneedling",
@@ -1460,7 +1486,7 @@ export const CARS: Car[] = [
     "description": "Exosome serums driven into the skin with microneedling to boost collagen, calm redness and brighten tone with minimal downtime."
   },
   {
-    "id": 57,
+    "id": 58,
     "make": "Cosmetic",
     "model": "Scar & Wound MSC Therapy",
     "trim": "Autologous MSC",

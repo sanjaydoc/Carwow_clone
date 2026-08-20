@@ -36,6 +36,14 @@ const HIV = '#e11d48';
 export const therapies = [
   // ── Age Rejuvenation ────────────────────────────────────────────────────
   {
+    make: 'Age Rejuvenation', model: 'ER-100 Epigenetic Reprogramming', trim: 'OSK partial reprogramming (OCT4 · SOX2 · KLF4)', year: 2026,
+    price: 48000, monthly_price: 2000, body_type: 'iPSC', fuel_type: 'Autologous', transmission: 'Intravitreal injection',
+    mileage: 60, color: 'Day-case', condition: 'used', seats: null, doors: 1,
+    engine: 'AAV-delivered inducible OSK (OCT4, SOX2, KLF4)', power_bhp: 57, zero_to_sixty: 1, top_speed: 7,
+    economy_mpg: 12, rating: 4.3, review_count: 20, accent: AGE,
+    description: 'Built on the Partial Epigenetic Reprogramming platform, ER-100 uses controlled, transient expression of three classic Yamanaka transcription factors — OCT4, SOX2 and KLF4 (“OSK”) — to reset the epigenome of aged or damaged cells toward a younger, healthier state, without changing the underlying DNA sequence. Delivered as a single intravitreal gene therapy, it is being studied to rejuvenate retinal ganglion cells and restore vision in optic neuropathies such as open-angle glaucoma and NAION. First-in-human Phase 1 (investigational).'
+  },
+  {
     make: 'Age Rejuvenation', model: 'Systemic MSC Infusion', trim: 'Allogeneic UC-MSC', year: 2022,
     price: 12000, monthly_price: 500, body_type: 'MSC', fuel_type: 'Allogeneic', transmission: 'IV infusion',
     mileage: 90, color: 'Day-case', condition: 'used', seats: 150, doors: 2,
