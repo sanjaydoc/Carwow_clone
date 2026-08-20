@@ -106,7 +106,7 @@ export default function CarDetail() {
             <p className="mt-2 leading-relaxed text-ink-700/80">{car.description}</p>
 
             <h3 className="mt-6 font-display text-lg font-bold text-ink-900">Clinical details</h3>
-            <dl className="mt-3 grid grid-cols-2 gap-x-6 gap-y-0 sm:grid-cols-3">
+            <dl className="mt-3 grid grid-cols-1 gap-x-6 gap-y-0 sm:grid-cols-2 lg:grid-cols-3">
               {specs.map((s) => (
                 <div key={s.label} className="flex justify-between border-b border-cream-300 py-3">
                   <dt className="text-sm text-ink-700/60">{s.label}</dt>
@@ -358,7 +358,7 @@ export default function CarDetail() {
             </div>
 
             <p className="mt-3 text-xs font-bold uppercase tracking-wide text-clay-600">{car.make}</p>
-            <h1 className="mt-1 font-display text-3xl font-extrabold leading-tight text-ink-900">
+            <h1 className="mt-1 break-words font-display text-2xl font-extrabold leading-tight text-ink-900 sm:text-3xl">
               {car.model}
             </h1>
             {car.trim && <p className="text-ink-700/70">Protocol: {car.trim}</p>}
