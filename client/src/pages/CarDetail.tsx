@@ -170,6 +170,84 @@ export default function CarDetail() {
               </p>
             </div>
           )}
+
+          {isER100 && (
+            <div className="mt-6 card p-6">
+              <h2 className="font-display text-xl font-bold text-ink-900">
+                Where do OCT4, SOX2 &amp; KLF4 come from?
+              </h2>
+              <p className="mt-2 text-ink-700/80">
+                They are <b>natural human genes already present in every cell</b> — not invented molecules. The
+                only "synthetic" part is the gene-therapy system that re-supplies and controls them.
+              </p>
+
+              <div className="mt-4 overflow-x-auto">
+                <table className="w-full min-w-[360px] border-separate border-spacing-0 text-sm">
+                  <thead>
+                    <tr className="text-left text-ink-700/60">
+                      <th className="border-b border-cream-300 py-2 pr-4 font-semibold">Factor</th>
+                      <th className="border-b border-cream-300 py-2 pr-4 font-semibold">Gene</th>
+                      <th className="border-b border-cream-300 py-2 font-semibold">Location</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-ink-900">
+                    <tr>
+                      <td className="border-b border-cream-300 py-2 pr-4 font-bold">OCT4</td>
+                      <td className="border-b border-cream-300 py-2 pr-4"><i>POU5F1</i></td>
+                      <td className="border-b border-cream-300 py-2">Chromosome 6</td>
+                    </tr>
+                    <tr>
+                      <td className="border-b border-cream-300 py-2 pr-4 font-bold">SOX2</td>
+                      <td className="border-b border-cream-300 py-2 pr-4"><i>SOX2</i></td>
+                      <td className="border-b border-cream-300 py-2">Chromosome 3</td>
+                    </tr>
+                    <tr>
+                      <td className="py-2 pr-4 font-bold">KLF4</td>
+                      <td className="py-2 pr-4"><i>KLF4</i></td>
+                      <td className="py-2">Chromosome 9</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p className="mt-3 text-sm text-ink-700/70">
+                These "switch" genes are highly active in embryonic stem cells and largely <b>switched off</b>{' '}
+                in adult cells — the therapy briefly re-awakens the cell's own copies.
+              </p>
+
+              <h3 className="mt-5 font-display font-bold text-ink-900">What the therapy actually does</h3>
+              <ul className="mt-2 space-y-2 text-ink-700/80">
+                <li className="flex gap-2">
+                  <span className="text-clay-600">•</span>
+                  <span>An <b>AAV gene-therapy vector</b> carries lab-cloned copies of the OSK coding sequences into the target cells.</span>
+                </li>
+                <li className="flex gap-2">
+                  <span className="text-clay-600">•</span>
+                  <span>The cell reads them and makes the <b>real, natural human OCT4 / SOX2 / KLF4 proteins</b>.</span>
+                </li>
+                <li className="flex gap-2">
+                  <span className="text-clay-600">•</span>
+                  <span>An <b>inducible switch</b> (e.g. doxycycline / "Tet-On") turns them on <b>briefly, then off</b> — a partial, transient reset rather than a full wipe back to a stem cell.</span>
+                </li>
+              </ul>
+
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                <div className="rounded-2xl border border-cream-300 bg-cream-100 p-4 text-sm text-ink-700/80">
+                  <b className="text-ink-900">Why only three factors?</b> The original cocktail is OSK{' '}
+                  <b>+ c-Myc</b>. c-Myc is an <b>oncogene</b> (cancer risk), so ER-100 uses only <b>OSK</b> for
+                  safety.
+                </div>
+                <div className="rounded-2xl border border-cream-300 bg-cream-100 p-4 text-sm text-ink-700/80">
+                  <b className="text-ink-900">DNA stays untouched.</b> Because it uses the cell's own
+                  machinery, it nudges the epigenetic settings <b>without changing the DNA sequence</b>.
+                </div>
+              </div>
+
+              <p className="mt-4 text-sm italic text-ink-700/60">
+                In short: the factors are natural genes already in your genome; the lab-made construct simply
+                re-awakens and controls them for a short, safe window.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Right: purchase panel */}
