@@ -127,7 +127,8 @@ type Tab = 'find' | 'sell' | 'reviews';
 export default function Home() {
   const [featured, setFeatured] = useState<Car[]>([]);
   const [trending, setTrending] = useState<Car[]>([]);
-  const [poster, setPoster] = useState<Car | null>(null);
+  const [posters, setPosters] = useState<Car[]>([]);
+  const [slide, setSlide] = useState(0);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<Tab>('find');
   const [search, setSearch] = useState('');
@@ -148,9 +149,20 @@ export default function Home() {
       })
       .finally(() => setLoading(false));
     api.getCars({ sort: 'rating_desc', limit: 6 }).then(({ cars }) => setTrending(cars));
-    // Feature "Exosome IV Longevity" (Age Rejuvenation) in the poster.
-    api.getCars({ search: 'Exosome IV Longevity', limit: 1 }).then(({ cars }) => setPoster(cars[0] ?? null));
+    // Featured-therapies slider: Exosome IV Longevity, Type 1 Diabetes, HIV cure.
+    Promise.all([
+      api.getCars({ search: 'Exosome IV Longevity', limit: 1 }),
+      api.getCars({ search: 'Type 1 Diabetes', limit: 1 }),
+      api.getCars({ make: 'HIV', sort: 'rating_desc', limit: 1 }),
+    ]).then((res) => setPosters(res.map((r) => r.cars[0]).filter(Boolean) as Car[]));
   }, []);
+
+  // Auto-advance the featured slider.
+  useEffect(() => {
+    if (posters.length < 2) return;
+    const t = window.setInterval(() => setSlide((s) => (s + 1) % posters.length), 4500);
+    return () => clearInterval(t);
+  }, [posters.length]);
 
   const onFind = (e: FormEvent) => {
     e.preventDefault();
@@ -163,7 +175,6 @@ export default function Home() {
     navigate(`/browse?search=${encodeURIComponent(reg.trim())}`);
   };
 
-  const posterCar = poster ?? featured.find((c) => c.body_type === 'MSC') ?? featured[0];
 
   return (
     <div>
@@ -275,44 +286,68 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ---------- FEATURED THERAPY POSTER ---------- */}
-      {posterCar && (
+      {/* ---------- FEATURED THERAPIES SLIDER ---------- */}
+      {posters.length > 0 && (
         <section className="container-x pt-10">
-          <Link
-            to={`/therapies/${posterCar.id}`}
-            className="group relative block overflow-hidden rounded-3xl bg-ink-900 text-white"
-          >
-            <div className="absolute -right-10 top-0 h-72 w-72 rounded-full bg-clay-500/25 blur-3xl" />
-            <div className="relative grid items-center gap-4 p-6 sm:p-10 md:grid-cols-2">
-              <div>
-                <span className="chip bg-white/10 text-white/80">Featured therapy</span>
-                <h2 className="mt-4 font-display text-3xl font-extrabold uppercase leading-none sm:text-5xl">
-                  {posterCar.model}
-                </h2>
-                <p className="mt-3 max-w-sm text-white/70">
-                  {posterCar.description}
-                </p>
-                <div className="mt-5 flex flex-wrap items-center gap-4">
-                  <span className="rounded-full bg-white px-6 py-3 font-display font-bold text-ink-900 transition group-hover:bg-clay-500 group-hover:text-white">
-                    Learn more
-                  </span>
-                  <span className="text-sm text-white/70">
-                    From <b className="text-white">{gbp(posterCar.price)}</b> · from{' '}
-                    <b className="text-clay-300">{gbp(posterCar.monthly_price)}/mo</b>
-                  </span>
-                </div>
-              </div>
-              <CarImage
-                accent={posterCar.accent}
-                bodyType={posterCar.body_type}
-                make={posterCar.make}
-                model={posterCar.model}
-                year={posterCar.year}
-                angle={21}
-                className="h-56 w-full rounded-2xl bg-transparent sm:h-72"
-              />
+          <div className="relative overflow-hidden rounded-3xl bg-ink-900">
+            <div
+              className="flex transition-transform duration-700 ease-out"
+              style={{ transform: `translateX(-${slide * 100}%)` }}
+            >
+              {posters.map((p) => (
+                <Link
+                  key={p.id}
+                  to={`/therapies/${p.id}`}
+                  className="group relative w-full shrink-0 text-white"
+                >
+                  <div className="absolute -right-10 top-0 h-72 w-72 rounded-full bg-clay-500/25 blur-3xl" />
+                  <div className="relative grid items-center gap-4 p-6 pb-12 sm:p-10 sm:pb-14 md:grid-cols-2">
+                    <div>
+                      <span className="chip bg-white/10 text-white/80">Featured therapy</span>
+                      <h2 className="mt-4 font-display text-3xl font-extrabold uppercase leading-none sm:text-5xl">
+                        {p.model}
+                      </h2>
+                      <p className="mt-3 max-w-sm text-white/70">{p.description}</p>
+                      <div className="mt-5 flex flex-wrap items-center gap-4">
+                        <span className="rounded-full bg-white px-6 py-3 font-display font-bold text-ink-900 transition group-hover:bg-clay-500 group-hover:text-white">
+                          Learn more
+                        </span>
+                        <span className="text-sm text-white/70">
+                          From <b className="text-white">{gbp(p.price)}</b> · from{' '}
+                          <b className="text-clay-300">{gbp(p.monthly_price)}/mo</b>
+                        </span>
+                      </div>
+                    </div>
+                    <CarImage
+                      accent={p.accent}
+                      bodyType={p.body_type}
+                      make={p.make}
+                      model={p.model}
+                      year={p.year}
+                      angle={21}
+                      className="h-56 w-full rounded-2xl bg-transparent sm:h-72"
+                    />
+                  </div>
+                </Link>
+              ))}
             </div>
-          </Link>
+
+            {/* dots */}
+            {posters.length > 1 && (
+              <div className="absolute bottom-5 left-1/2 z-10 flex -translate-x-1/2 gap-2">
+                {posters.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setSlide(i)}
+                    aria-label={`Show featured therapy ${i + 1}`}
+                    className={`h-2 rounded-full transition-all ${
+                      i === slide ? 'w-6 bg-white' : 'w-2 bg-white/40 hover:bg-white/70'
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
         </section>
       )}
 
