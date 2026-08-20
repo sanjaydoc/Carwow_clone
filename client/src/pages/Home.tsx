@@ -150,8 +150,9 @@ export default function Home() {
       })
       .finally(() => setLoading(false));
     api.getCars({ sort: 'rating_desc', limit: 6 }).then(({ cars }) => setTrending(cars));
-    // Featured-therapies slider: Exosome IV Longevity, Type 1 Diabetes, HIV cure.
+    // Featured-therapies slider: ER-100, Exosome IV Longevity, Type 1 Diabetes, HIV cure.
     Promise.all([
+      api.getCars({ search: 'ER-100', limit: 1 }),
       api.getCars({ search: 'Exosome IV Longevity', limit: 1 }),
       api.getCars({ search: 'Type 1 Diabetes', limit: 1 }),
       api.getCars({ make: 'HIV', sort: 'rating_desc', limit: 1 }),
