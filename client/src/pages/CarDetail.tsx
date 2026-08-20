@@ -248,6 +248,99 @@ export default function CarDetail() {
               </p>
             </div>
           )}
+
+          {isER100 && (
+            <div className="mt-6 card p-6">
+              <h2 className="font-display text-xl font-bold text-ink-900">How ER-100 is made &amp; switched on</h2>
+              <p className="mt-2 text-ink-700/80">
+                You never manufacture the proteins — you build a piece of <b>DNA</b> (the vector), deliver it to
+                the patient's cells, and <b>their own cells</b> make the OCT4/SOX2/KLF4 proteins on demand, under
+                a drug-controlled switch.
+              </p>
+
+              {/* Accordion 1: building the construct */}
+              <details className="group mt-4 rounded-2xl border border-cream-300 bg-cream-100 [&[open]]:bg-white" open>
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4 font-display font-bold text-ink-900 [&::-webkit-details-marker]:hidden">
+                  1 · Building the OSK construct
+                  <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0 transition group-open:rotate-180" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </summary>
+                <div className="space-y-3 px-4 pb-4 text-sm text-ink-700/80">
+                  <p>
+                    A <b>PCR machine (thermal cycler) helps</b>, but it's only one tool — the genes are chemically
+                    written and the virus is grown in cells:
+                  </p>
+                  <ol className="space-y-2">
+                    <li><b>1. Design</b> — look up the coding sequences (cDNA) of <b>OCT4 (<i>POU5F1</i>), SOX2 and KLF4</b> from a database; codon-optimise them.</li>
+                    <li><b>2. Synthesise the DNA</b> — a DNA synthesiser prints short <b>oligonucleotides</b> base-by-base; a <b>PCR thermal cycler</b> assembles &amp; amplifies them into full genes. (The genes are <i>written</i> in the lab, not copied from a person.)</li>
+                    <li><b>3. Clone into a plasmid</b> — join all three genes into one cassette (linked by self-cleaving <b>2A peptides</b>) together with the Tet-On control parts, using cloning enzymes / Gibson assembly.</li>
+                    <li><b>4. Package into AAV</b> — transfect <b>HEK293 producer cells</b> with the transfer + helper plasmids; the cells assemble <b>AAV particles</b> carrying the construct.</li>
+                    <li><b>5. Purify &amp; QC</b> — chromatography, titre by <b>qPCR</b>, sequence-verify → clinical-grade vector.</li>
+                  </ol>
+                  <div className="overflow-x-auto">
+                    <pre className="min-w-[420px] rounded-xl bg-ink-900 p-3 text-xs text-clay-300">{`[ITR]-[TRE/tetO]-OCT4-2A-SOX2-2A-KLF4-[polyA]-[rtTA]-[ITR]
+        └ the switch        └ the three factors      └ activator`}</pre>
+                  </div>
+                </div>
+              </details>
+
+              {/* Accordion 2: the switch */}
+              <details className="group mt-3 rounded-2xl border border-cream-300 bg-cream-100 [&[open]]:bg-white">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4 font-display font-bold text-ink-900 [&::-webkit-details-marker]:hidden">
+                  2 · The doxycycline switch (Tet-On)
+                  <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0 transition group-open:rotate-180" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </summary>
+                <div className="space-y-3 px-4 pb-4 text-sm text-ink-700/80">
+                  <p>Two parts are engineered into the construct:</p>
+                  <ul className="space-y-1">
+                    <li>• <b>rtTA</b> — an activator protein that can only grab the DNA <b>while it's holding doxycycline</b> (the "key").</li>
+                    <li>• <b>TRE / tetO</b> — docking sites just upstream of the OSK genes (the "lock").</li>
+                  </ul>
+                  <div className="overflow-x-auto">
+                    <table className="w-full min-w-[360px] border-separate border-spacing-0">
+                      <tbody className="text-ink-900">
+                        <tr><td className="border-b border-cream-300 py-2 pr-3">No doxycycline</td><td className="border-b border-cream-300 py-2 font-bold text-clay-700">OSK OFF 🔴</td></tr>
+                        <tr><td className="border-b border-cream-300 py-2 pr-3">Give doxycycline (a pill)</td><td className="border-b border-cream-300 py-2 font-bold text-green-700">OSK ON 🟢</td></tr>
+                        <tr><td className="py-2 pr-3">Stop doxycycline</td><td className="py-2 font-bold text-clay-700">OSK OFF 🔴</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <p><b>Doxycycline is the remote control</b> — the clinician sets how long the factors express by how long the patient takes it.</p>
+
+                  <p className="pt-1 font-semibold text-ink-900">Tet-On vs Tet-Off — same drug, opposite logic</p>
+                  <div className="overflow-x-auto">
+                    <table className="w-full min-w-[420px] border-separate border-spacing-0">
+                      <thead>
+                        <tr className="text-left text-ink-700/60">
+                          <th className="border-b border-cream-300 py-2 pr-3 font-semibold"> </th>
+                          <th className="border-b border-cream-300 py-2 pr-3 font-semibold">Tet-Off (tTA)</th>
+                          <th className="border-b border-cream-300 py-2 font-semibold">Tet-On (rtTA)</th>
+                        </tr>
+                      </thead>
+                      <tbody className="text-ink-900">
+                        <tr><td className="border-b border-cream-300 py-2 pr-3">No drug</td><td className="border-b border-cream-300 py-2 pr-3">ON 🟢</td><td className="border-b border-cream-300 py-2">OFF 🔴</td></tr>
+                        <tr><td className="border-b border-cream-300 py-2 pr-3">Add drug</td><td className="border-b border-cream-300 py-2 pr-3">OFF 🔴</td><td className="border-b border-cream-300 py-2">ON 🟢</td></tr>
+                        <tr><td className="py-2 pr-3">Doxycycline is the…</td><td className="py-2 pr-3">"stop" button</td><td className="py-2">"go" button</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <p>
+                    Therapies choose <b>Tet-On</b> because it's <b>fail-safe</b>: default = OFF, so no drug means
+                    nothing happens. (Tet-Off would be ON by default and need continuous dosing just to stay
+                    suppressed — dangerous for OSK.)
+                  </p>
+                  <p className="rounded-xl bg-cream-100 p-3 italic text-ink-700/70">
+                    Why "partial"? A <b>short pulse</b> resets epigenetic ageing marks while the cell keeps its
+                    identity. <b>Continuous</b> expression would push it all the way to a stem cell (iPSC) and risk
+                    tumours — so the switch is turned off in time.
+                  </p>
+                </div>
+              </details>
+            </div>
+          )}
         </div>
 
         {/* Right: purchase panel */}
