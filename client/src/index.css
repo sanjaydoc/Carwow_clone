@@ -8,11 +8,14 @@
     /* Prevent any element from causing sideways page scroll (clip is
        position:sticky-safe, unlike overflow-x:hidden). */
     overflow-x: clip;
+    overscroll-behavior-x: none;
   }
   body {
     @apply bg-cream-100 text-ink-900 font-sans antialiased;
     overflow-x: clip;
+    overscroll-behavior-x: none;
     max-width: 100%;
+    width: 100%;
   }
 }
 
