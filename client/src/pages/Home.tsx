@@ -64,7 +64,7 @@ const carTypes = [
 ];
 
 const BRANDS = [
-  'Age Rejuvenation', 'Diabetes', 'Autoimmune', 'Dental', 'Orthopedics',
+  'Age Rejuvenation', 'Diabetes', 'HIV', 'Autoimmune', 'Dental', 'Orthopedics',
   'Cardiology', 'Gastroenterology', 'Neurology', 'Pulmonology', 'Cosmetic',
 ];
 

@@ -106,7 +106,7 @@ The StemCells Protocol platform turns a patient's own genome into a personalised
 
 ## 🩺 Departments & therapies
 
-A curated catalogue of **52 illustrative therapies** across **10 departments** — **Age Rejuvenation, Diabetes, Autoimmune, Dental, Orthopedics, Cardiology, Gastroenterology, Neurology, Pulmonology** and **Cosmetic** — spanning six regenerative **categories** (MSC, HSC, iPSC, Exosome, Immune-cell, PRP).
+A curated catalogue of **57 illustrative therapies** across **11 departments** — **Age Rejuvenation, Diabetes, HIV, Autoimmune, Dental, Orthopedics, Cardiology, Gastroenterology, Neurology, Pulmonology** and **Cosmetic** — spanning six regenerative **categories** (MSC, HSC, iPSC, Exosome, Immune-cell, PRP).
 
 Each therapy is labelled **Available** (established) or **Under research** (investigational / clinical-trial), with a cell source (autologous / allogeneic), delivery route, indicative cost, and illustrative clinical metrics.
 

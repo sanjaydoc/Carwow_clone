@@ -5,6 +5,7 @@ import type { ReactNode } from 'react';
 export const DEPARTMENTS = [
   'Age Rejuvenation',
   'Diabetes',
+  'HIV',
   'Autoimmune',
   'Dental',
   'Orthopedics',
@@ -89,6 +90,15 @@ function deptPaths(name: string): ReactNode {
         <>
           <path d="M12 3l7 3v5c0 4.6-3 7.7-7 9-4-1.3-7-4.4-7-9V6z" />
           <path d="M9.3 12l1.9 1.9L15 10" />
+        </>
+      );
+    case 'HIV':
+      // Awareness ribbon: a looped top with two crossing tails.
+      return (
+        <>
+          <path d="M12 12.5c-2.4-2.2-4-4.1-4-6.1A2.6 2.6 0 0 1 12 4a2.6 2.6 0 0 1 4 2.4c0 2-1.6 3.9-4 6.1z" />
+          <path d="M10.4 11.2 8 21" />
+          <path d="M13.6 11.2 16 21" />
         </>
       );
     default:

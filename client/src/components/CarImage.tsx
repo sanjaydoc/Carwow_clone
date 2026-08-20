@@ -25,6 +25,7 @@ const BY_MODEL: Record<string, string> = {
 const LOCAL: Record<string, string> = {
   'Age Rejuvenation': 'age-rejuvenation.jpg', // IV exosome infusion
   Diabetes: 'cell-lab.jpg',
+  HIV: 'cleanroom.jpg',
   Autoimmune: 'cryo-tech.jpg',
   Cardiology: 'cryo-tanks.jpg',
   Pulmonology: 'cryo-tech.jpg',

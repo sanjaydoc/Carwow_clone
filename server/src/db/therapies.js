@@ -31,6 +31,7 @@ const COSMETIC = '#db2777';
 const AGE = '#059669';
 const DIABETES = '#0e7490';
 const AUTOIMMUNE = '#9333ea';
+const HIV = '#e11d48';
 
 export const therapies = [
   // ── Age Rejuvenation ────────────────────────────────────────────────────
@@ -91,6 +92,48 @@ export const therapies = [
     engine: 'Umbilical cord-derived MSC', power_bhp: 60, zero_to_sixty: 3, top_speed: 14,
     economy_mpg: 18, rating: 4.2, review_count: 130, accent: DIABETES,
     description: 'Mesenchymal stem-cell infusions studied to reduce insulin resistance, calm chronic inflammation and support failing beta-cell function in type 2 diabetes. Investigational.'
+  },
+
+  // ── HIV ─────────────────────────────────────────────────────────────────
+  {
+    make: 'HIV', model: 'CCR5-Δ32 Stem-Cell Transplant', trim: 'Allogeneic CCR5-Δ32 HSCT', year: 2019,
+    price: 55000, monthly_price: 2292, body_type: 'HSC', fuel_type: 'Allogeneic', transmission: 'IV infusion',
+    mileage: 240, color: 'Inpatient', condition: 'new', seats: 300, doors: 4,
+    engine: 'CCR5-Δ32 donor haematopoietic stem cells', power_bhp: 78, zero_to_sixty: 1, top_speed: 120,
+    economy_mpg: 36, rating: 4.6, review_count: 60, accent: HIV,
+    description: 'An allogeneic stem-cell transplant from a donor with the rare CCR5-Δ32 mutation rebuilds an immune system that HIV cannot infect. This is the approach behind the documented HIV cures — currently reserved for patients who also need a transplant for a blood cancer.'
+  },
+  {
+    make: 'HIV', model: 'Cord-Blood CCR5-Δ32 Transplant', trim: 'CCR5-Δ32 cord blood', year: 2022,
+    price: 52000, monthly_price: 2167, body_type: 'HSC', fuel_type: 'Allogeneic', transmission: 'IV infusion',
+    mileage: 200, color: 'Inpatient', condition: 'new', seats: 200, doors: 4,
+    engine: 'CCR5-Δ32 cord-blood stem cells', power_bhp: 74, zero_to_sixty: 1, top_speed: 100,
+    economy_mpg: 36, rating: 4.5, review_count: 30, accent: HIV,
+    description: 'A cord-blood transplant carrying the CCR5-Δ32 mutation needs a less strict donor match, broadening access to HIV-resistant transplants — the approach that cured the New York patient.'
+  },
+  {
+    make: 'HIV', model: 'CCR5 Gene-Edited HSC Therapy', trim: 'Autologous CRISPR CCR5-KO', year: 2024,
+    price: 38000, monthly_price: 1583, body_type: 'HSC', fuel_type: 'Autologous', transmission: 'IV infusion',
+    mileage: 180, color: 'Inpatient', condition: 'used', seats: 250, doors: 2,
+    engine: 'Patient’s own CRISPR CCR5-edited HSCs', power_bhp: 58, zero_to_sixty: 1, top_speed: 60,
+    economy_mpg: 24, rating: 4.1, review_count: 25, accent: HIV,
+    description: 'The patient’s own blood stem cells are gene-edited to remove the CCR5 receptor, so the new T cells they produce resist HIV — an investigational route that aims to avoid the need for a matched donor.'
+  },
+  {
+    make: 'HIV', model: 'Anti-HIV Gene Therapy in HSCs', trim: 'Lentiviral CCR5/C46', year: 2023,
+    price: 32000, monthly_price: 1333, body_type: 'HSC', fuel_type: 'Autologous', transmission: 'IV infusion',
+    mileage: 150, color: 'Inpatient', condition: 'used', seats: 200, doors: 2,
+    engine: 'Lentiviral anti-HIV gene-modified HSCs', power_bhp: 55, zero_to_sixty: 1, top_speed: 45,
+    economy_mpg: 24, rating: 4.0, review_count: 40, accent: HIV,
+    description: 'Blood stem cells are engineered with anti-HIV genes (CCR5 knockdown plus a fusion inhibitor) so they produce immune cells protected from the virus. Investigational.'
+  },
+  {
+    make: 'HIV', model: 'CCR5-Disrupted CD4 T-cell Therapy', trim: 'ZFN CCR5-edited CD4 T cells', year: 2022,
+    price: 22000, monthly_price: 917, body_type: 'Immune cell', fuel_type: 'Autologous', transmission: 'IV infusion',
+    mileage: 90, color: 'Day-case', condition: 'used', seats: 150, doors: 2,
+    engine: 'CCR5-disrupted autologous CD4 T cells', power_bhp: 52, zero_to_sixty: 2, top_speed: 14,
+    economy_mpg: 18, rating: 4.0, review_count: 90, accent: HIV,
+    description: 'The patient’s CD4 T-helper cells are edited to remove CCR5 and reinfused, expanding a population of HIV-resistant T cells. Investigational.'
   },
 
   // ── Autoimmune ──────────────────────────────────────────────────────────
