@@ -562,15 +562,15 @@ export default function Home() {
         <h3 className="mt-12 font-display text-xl font-bold text-ink-900 sm:text-2xl">
           Browse by department
         </h3>
-        <div className="mt-5 grid grid-cols-2 gap-x-8 gap-y-1 sm:grid-cols-3 lg:grid-cols-4">
+        <div className="mt-5 grid grid-cols-1 gap-x-8 gap-y-1 sm:grid-cols-3 lg:grid-cols-4">
           {BRANDS.map((m) => (
             <Link
               key={m}
               to={`/browse?make=${encodeURIComponent(m)}`}
-              className="flex items-center gap-3 rounded-xl px-2 py-3 transition hover:bg-cream-200"
+              className="flex min-w-0 items-center gap-3 rounded-xl px-2 py-3 transition hover:bg-cream-200"
             >
               <BrandLogo make={m} />
-              <span className="font-bold text-ink-900">{m}</span>
+              <span className="min-w-0 break-words font-bold text-ink-900">{m}</span>
             </Link>
           ))}
         </div>
@@ -581,12 +581,12 @@ export default function Home() {
         <h2 className="font-display text-2xl font-extrabold uppercase text-ink-900 sm:text-3xl">
           Popular therapies
         </h2>
-        <div className="mt-6 grid grid-cols-2 gap-x-8 gap-y-3 sm:grid-cols-3 lg:grid-cols-4">
+        <div className="mt-6 grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-3 lg:grid-cols-4">
           {usedModels.map((m) => (
             <Link
               key={m}
               to={`/browse?search=${encodeURIComponent(m)}`}
-              className="font-semibold text-ink-800 underline-offset-4 transition hover:text-clay-600 hover:underline"
+              className="break-words font-semibold text-ink-800 underline-offset-4 transition hover:text-clay-600 hover:underline"
             >
               {m}
             </Link>
