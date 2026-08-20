@@ -313,7 +313,7 @@ export default function Home() {
                     <div>
                       <span className="chip bg-white/10 text-white/80">Featured therapy</span>
                       <h2 className="mt-4 font-display text-3xl font-extrabold uppercase leading-none sm:text-5xl">
-                        {p.model}
+                        {p.make === 'HIV' ? 'HIV Cure' : p.model}
                       </h2>
                       <p className="mt-3 max-w-sm text-white/70">{p.description}</p>
                       <div className="mt-5 flex flex-wrap items-center gap-4">
