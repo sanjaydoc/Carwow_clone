@@ -86,9 +86,9 @@ export default function CarDetail() {
         / <span className="text-ink-800">{car.model}</span>
       </nav>
 
-      <div className="grid gap-8 lg:grid-cols-[1.4fr_1fr]">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.4fr_1fr]">
         {/* Left: image + specs */}
-        <div>
+        <div className="min-w-0">
           <div className="card overflow-hidden">
             <CarImage
               accent={car.accent}
@@ -108,9 +108,9 @@ export default function CarDetail() {
             <h3 className="mt-6 font-display text-lg font-bold text-ink-900">Clinical details</h3>
             <dl className="mt-3 grid grid-cols-1 gap-x-6 gap-y-0 sm:grid-cols-2 lg:grid-cols-3">
               {specs.map((s) => (
-                <div key={s.label} className="flex justify-between border-b border-cream-300 py-3">
-                  <dt className="text-sm text-ink-700/60">{s.label}</dt>
-                  <dd className="text-sm font-semibold text-ink-900">{s.value}</dd>
+                <div key={s.label} className="flex items-start justify-between gap-4 border-b border-cream-300 py-3">
+                  <dt className="shrink-0 text-sm text-ink-700/60">{s.label}</dt>
+                  <dd className="min-w-0 break-words text-right text-sm font-semibold text-ink-900">{s.value}</dd>
                 </div>
               ))}
             </dl>
@@ -344,7 +344,7 @@ export default function CarDetail() {
         </div>
 
         {/* Right: purchase panel */}
-        <div>
+        <div className="min-w-0">
           <div className="card sticky top-20 p-6">
             <div className="flex items-center justify-between">
               <span
