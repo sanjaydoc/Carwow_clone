@@ -1,5 +1,4 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
-import { api } from '../api/client';
 import { useAuth } from './AuthContext';
 
 interface SavedContextValue {
@@ -14,43 +13,41 @@ const SavedContext = createContext<SavedContextValue | undefined>(undefined);
 export function SavedProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   const [savedIds, setSavedIds] = useState<Set<number>>(new Set());
+  const key = user ? `saved:${user.id}` : null;
 
   useEffect(() => {
-    if (!user) {
+    if (!key) {
       setSavedIds(new Set());
       return;
     }
-    api
-      .getSavedIds()
-      .then(({ ids }) => setSavedIds(new Set(ids)))
-      .catch(() => setSavedIds(new Set()));
-  }, [user]);
+    try {
+      const raw = localStorage.getItem(key);
+      setSavedIds(new Set(raw ? (JSON.parse(raw) as number[]) : []));
+    } catch {
+      setSavedIds(new Set());
+    }
+  }, [key]);
+
+  const persist = (ids: Set<number>) => {
+    if (!key) return;
+    try {
+      localStorage.setItem(key, JSON.stringify([...ids]));
+    } catch {
+      /* ignore */
+    }
+  };
 
   const isSaved = (id: number) => savedIds.has(id);
 
   const toggle = async (id: number) => {
     if (!user) throw new Error('not-authenticated');
-    const currentlySaved = savedIds.has(id);
-    // optimistic update
     setSavedIds((prev) => {
       const next = new Set(prev);
-      if (currentlySaved) next.delete(id);
+      if (next.has(id)) next.delete(id);
       else next.add(id);
+      persist(next);
       return next;
     });
-    try {
-      if (currentlySaved) await api.unsaveCar(id);
-      else await api.saveCar(id);
-    } catch (e) {
-      // revert on failure
-      setSavedIds((prev) => {
-        const next = new Set(prev);
-        if (currentlySaved) next.add(id);
-        else next.delete(id);
-        return next;
-      });
-      throw e;
-    }
   };
 
   return (

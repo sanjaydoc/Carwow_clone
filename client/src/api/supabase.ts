@@ -12,7 +12,14 @@ const KEY =
 
 export const supabase: SupabaseClient | null =
   URL && KEY
-    ? createClient(URL, KEY, { auth: { persistSession: true, autoRefreshToken: true } })
+    ? createClient(URL, KEY, {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true,
+          flowType: 'pkce',
+        },
+      })
     : null;
 
 /** Fire-and-forget insert; never throws into the UI. */

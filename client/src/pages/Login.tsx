@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
-  const { login } = useAuth();
+  const { login, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const from = (location.state as { from?: string })?.from || '/';
@@ -40,7 +40,14 @@ export default function Login() {
 
       <button
         type="button"
-        onClick={() => setError('Google sign-in is not available yet — please use your email below.')}
+        onClick={async () => {
+          setError('');
+          try {
+            await loginWithGoogle();
+          } catch (err) {
+            setError(err instanceof Error ? err.message : 'Google sign-in failed');
+          }
+        }}
         className="mt-8 flex w-full items-center justify-center gap-3 rounded-xl bg-[#4285F4] py-4 font-display text-lg font-bold text-white transition hover:brightness-95"
       >
         <span className="grid h-7 w-7 place-items-center rounded bg-white text-lg font-bold text-[#4285F4]">G</span>

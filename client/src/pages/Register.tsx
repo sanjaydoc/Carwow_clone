@@ -12,16 +12,22 @@ export default function Register() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [done, setDone] = useState(false);
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
     try {
-      await register(name, email, password);
+      const { needsConfirmation } = await register(name, email, password);
       // Capture the sign-up (name + email only, never the password) for the
       // clinic — insert-only, RLS-protected.
       saveRow('signups', { name, email, consent: true });
+      if (needsConfirmation) {
+        setError('');
+        setDone(true);
+        return;
+      }
       navigate('/', { replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Registration failed');
@@ -29,6 +35,20 @@ export default function Register() {
       setLoading(false);
     }
   };
+
+  if (done) {
+    return (
+      <AuthLayout title="Check your email" subtitle="One quick step to activate your account.">
+        <div className="rounded-xl bg-clay-50 p-5 text-sm text-ink-800">
+          We've sent a confirmation link to <b>{email}</b>. Click it to activate your account, then{' '}
+          <Link to="/login" className="font-bold text-clay-600 underline">
+            log in
+          </Link>
+          .
+        </div>
+      </AuthLayout>
+    );
+  }
 
   return (
     <AuthLayout title="Create your account" subtitle="Join thousands of patients exploring regenerative care.">
