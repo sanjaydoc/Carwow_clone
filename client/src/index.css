@@ -50,3 +50,42 @@
     @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
   }
 }
+
+/* Rendered Markdown inside assistant chat bubbles */
+.chat-md p {
+  margin: 0 0 0.5rem;
+}
+.chat-md > :last-child {
+  margin-bottom: 0;
+}
+.chat-md h4 {
+  font-weight: 700;
+  margin: 0.6rem 0 0.25rem;
+}
+.chat-md ul,
+.chat-md ol {
+  margin: 0.25rem 0 0.5rem;
+  padding-left: 1.15rem;
+}
+.chat-md ul {
+  list-style: disc;
+}
+.chat-md ol {
+  list-style: decimal;
+}
+.chat-md li {
+  margin: 0.15rem 0;
+}
+.chat-md strong {
+  font-weight: 700;
+}
+.chat-md code {
+  background: rgba(0, 0, 0, 0.06);
+  padding: 0.05rem 0.3rem;
+  border-radius: 4px;
+  font-size: 0.85em;
+}
+.chat-md a {
+  color: #4285f4;
+  text-decoration: underline;
+}

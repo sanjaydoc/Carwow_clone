@@ -384,10 +384,70 @@ function Bubble({
             ))}
           </div>
         )}
-        {typing ? <TypingDots /> : text}
+        {typing ? (
+          <TypingDots />
+        ) : isUser ? (
+          text
+        ) : (
+          <div className="chat-md" dangerouslySetInnerHTML={{ __html: mdToHtml(text) }} />
+        )}
       </div>
     </div>
   );
+}
+
+// Minimal, safe Markdown → HTML for assistant replies. Escapes HTML first,
+// then introduces only our own tags, so there is no XSS surface.
+function mdToHtml(src: string): string {
+  const escape = (s: string) =>
+    s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const inline = (t: string) =>
+    t
+      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+      .replace(/`([^`]+)`/g, '<code>$1</code>')
+      .replace(
+        /\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g,
+        '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>',
+      )
+      .replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<em>$2</em>');
+  const lines = escape(src).split('\n');
+  let html = '';
+  let list: 'ul' | 'ol' | null = null;
+  const closeList = () => {
+    if (list) {
+      html += `</${list}>`;
+      list = null;
+    }
+  };
+  for (const raw of lines) {
+    const line = raw.trimEnd();
+    let m: RegExpMatchArray | null;
+    if ((m = line.match(/^\s*#{1,6}\s+(.*)$/))) {
+      closeList();
+      html += `<h4>${inline(m[1])}</h4>`;
+    } else if ((m = line.match(/^\s*[-*]\s+(.*)$/))) {
+      if (list !== 'ul') {
+        closeList();
+        html += '<ul>';
+        list = 'ul';
+      }
+      html += `<li>${inline(m[1])}</li>`;
+    } else if ((m = line.match(/^\s*\d+\.\s+(.*)$/))) {
+      if (list !== 'ol') {
+        closeList();
+        html += '<ol>';
+        list = 'ol';
+      }
+      html += `<li>${inline(m[1])}</li>`;
+    } else if (line.trim() === '') {
+      closeList();
+    } else {
+      closeList();
+      html += `<p>${inline(line)}</p>`;
+    }
+  }
+  closeList();
+  return html;
 }
 
 function TypingDots() {
