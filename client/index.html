@@ -15,6 +15,9 @@
       rel="stylesheet"
     />
     <title>StemCells Protocol — regenerative &amp; stem-cell therapies</title>
+    <!-- Secure chat proxy (Cloudflare Worker). Public URL, not a secret — the
+         Anthropic API key lives only on the Worker, never in this bundle. -->
+    <script>window.STEMCELLS_CHAT_ENDPOINT = "https://stemcells-chat.dr-sanjayanbu.workers.dev";</script>
   </head>
   <body>
     <div id="root"></div>
