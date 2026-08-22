@@ -38,6 +38,10 @@ const LANG_NAME: Record<string, string> = {
   'ml-IN': 'Malayalam',
   'te-IN': 'Telugu',
   'kn-IN': 'Kannada',
+  'bn-IN': 'Bengali',
+  'mr-IN': 'Marathi',
+  'ur-PK': 'Urdu',
+  'ar-SA': 'Arabic',
 };
 
 export default function ChatWidget() {
@@ -482,6 +486,10 @@ export default function ChatWidget() {
                   <option value="ml-IN">മലയാളം (Malayalam)</option>
                   <option value="te-IN">తెలుగు (Telugu)</option>
                   <option value="kn-IN">ಕನ್ನಡ (Kannada)</option>
+                  <option value="bn-IN">বাংলা (Bengali)</option>
+                  <option value="mr-IN">मराठी (Marathi)</option>
+                  <option value="ur-PK">اردو (Urdu)</option>
+                  <option value="ar-SA">العربية (Arabic)</option>
                 </select>
                 <span className="hidden text-ink-700/45 sm:inline">· replies &amp; voice</span>
               </div>
