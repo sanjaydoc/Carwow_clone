@@ -98,8 +98,55 @@ async function rateLimited(env, ip) {
   return false;
 }
 
+// Email a new-consultation alert (called by a Supabase Database Webhook).
+async function handleNotify(request, env) {
+  if (request.method !== 'POST') return json(405, { error: 'Method not allowed' }, {});
+  if (env.NOTIFY_SECRET && request.headers.get('x-notify-secret') !== env.NOTIFY_SECRET) {
+    return json(401, { error: 'Unauthorized' }, {});
+  }
+  if (!env.RESEND_API_KEY || !env.ADMIN_EMAIL) {
+    return json(500, { error: 'Notify not configured' }, {});
+  }
+  let payload = {};
+  try {
+    payload = await request.json();
+  } catch {
+    /* ignore */
+  }
+  const r = payload?.record || {};
+  const rows = ['name', 'email', 'phone', 'department', 'condition', 'notes']
+    .filter((k) => r[k])
+    .map((k) => `<tr><td style="padding:4px 10px;color:#666">${k}</td><td style="padding:4px 10px"><b>${String(r[k]).replace(/</g, '&lt;')}</b></td></tr>`)
+    .join('');
+  const html = `<h2 style="font-family:Arial">New consultation request</h2><table style="font-family:Arial;border-collapse:collapse">${rows}</table><p style="font-family:Arial;color:#888;font-size:12px">via stemcellsprotocol.com</p>`;
+
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      from: env.NOTIFY_FROM || 'StemCells Protocol <onboarding@resend.dev>',
+      to: env.ADMIN_EMAIL,
+      subject: `New consultation: ${r.name || 'Unknown'}${r.department ? ' · ' + r.department : ''}`,
+      html,
+    }),
+  });
+  if (!res.ok) {
+    let detail = '';
+    try {
+      detail = await res.text();
+    } catch {
+      /* ignore */
+    }
+    return json(502, { error: 'Email failed', detail }, {});
+  }
+  return json(200, { ok: true }, {});
+}
+
 export default {
   async fetch(request, env) {
+    const path = new URL(request.url).pathname;
+    if (path === '/notify') return handleNotify(request, env);
+
     const origin = request.headers.get('Origin') || '';
     const allowed = (env.ALLOWED_ORIGINS || '')
       .split(',')
