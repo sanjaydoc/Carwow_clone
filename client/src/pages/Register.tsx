@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import AuthLayout from '../components/AuthLayout';
+import { saveRow } from '../api/supabase';
 
 export default function Register() {
   const { register } = useAuth();
@@ -18,6 +19,9 @@ export default function Register() {
     setLoading(true);
     try {
       await register(name, email, password);
+      // Capture the sign-up (name + email only, never the password) for the
+      // clinic — insert-only, RLS-protected.
+      saveRow('signups', { name, email, consent: true });
       navigate('/', { replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Registration failed');

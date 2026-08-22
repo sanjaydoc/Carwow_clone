@@ -6,6 +6,7 @@ import {
   type ChatMessage,
   type ContentBlock,
 } from '../api/chat';
+import { saveRow } from '../api/supabase';
 
 interface Attachment {
   file: File;
@@ -320,6 +321,15 @@ export default function ChatWidget() {
             text: '⚠️ No reply came back — please tap send to try again.',
           };
           return copy;
+        });
+      }
+      // Log the exchange to the clinic database (insert-only, RLS-protected).
+      if (acc.trim()) {
+        saveRow('chat_logs', {
+          language: voiceLang || 'auto',
+          question: text || '(attachment only)',
+          answer: acc,
+          had_attachment: uiAttach.length > 0,
         });
       }
     } catch (e: any) {

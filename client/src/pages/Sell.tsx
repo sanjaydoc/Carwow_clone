@@ -5,6 +5,7 @@ import type { SellResult } from '../types';
 import { gbp } from '../utils/format';
 import StarRating from '../components/StarRating';
 import { useAuth } from '../context/AuthContext';
+import { saveRow } from '../api/supabase';
 
 const departments = [
   'Dental',
@@ -39,14 +40,28 @@ export default function Sell() {
   const [result, setResult] = useState<SellResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [consent, setConsent] = useState(false);
 
   const set = (k: string, v: string) => setForm((f) => ({ ...f, [k]: v }));
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
+    if (!consent) {
+      setError('Please tick the consent box so we can contact you about your enquiry.');
+      return;
+    }
     setError('');
     setLoading(true);
     try {
+      // Save the enquiry to the clinic database (insert-only, RLS-protected).
+      await saveRow('consultations', {
+        name: form.name,
+        email: form.email,
+        department: form.make,
+        condition: form.model || form.reg,
+        notes: form.reg,
+        consent: true,
+      });
       const res = await api.sell({
         reg: form.reg,
         make: form.make,
@@ -255,6 +270,19 @@ export default function Sell() {
               />
             </div>
           </div>
+
+          <label className="flex items-start gap-2.5 text-sm text-ink-700/80">
+            <input
+              type="checkbox"
+              checked={consent}
+              onChange={(e) => setConsent(e.target.checked)}
+              className="mt-0.5 h-4 w-4 shrink-0 accent-clay-500"
+            />
+            <span>
+              I consent to StemCells Protocol storing the details I've entered and contacting me about
+              my enquiry. I understand this is not a diagnosis.
+            </span>
+          </label>
 
           {error && (
             <p className="rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-700">{error}</p>
