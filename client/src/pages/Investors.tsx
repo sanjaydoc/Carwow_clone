@@ -86,7 +86,7 @@ const SHOWCASES = [
 ];
 
 const VISION =
-  'Invent a brain-uploading system end to end with an ultrasound + quantum scanner that stores connectome data on an H100 GPU server cluster; the collected data is written into a brain template of 86 billion neurons and 100 trillion synapses, so the uploaded brain can be simulated inside a world-environment simulator.';
+  'We built StemCells Protocol to make age-reversal therapy truly personal. A patient uploads a digital version of their DNA into our AI care assistant, which orchestrates our De-Novo-LLM to generate novel age-reversal biomolecules for epigenetic reprogramming — the same approach behind ER-100. Instead of one-size-fits-all treatment, every person receives a therapy engineered specifically for their own genome.';
 
 const highlights: { icon: IconName; title: string; body: string }[] = [
   {
@@ -313,7 +313,7 @@ export default function Investors() {
       {/* Research vision */}
       <div className="mx-auto mt-14 max-w-3xl">
         <div className="rounded-3xl bg-ink-900 p-8 text-white sm:p-10">
-          <span className="chip bg-clay-500 text-white">Research vision</span>
+          <span className="chip bg-clay-500 text-white">Our vision</span>
           <p className="mt-4 font-display text-xl font-semibold leading-relaxed text-white/90 sm:text-2xl">
             “{VISION}”
           </p>
