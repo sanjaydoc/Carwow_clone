@@ -37,10 +37,108 @@ export default function ChatWidget() {
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [listening, setListening] = useState(false);
+  const [exportOpen, setExportOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const recognitionRef = useRef<any>(null);
   const configured = isChatConfigured();
+  const speechSupported =
+    typeof window !== 'undefined' &&
+    !!((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition);
+
+  // ---- Voice input (Web Speech API) ----
+  const toggleVoice = () => {
+    if (listening) {
+      recognitionRef.current?.stop();
+      return;
+    }
+    const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SR) return;
+    const rec = new SR();
+    rec.lang = navigator.language || 'en-US';
+    rec.interimResults = true;
+    rec.continuous = false;
+    rec.onresult = (e: any) => {
+      let t = '';
+      for (let i = 0; i < e.results.length; i++) t += e.results[i][0].transcript;
+      setInput(t);
+    };
+    rec.onerror = () => setListening(false);
+    rec.onend = () => setListening(false);
+    recognitionRef.current = rec;
+    setListening(true);
+    rec.start();
+  };
+
+  // ---- Export / save the conversation ----
+  const transcriptRows = () =>
+    messages
+      .filter((m) => m.text && !m.text.startsWith('⚠️'))
+      .map((m) => ({ who: m.role === 'user' ? 'You' : 'StemCells Protocol AI', text: m.text }));
+
+  const downloadBlob = (content: BlobPart, mime: string, filename: string) => {
+    const blob = new Blob([content], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+
+  const escHtml = (s: string) =>
+    s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  const transcriptHtml = () => {
+    const rows = transcriptRows()
+      .map(
+        (r) =>
+          `<p style="margin:0 0 12px"><b style="color:#2f6fe0">${r.who}:</b><br>${escHtml(
+            r.text,
+          ).replace(/\n/g, '<br>')}</p>`,
+      )
+      .join('');
+    const when = new Date().toLocaleString();
+    return `<h2 style="font-family:Arial,sans-serif">StemCells Protocol — chat summary</h2><p style="color:#666;font-family:Arial,sans-serif;font-size:12px">${when}</p><hr>${rows}<hr><p style="color:#888;font-family:Arial,sans-serif;font-size:11px">Educational information only — not a diagnosis or prescription. Confirm with your doctor.</p>`;
+  };
+
+  const exportText = () => {
+    const txt = transcriptRows()
+      .map((r) => `${r.who}:\n${r.text}\n`)
+      .join('\n');
+    downloadBlob(txt, 'text/plain;charset=utf-8', 'stemcells-chat.txt');
+    setExportOpen(false);
+  };
+
+  const exportWord = () => {
+    const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8"></head><body style="font-family:Arial,sans-serif">${transcriptHtml()}</body></html>`;
+    downloadBlob(html, 'application/msword', 'stemcells-chat.doc');
+    setExportOpen(false);
+  };
+
+  const exportPdf = () => {
+    const iframe = document.createElement('iframe');
+    iframe.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0';
+    document.body.appendChild(iframe);
+    const doc = iframe.contentWindow?.document;
+    if (doc) {
+      doc.open();
+      doc.write(
+        `<html><head><meta charset="utf-8"><title>StemCells Protocol chat</title></head><body>${transcriptHtml()}</body></html>`,
+      );
+      doc.close();
+      iframe.contentWindow?.focus();
+      setTimeout(() => {
+        iframe.contentWindow?.print();
+        setTimeout(() => iframe.remove(), 1500);
+      }, 300);
+    }
+    setExportOpen(false);
+  };
 
   useEffect(() => {
     if (open && scrollRef.current) {
@@ -246,6 +344,36 @@ export default function ChatWidget() {
                   <span className="h-2 w-2 rounded-full bg-green-400" /> Online · general info only
                 </p>
               </div>
+              {messages.length > 0 && (
+                <div className="relative">
+                  <button
+                    onClick={() => setExportOpen((v) => !v)}
+                    aria-label="Save or export chat"
+                    className="grid h-8 w-8 place-items-center rounded-lg text-white/70 transition hover:bg-white/10 hover:text-white"
+                  >
+                    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M12 3v12m0 0l-4-4m4 4l4-4" strokeLinecap="round" strokeLinejoin="round" />
+                      <path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" strokeLinecap="round" />
+                    </svg>
+                  </button>
+                  {exportOpen && (
+                    <div className="absolute right-0 top-10 z-10 w-40 overflow-hidden rounded-xl bg-white py-1 text-ink-900 shadow-xl ring-1 ring-ink-900/10">
+                      <p className="px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-ink-700/50">
+                        Save chat as
+                      </p>
+                      <button onClick={exportPdf} className="block w-full px-3 py-2 text-left text-sm hover:bg-cream-100">
+                        📄 PDF
+                      </button>
+                      <button onClick={exportWord} className="block w-full px-3 py-2 text-left text-sm hover:bg-cream-100">
+                        📝 Word (.doc)
+                      </button>
+                      <button onClick={exportText} className="block w-full px-3 py-2 text-left text-sm hover:bg-cream-100">
+                        📃 Text (.txt)
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
               <button
                 onClick={() => setOpen(false)}
                 aria-label="Minimise chat"
@@ -328,9 +456,25 @@ export default function ChatWidget() {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={onKeyDown}
                   rows={1}
-                  placeholder="Ask a question…"
+                  placeholder={listening ? 'Listening…' : 'Ask a question…'}
                   className="max-h-28 min-h-[44px] w-full resize-none rounded-xl border border-cream-300 px-3 py-2.5 text-ink-900 placeholder:text-ink-700/40 focus:border-clay-400 focus:outline-none focus:ring-2 focus:ring-clay-200"
                 />
+                {speechSupported && (
+                  <button
+                    onClick={toggleVoice}
+                    aria-label={listening ? 'Stop voice input' : 'Speak your question'}
+                    className={`grid h-11 w-11 shrink-0 place-items-center rounded-xl border transition ${
+                      listening
+                        ? 'animate-pulse border-clay-400 bg-clay-50 text-clay-600'
+                        : 'border-cream-300 text-ink-700/70 hover:border-clay-400 hover:text-clay-600'
+                    }`}
+                  >
+                    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
+                      <rect x="9" y="3" width="6" height="11" rx="3" />
+                      <path d="M5 11a7 7 0 0014 0M12 18v3" strokeLinecap="round" />
+                    </svg>
+                  </button>
+                )}
                 {busy ? (
                   <button
                     onClick={stop}
