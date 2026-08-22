@@ -1,9 +1,9 @@
 import { useState, type FormEvent } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { api } from '../api/client';
-import type { SellResult } from '../types';
+import type { SellResult, Car } from '../types';
 import { gbp } from '../utils/format';
-import StarRating from '../components/StarRating';
+import CarImage from '../components/CarImage';
 import { useAuth } from '../context/AuthContext';
 import { saveRow } from '../api/supabase';
 
@@ -38,6 +38,7 @@ export default function Sell() {
     email: user?.email || '',
   });
   const [result, setResult] = useState<SellResult | null>(null);
+  const [er100, setEr100] = useState<Car | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [consent, setConsent] = useState(false);
@@ -73,6 +74,13 @@ export default function Sell() {
         email: form.email,
       });
       setResult(res);
+      // Recommend the ER-100 Age Reversal therapy instead of nearby clinics.
+      try {
+        const list = await api.getCars({ search: 'ER-100', limit: 1 });
+        setEr100(list.cars?.[0] || null);
+      } catch {
+        /* ignore — falls back to a link */
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong');
     } finally {
@@ -81,69 +89,69 @@ export default function Sell() {
   };
 
   if (result) {
-    const best = result.offers[0];
     return (
       <div className="container-x py-10">
         <div className="mx-auto max-w-3xl">
           <div className="card overflow-hidden">
             <div className="bg-ink-900 p-8 text-white">
-              <p className="text-white/60">
-                {result.submission.make} · {result.submission.model}
+              <span className="chip bg-clay-500 text-white">Enquiry received</span>
+              <h2 className="mt-3 font-display text-3xl font-extrabold">Thanks — we'll be in touch</h2>
+              <p className="mt-2 text-white/70">
+                Our specialist team has your details
+                {result.submission?.make ? ` for ${result.submission.make}` : ''} and will contact you
+                shortly.
               </p>
-              <p className="mt-2 text-sm uppercase tracking-wide text-clay-300">
-                Indicative starting cost (from)
-              </p>
-              <p className="font-display text-5xl font-extrabold">
-                {gbp(result.submission.estimated_value)}
-              </p>
-              {best && (
-                <p className="mt-2 text-white/80">
-                  Best matched option:{' '}
-                  <span className="font-bold text-clay-300">from {gbp(best.offer_amount)}</span>
-                </p>
-              )}
             </div>
 
             <div className="p-6">
-              <h2 className="font-display text-xl font-bold text-ink-900">
-                Indicative options from {result.offers.length} matched specialists
-              </h2>
+              <p className="text-xs font-bold uppercase tracking-wide text-clay-600">
+                Recommended therapy
+              </p>
+              <h3 className="mt-1 font-display text-2xl font-extrabold text-ink-900">
+                ER-100 Age Reversal
+              </h3>
               <p className="mt-1 text-sm text-ink-700/70">
-                Indicative only — a specialist will confirm suitability and cost at consultation.
+                Our flagship partial epigenetic reprogramming therapy — resetting biological age at the
+                cellular level.
               </p>
 
-              <div className="mt-5 space-y-3">
-                {result.offers.map((offer, i) => (
-                  <div
-                    key={offer.id}
-                    className={`flex flex-col gap-3 rounded-2xl border p-4 sm:flex-row sm:items-center sm:justify-between ${
-                      i === 0 ? 'border-clay-300 bg-clay-50' : 'border-cream-300 bg-white'
-                    }`}
-                  >
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <p className="font-display font-bold text-ink-900">{offer.dealer_name}</p>
-                        {i === 0 && (
-                          <span className="chip bg-clay-500 text-white">Best match</span>
-                        )}
-                      </div>
-                      <div className="mt-1 flex items-center gap-3 text-sm text-ink-700/70">
-                        <StarRating rating={offer.dealer_rating} size={12} />
-                        <span>· {offer.distance_mi} miles away</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <p className="font-display text-2xl font-extrabold text-ink-900">
-                        from {gbp(offer.offer_amount)}
-                      </p>
-                      <button className="btn-primary px-5 py-2.5 text-sm">Enquire</button>
-                    </div>
+              {er100 ? (
+                <Link
+                  to={`/therapies/${er100.id}`}
+                  className="mt-5 block overflow-hidden rounded-2xl border border-cream-300 transition hover:shadow-lg"
+                >
+                  <CarImage
+                    accent={er100.accent}
+                    bodyType={er100.body_type}
+                    make={er100.make}
+                    model={er100.model}
+                    year={er100.year}
+                    className="aspect-[16/9] w-full"
+                  />
+                  <div className="p-5">
+                    <p className="text-xs font-bold uppercase tracking-wide text-clay-600">{er100.make}</p>
+                    <p className="font-display text-xl font-bold text-ink-900">{er100.model}</p>
+                    <p className="mt-2 line-clamp-3 text-sm text-ink-700/70">{er100.description}</p>
+                    <p className="mt-3 font-display text-lg font-extrabold text-ink-900">
+                      {gbp(er100.price)}{' '}
+                      <span className="text-sm font-normal text-ink-700/60">
+                        · from {gbp(er100.monthly_price)}/mo
+                      </span>
+                    </p>
+                    <span className="btn-primary mt-4 inline-block px-5 py-2.5 text-sm">Learn more →</span>
                   </div>
-                ))}
-              </div>
+                </Link>
+              ) : (
+                <Link to="/browse?search=ER-100" className="btn-primary mt-5 inline-block px-6 py-3">
+                  View ER-100 Age Reversal
+                </Link>
+              )}
 
               <button
-                onClick={() => setResult(null)}
+                onClick={() => {
+                  setResult(null);
+                  setEr100(null);
+                }}
                 className="btn-outline mt-6 w-full py-3"
               >
                 Start another enquiry
