@@ -94,21 +94,35 @@ export default function ChatWidget() {
     s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
   const transcriptHtml = () => {
+    // Render the assistant's Markdown to clean HTML so exports show bold,
+    // headings and bullets instead of raw ** and ## symbols.
     const rows = transcriptRows()
       .map(
         (r) =>
-          `<p style="margin:0 0 12px"><b style="color:#2f6fe0">${r.who}:</b><br>${escHtml(
+          `<div style="margin:0 0 16px;font-family:Arial,sans-serif;font-size:13px;line-height:1.5"><b style="color:#2f6fe0">${r.who}:</b><div>${mdToHtml(
             r.text,
-          ).replace(/\n/g, '<br>')}</p>`,
+          )}</div></div>`,
       )
       .join('');
     const when = new Date().toLocaleString();
     return `<h2 style="font-family:Arial,sans-serif">StemCells Protocol — chat summary</h2><p style="color:#666;font-family:Arial,sans-serif;font-size:12px">${when}</p><hr>${rows}<hr><p style="color:#888;font-family:Arial,sans-serif;font-size:11px">Educational information only — not a diagnosis or prescription. Confirm with your doctor.</p>`;
   };
 
+  // Strip Markdown for the plain-text export.
+  const stripMd = (s: string) =>
+    s
+      .replace(/\*\*(.+?)\*\*/g, '$1')
+      .replace(/\*(.+?)\*/g, '$1')
+      .replace(/`([^`]+)`/g, '$1')
+      .replace(/^\s*#{1,6}\s*/gm, '')
+      .replace(/^\s*[-*]\s+/gm, '• ')
+      .replace(/^\s*---\s*$/gm, '')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
+
   const exportText = () => {
     const txt = transcriptRows()
-      .map((r) => `${r.who}:\n${r.text}\n`)
+      .map((r) => `${r.who}:\n${stripMd(r.text)}\n`)
       .join('\n');
     downloadBlob(txt, 'text/plain;charset=utf-8', 'stemcells-chat.txt');
     setExportOpen(false);
