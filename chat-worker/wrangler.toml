@@ -3,17 +3,15 @@ main = "worker.js"
 compatibility_date = "2024-11-01"
 
 # Site origins allowed to call this proxy (comma-separated, no trailing slash).
-# Add your GitHub Pages origin and localhost for dev.
 [vars]
-ALLOWED_ORIGINS = "https://sanjaydoc.github.io,http://localhost:5173"
+ALLOWED_ORIGINS = "https://stemcellsprotocol.com,https://www.stemcellsprotocol.com,https://sanjaydoc.github.io,http://localhost:5173"
 # Optional: override the model. Defaults to a current Sonnet inside worker.js.
 # MODEL = "claude-sonnet-4-5-20250929"
 
-# Optional per-IP rate limiting. Create a KV namespace and paste its id here,
-# then uncomment. Without it the Worker still runs (no throttling).
-# [[kv_namespaces]]
-# binding = "RATE_LIMIT"
-# id = "<your-kv-namespace-id>"
+# Per-IP rate limiting (20 req/min). Bound to the RATE_LIMIT KV namespace.
+[[kv_namespaces]]
+binding = "RATE_LIMIT"
+id = "df4fd9971f6f4f97a84026cb272f4a75"
 
-# The API key is NOT stored here. Set it as an encrypted secret:
-#   wrangler secret put ANTHROPIC_API_KEY
+# The API key is NOT stored here — it lives as an encrypted secret on the
+# Worker (set via the dashboard) and is preserved across every deploy.
