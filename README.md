@@ -144,12 +144,18 @@ Each therapy is labelled **Available** (established) or **Under research** (inve
 
 ## 🛠 Tech stack
 
+The live site at **[stemcellsprotocol.com](https://stemcellsprotocol.com)** runs **fully serverless** — a static React build on GitHub Pages, with Cloudflare Workers and Supabase providing the dynamic backend. (The original Node/Express + SQLite server is still in the repo as an optional self-hosted full-stack mode — see the Architecture section.)
+
 | Layer | Technology |
 | ----- | ---------- |
 | **Front end** | React 18 · TypeScript · Vite · Tailwind CSS · React Router |
-| **Back end** | Node.js · Express |
-| **Database** | SQLite (`better-sqlite3`) |
-| **Auth** | JWT (`jsonwebtoken`) · `bcryptjs` |
+| **Hosting / CI** | GitHub Pages (static build from `/docs`) · custom domain **stemcellsprotocol.com** · auto-deploy on push |
+| **AI assistant** | Anthropic **Claude** (`claude-sonnet-4-5`) via a **Cloudflare Worker** proxy — the API key lives only as an encrypted Worker secret, never in the browser · SSE streaming · image/PDF uploads (ECG, X-ray, MRI, prescriptions, lab reports) · voice input & 20+ languages (Web Speech API) |
+| **Serverless edge** | **Cloudflare Workers** (chat proxy + email-alert endpoint) · **Workers KV** (per-IP rate limiting) · **Workers Builds** (Git auto-deploy) |
+| **Database & Auth** | **Supabase** — Postgres · **Auth** (email/password + Google OAuth, PKCE) · **Row-Level Security** · `pg_net` triggers |
+| **Email alerts** | **Resend** — new consultations fire a Supabase `pg_net` trigger → Worker `/notify` → email to the clinic inbox |
+| **Analytics** | **Cloudflare Web Analytics** (privacy-friendly, cookieless) · in-app admin dashboard (visits, consultations, sign-ups, chat) with date filters, search, CSV export & charts |
+| **Optional back end** | Node.js · Express · SQLite (`better-sqlite3`) · JWT (`jsonwebtoken`) · `bcryptjs` — self-hosted full-stack mode |
 | **Imagery** | **Bundled** real clinic/lab photography with an inline-SVG glyph fallback — no external image CDN |
 
 ---
