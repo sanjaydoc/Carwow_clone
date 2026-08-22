@@ -4,9 +4,11 @@ const FOUNDER = {
   name: 'Dr. Sanjay Anbu',
   role: 'Founder',
   email: 'dr.sanjayanbu@gmail.com',
-  phone: '6385371758',
-  phoneDisplay: '+91 63853 71758',
-  whatsapp: '6385371758',
+  // Both numbers are India (+91) and both have WhatsApp.
+  phones: [
+    { raw: '6385371758', display: '+91 63853 71758' },
+    { raw: '6385181758', display: '+91 63851 81758' },
+  ],
 };
 
 const highlights = [
@@ -90,33 +92,39 @@ export default function Investors() {
                 </span>
               </a>
 
-              <a
-                href={`tel:+91${FOUNDER.phone}`}
-                className="flex items-center gap-3 rounded-2xl border border-cream-300 px-5 py-4 transition hover:border-clay-300 hover:bg-clay-50"
-              >
-                <span className="grid h-10 w-10 place-items-center rounded-full bg-clay-100 text-clay-600">
-                  <PhoneIcon />
-                </span>
-                <span className="min-w-0">
-                  <span className="block text-xs font-semibold uppercase tracking-wide text-ink-700/50">Phone</span>
-                  <span className="block font-semibold text-ink-900">{FOUNDER.phoneDisplay}</span>
-                </span>
-              </a>
+              {FOUNDER.phones.map((p) => (
+                <a
+                  key={`tel-${p.raw}`}
+                  href={`tel:+91${p.raw}`}
+                  className="flex items-center gap-3 rounded-2xl border border-cream-300 px-5 py-4 transition hover:border-clay-300 hover:bg-clay-50"
+                >
+                  <span className="grid h-10 w-10 place-items-center rounded-full bg-clay-100 text-clay-600">
+                    <PhoneIcon />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block text-xs font-semibold uppercase tracking-wide text-ink-700/50">Phone</span>
+                    <span className="block font-semibold text-ink-900">{p.display}</span>
+                  </span>
+                </a>
+              ))}
 
-              <a
-                href={`https://wa.me/91${FOUNDER.whatsapp}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 rounded-2xl border border-cream-300 px-5 py-4 transition hover:border-green-300 hover:bg-green-50"
-              >
-                <span className="grid h-10 w-10 place-items-center rounded-full bg-green-100 text-green-600">
-                  <WhatsAppIcon />
-                </span>
-                <span className="min-w-0">
-                  <span className="block text-xs font-semibold uppercase tracking-wide text-ink-700/50">WhatsApp</span>
-                  <span className="block font-semibold text-ink-900">{FOUNDER.phoneDisplay}</span>
-                </span>
-              </a>
+              {FOUNDER.phones.map((p) => (
+                <a
+                  key={`wa-${p.raw}`}
+                  href={`https://wa.me/91${p.raw}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 rounded-2xl border border-cream-300 px-5 py-4 transition hover:border-green-300 hover:bg-green-50"
+                >
+                  <span className="grid h-10 w-10 place-items-center rounded-full bg-green-100 text-green-600">
+                    <WhatsAppIcon />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block text-xs font-semibold uppercase tracking-wide text-ink-700/50">WhatsApp</span>
+                    <span className="block font-semibold text-ink-900">{p.display}</span>
+                  </span>
+                </a>
+              ))}
             </div>
 
             <p className="mt-6 text-center text-xs text-ink-700/50">
