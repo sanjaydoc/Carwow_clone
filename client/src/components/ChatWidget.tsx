@@ -22,12 +22,12 @@ interface UIMsg {
 const MAX_IMAGE_MB = 5;
 const MAX_PDF_MB = 10;
 const GREETING =
-  "Hi — I'm the StemCells Protocol assistant. Ask me about our therapies, recovery and post-operative care, medications, or general medical questions. You can also attach a report or scan. This is general information, not a diagnosis.";
+  "Hi — I'm the StemCells Protocol assistant. Ask about our therapies, recovery and post-operative care, or medications. You can also 📎 attach an ECG, X-ray/MRI, prescription or lab report and I'll explain it in simple words. This is educational support, not a diagnosis — AI can misread scans, so always confirm with your doctor.";
 
 const SUGGESTIONS = [
+  'Upload an ECG — explain it simply',
+  'What does my prescription treat?',
   'What is ER-100 age reversal?',
-  'Aftercare for a stem-cell knee therapy?',
-  'Which department treats Type 1 diabetes?',
 ];
 
 export default function ChatWidget() {
