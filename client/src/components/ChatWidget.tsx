@@ -162,13 +162,14 @@ export default function ChatWidget() {
       });
     } catch (e: any) {
       if (e?.name !== 'AbortError') {
+        const detail = (e?.message || 'Could not reach the assistant.').toString();
         setMessages((m) => {
           const copy = [...m];
           const last = copy[copy.length - 1];
           if (last && last.role === 'assistant' && !last.text) {
             copy[copy.length - 1] = {
               ...last,
-              text: "Sorry — I couldn't reach the assistant just now. Please try again in a moment.",
+              text: `⚠️ ${detail}`,
             };
           }
           return copy;
