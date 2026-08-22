@@ -15,7 +15,7 @@
  */
 
 const DEFAULT_MODEL = 'claude-sonnet-4-5-20250929';
-const MAX_TOKENS = 1500;
+const MAX_TOKENS = 4096;
 const MAX_MESSAGES = 24; // trim very long histories
 const RATE_MAX = 20; // requests…
 const RATE_WINDOW = 60; // …per this many seconds, per IP
