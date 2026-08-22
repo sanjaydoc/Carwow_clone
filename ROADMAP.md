@@ -10,16 +10,17 @@ Live at **https://stemcellsprotocol.com** · AI chat via a secure Cloudflare Wor
 - Full-length replies (SSE piped through Worker; parsing on the client)
 - Rate limiting (20 req/min per IP via KV) + encrypted API key + $20/mo spend cap
 - Auto-deploy for both site (GitHub Pages) and Worker (Workers Builds)
-
-## 🔨 In progress (this batch)
-- **Voice input** — patients speak their question (Web Speech API); mic button in the composer.
-- **Multi-language** — assistant replies in the same language the patient writes in.
-- **Conversation memory** — follow-up questions in context (already sends history; polishing).
-- **Save / export chat** — download the conversation (or a medicine/scan summary) as **PDF**, **Word (.doc)**, and **plain text**.
+- Voice input, multi-language (typing/voice/replies), chat export (PDF/Word/text)
+- **Visitor analytics** — Cloudflare Web Analytics (visitors, time-on-site, pages)
+- **Data capture** — consultations, sign-ups & chat logs saved to Supabase (RLS insert-only + consent)
+- **Admin dashboard** (`/#/admin`) — serverless, Supabase-Auth login, admin-only reads of all submissions
 
 ## 🗺️ Planned / ideas
-- Admin dashboard — view sign-ups, consultation requests, chat volume
-- Structured "consultation handoff" — chat summary pre-fills the consultation form (after dashboard)
+- Dashboard polish — date filters, CSV export, search, charts/trends
+- Full Supabase Auth for patients (replace the localStorage mock login)
+- Structured "consultation handoff" — chat summary pre-fills the consultation form
+- Data retention/deletion controls + published privacy policy (DPDP/GDPR)
+- Email/WhatsApp notification when a new consultation arrives
 - Email capture / lead follow-up (Web3Forms or backend)
 - Analytics — popular questions, usage trends
 - Accessibility pass (screen-reader labels, keyboard nav, contrast)
