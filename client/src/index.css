@@ -89,3 +89,8 @@
   color: #4285f4;
   text-decoration: underline;
 }
+.chat-md hr {
+  border: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  margin: 0.6rem 0;
+}

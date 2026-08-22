@@ -595,7 +595,10 @@ function mdToHtml(src: string): string {
   for (const raw of lines) {
     const line = raw.trimEnd();
     let m: RegExpMatchArray | null;
-    if ((m = line.match(/^\s*#{1,6}\s+(.*)$/))) {
+    if (/^\s*(?:---+|\*\*\*+|___+)\s*$/.test(line)) {
+      closeList();
+      html += '<hr>';
+    } else if ((m = line.match(/^\s*#{1,6}\s+(.*)$/))) {
       closeList();
       html += `<h4>${inline(m[1])}</h4>`;
     } else if ((m = line.match(/^\s*[-*]\s+(.*)$/))) {
