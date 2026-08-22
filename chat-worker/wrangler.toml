@@ -1,0 +1,19 @@
+name = "stemcells-chat"
+main = "worker.js"
+compatibility_date = "2024-11-01"
+
+# Site origins allowed to call this proxy (comma-separated, no trailing slash).
+# Add your GitHub Pages origin and localhost for dev.
+[vars]
+ALLOWED_ORIGINS = "https://sanjaydoc.github.io,http://localhost:5173"
+# Optional: override the model. Defaults to a current Sonnet inside worker.js.
+# MODEL = "claude-sonnet-4-5-20250929"
+
+# Optional per-IP rate limiting. Create a KV namespace and paste its id here,
+# then uncomment. Without it the Worker still runs (no throttling).
+# [[kv_namespaces]]
+# binding = "RATE_LIMIT"
+# id = "<your-kv-namespace-id>"
+
+# The API key is NOT stored here. Set it as an encrypted secret:
+#   wrangler secret put ANTHROPIC_API_KEY

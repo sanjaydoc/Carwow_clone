@@ -7,6 +7,7 @@ import CarImage from '../components/CarImage';
 import CarTypeIcon from '../components/CarTypeIcon';
 import BrandLogo from '../components/BrandLogo';
 import Spinner from '../components/Spinner';
+import ChatWidget from '../components/ChatWidget';
 import { gbp, statusLabel, isResearch } from '../utils/format';
 
 const categories = [
@@ -200,8 +201,13 @@ export default function Home() {
             Advanced stem-cell &amp; regenerative therapies from specialist clinical teams — matched to your condition.
           </p>
 
+          {/* AI chat assistant — launcher sits just above the search widget */}
+          <div className="mt-7">
+            <ChatWidget />
+          </div>
+
           {/* Tabbed search card */}
-          <div className="mt-7 max-w-2xl overflow-hidden rounded-3xl bg-white/5 p-5 shadow-card ring-1 ring-white/10 backdrop-blur sm:p-7">
+          <div className="max-w-2xl overflow-hidden rounded-3xl bg-white/5 p-5 shadow-card ring-1 ring-white/10 backdrop-blur sm:p-7">
             <div className="flex gap-5 border-b border-white/10 sm:gap-8">
               {[
                 { id: 'find' as Tab, label: 'Find a therapy' },
