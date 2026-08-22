@@ -17,6 +17,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Saved from './pages/Saved';
 import Admin from './pages/Admin';
+import Investors from './pages/Investors';
 import NotFound from './pages/NotFound';
 
 function ScrollToTop() {
@@ -52,6 +53,7 @@ export default function App() {
             }
           />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/investors" element={<Investors />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

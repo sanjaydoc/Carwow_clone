@@ -14,6 +14,7 @@ const linkCols = [
     { label: 'Browse therapies', to: '/browse' },
     { label: 'Book a consultation', to: '/consultation' },
     { label: 'Compare therapies', to: '/compare' },
+    { label: 'Investors', to: '/investors' },
   ],
 ];
 

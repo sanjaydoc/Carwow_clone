@@ -64,6 +64,7 @@ const menuSections: MenuSection[] = [
       ['Compare therapies', '/compare'],
     ],
   },
+  { title: 'Investors', to: '/investors' },
 ];
 
 export default function MobileNav() {

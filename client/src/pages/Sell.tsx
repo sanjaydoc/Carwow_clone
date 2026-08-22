@@ -36,6 +36,7 @@ export default function Sell() {
     condition: 'good',
     name: user?.name || '',
     email: user?.email || '',
+    phone: '',
   });
   const [result, setResult] = useState<SellResult | null>(null);
   const [er100, setEr100] = useState<Car | null>(null);
@@ -58,6 +59,7 @@ export default function Sell() {
       await saveRow('consultations', {
         name: form.name,
         email: form.email,
+        phone: form.phone,
         department: form.make,
         condition: form.model || form.reg,
         notes: form.reg,
@@ -277,6 +279,19 @@ export default function Sell() {
                 className="input"
               />
             </div>
+          </div>
+
+          <div>
+            <label className="label">Phone number</label>
+            <input
+              required
+              type="tel"
+              value={form.phone}
+              onChange={(e) => set('phone', e.target.value)}
+              placeholder="e.g. +91 63853 71758"
+              className="input"
+              autoComplete="tel"
+            />
           </div>
 
           <label className="flex items-start gap-2.5 text-sm text-ink-700/80">

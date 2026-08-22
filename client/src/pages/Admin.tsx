@@ -4,7 +4,7 @@ import { supabase } from '../api/supabase';
 type Row = Record<string, any>;
 
 const TABLES = [
-  { key: 'consultations', label: 'Consultations', cols: ['created_at', 'name', 'email', 'department', 'condition', 'notes'] },
+  { key: 'consultations', label: 'Consultations', cols: ['created_at', 'name', 'email', 'phone', 'department', 'condition', 'notes'] },
   { key: 'signups', label: 'Sign-ups', cols: ['created_at', 'name', 'email'] },
   { key: 'chat_logs', label: 'Chat logs', cols: ['created_at', 'language', 'question', 'answer', 'had_attachment'] },
 ] as const;
