@@ -39,6 +39,7 @@ export default function ChatWidget() {
   const [error, setError] = useState('');
   const [listening, setListening] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
+  const [voiceLang, setVoiceLang] = useState('');
   const scrollRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const abortRef = useRef<AbortController | null>(null);
@@ -57,7 +58,7 @@ export default function ChatWidget() {
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SR) return;
     const rec = new SR();
-    rec.lang = navigator.language || 'en-US';
+    rec.lang = voiceLang || navigator.language || 'en-US';
     rec.interimResults = true;
     rec.continuous = false;
     rec.onresult = (e: any) => {
@@ -444,6 +445,28 @@ export default function ChatWidget() {
                       </button>
                     </span>
                   ))}
+                </div>
+              )}
+              {speechSupported && (
+                <div className="mb-2 flex items-center gap-1.5 text-xs text-ink-700/60">
+                  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="9" y="3" width="6" height="11" rx="3" />
+                    <path d="M5 11a7 7 0 0014 0M12 18v3" strokeLinecap="round" />
+                  </svg>
+                  <span>Speak in</span>
+                  <select
+                    value={voiceLang}
+                    onChange={(e) => setVoiceLang(e.target.value)}
+                    className="rounded-md border border-cream-300 bg-white px-1.5 py-0.5 font-semibold text-ink-800 focus:border-clay-400 focus:outline-none"
+                  >
+                    <option value="">Auto (phone)</option>
+                    <option value="en-IN">English</option>
+                    <option value="ta-IN">தமிழ் (Tamil)</option>
+                    <option value="hi-IN">हिन्दी (Hindi)</option>
+                    <option value="ml-IN">മലയാളം (Malayalam)</option>
+                    <option value="te-IN">తెలుగు (Telugu)</option>
+                    <option value="kn-IN">ಕನ್ನಡ (Kannada)</option>
+                  </select>
                 </div>
               )}
               <div className="flex items-end gap-2">
