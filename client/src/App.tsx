@@ -16,6 +16,7 @@ import Simulator from './pages/Simulator';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Saved from './pages/Saved';
+import Admin from './pages/Admin';
 import NotFound from './pages/NotFound';
 
 function ScrollToTop() {
@@ -50,6 +51,7 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/admin" element={<Admin />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

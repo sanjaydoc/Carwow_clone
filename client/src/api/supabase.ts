@@ -11,7 +11,9 @@ const KEY =
   'sb_publishable_BNsHrXghbwLIPyf3mTTi2A_eLdiVVpn';
 
 export const supabase: SupabaseClient | null =
-  URL && KEY ? createClient(URL, KEY, { auth: { persistSession: false } }) : null;
+  URL && KEY
+    ? createClient(URL, KEY, { auth: { persistSession: true, autoRefreshToken: true } })
+    : null;
 
 /** Fire-and-forget insert; never throws into the UI. */
 export async function saveRow(table: string, row: Record<string, unknown>) {
