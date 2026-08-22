@@ -259,7 +259,7 @@ export default function Home() {
                   <input
                     value={reg}
                     onChange={(e) => setReg(e.target.value)}
-                    placeholder="Enter your condition"
+                    placeholder="Enter Condition"
                     className="w-full rounded-full bg-white px-6 py-3.5 text-center text-lg font-bold tracking-wide text-ink-900 placeholder:text-ink-700/40 focus:outline-none"
                   />
                   <button type="submit" className="btn-primary shrink-0 rounded-full px-8 py-3.5">
