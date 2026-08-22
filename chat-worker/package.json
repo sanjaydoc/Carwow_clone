@@ -1,0 +1,9 @@
+{
+  "name": "stemcells-chat",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Secure chat proxy (Cloudflare Worker) for StemCells Protocol",
+  "scripts": {
+    "build": "echo \"No build step needed for the chat worker\""
+  }
+}
