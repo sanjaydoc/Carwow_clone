@@ -4,12 +4,10 @@ import react from '@vitejs/plugin-react';
 // The production build is served by the Express server (single-server setup).
 // In dev, `npm run dev` proxies /api to the backend for a smooth workflow.
 //
-// For the static GitHub Pages build we set VITE_STATIC=true and a base path
-// matching the project site (https://<user>.github.io/Stemcellsprotocol/).
-const isStatic = process.env.VITE_STATIC === 'true';
-
+// The static GitHub Pages build (VITE_STATIC=true) is served from the custom
+// domain root (https://stemcellsprotocol.com/), so the base path is '/'.
 export default defineConfig({
-  base: isStatic ? '/Stemcellsprotocol/' : '/',
+  base: '/',
   plugins: [react()],
   server: {
     port: 5173,
