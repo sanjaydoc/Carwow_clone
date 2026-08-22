@@ -42,6 +42,17 @@ const LANG_NAME: Record<string, string> = {
   'mr-IN': 'Marathi',
   'ur-PK': 'Urdu',
   'ar-SA': 'Arabic',
+  'fr-FR': 'French',
+  'de-DE': 'German',
+  'es-ES': 'Spanish',
+  'it-IT': 'Italian',
+  'pt-PT': 'Portuguese',
+  'ru-RU': 'Russian',
+  'nl-NL': 'Dutch',
+  'zh-CN': 'Chinese',
+  'ja-JP': 'Japanese',
+  'ko-KR': 'Korean',
+  'ms-MY': 'Malay',
 };
 
 export default function ChatWidget() {
@@ -481,15 +492,30 @@ export default function ChatWidget() {
                 >
                   <option value="">Auto-detect</option>
                   <option value="en-IN">English</option>
-                  <option value="ta-IN">தமிழ் (Tamil)</option>
-                  <option value="hi-IN">हिन्दी (Hindi)</option>
-                  <option value="ml-IN">മലയാളം (Malayalam)</option>
-                  <option value="te-IN">తెలుగు (Telugu)</option>
-                  <option value="kn-IN">ಕನ್ನಡ (Kannada)</option>
-                  <option value="bn-IN">বাংলা (Bengali)</option>
-                  <option value="mr-IN">मराठी (Marathi)</option>
-                  <option value="ur-PK">اردو (Urdu)</option>
-                  <option value="ar-SA">العربية (Arabic)</option>
+                  <optgroup label="India">
+                    <option value="ta-IN">தமிழ் (Tamil)</option>
+                    <option value="hi-IN">हिन्दी (Hindi)</option>
+                    <option value="ml-IN">മലയാളം (Malayalam)</option>
+                    <option value="te-IN">తెలుగు (Telugu)</option>
+                    <option value="kn-IN">ಕನ್ನಡ (Kannada)</option>
+                    <option value="bn-IN">বাংলা (Bengali)</option>
+                    <option value="mr-IN">मराठी (Marathi)</option>
+                    <option value="ur-PK">اردو (Urdu)</option>
+                  </optgroup>
+                  <optgroup label="International">
+                    <option value="ar-SA">العربية (Arabic)</option>
+                    <option value="fr-FR">Français (French)</option>
+                    <option value="de-DE">Deutsch (German)</option>
+                    <option value="es-ES">Español (Spanish)</option>
+                    <option value="it-IT">Italiano (Italian)</option>
+                    <option value="pt-PT">Português (Portuguese)</option>
+                    <option value="ru-RU">Русский (Russian)</option>
+                    <option value="nl-NL">Nederlands (Dutch)</option>
+                    <option value="zh-CN">中文 (Chinese)</option>
+                    <option value="ja-JP">日本語 (Japanese)</option>
+                    <option value="ko-KR">한국어 (Korean)</option>
+                    <option value="ms-MY">Bahasa Melayu (Malay)</option>
+                  </optgroup>
                 </select>
                 <span className="hidden text-ink-700/45 sm:inline">· replies &amp; voice</span>
               </div>
