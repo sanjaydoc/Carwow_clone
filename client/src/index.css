@@ -46,6 +46,23 @@
   .card {
     @apply rounded-2xl bg-white shadow-card;
   }
+  /* Soft neumorphic tile for feature / step / category icons. Blue-tinted
+     raised surface on the near-white page background, with a blue icon. */
+  .icon-tile {
+    @apply grid shrink-0 place-items-center rounded-2xl text-clay-600;
+    background: linear-gradient(145deg, #ffffff, #e6edfa);
+    box-shadow:
+      4px 4px 10px rgba(21, 58, 124, 0.12),
+      -4px -4px 10px rgba(255, 255, 255, 0.95),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+  }
+  .icon-tile-dark {
+    @apply grid shrink-0 place-items-center rounded-2xl text-clay-300;
+    background: linear-gradient(145deg, #1b1b1a, #0e0e0d);
+    box-shadow:
+      4px 4px 10px rgba(0, 0, 0, 0.5),
+      -3px -3px 8px rgba(255, 255, 255, 0.04);
+  }
   .container-x {
     @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
   }

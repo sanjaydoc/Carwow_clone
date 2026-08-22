@@ -6,6 +6,7 @@ import CarImage from '../components/CarImage';
 import CarCard from '../components/CarCard';
 import StarRating from '../components/StarRating';
 import Spinner from '../components/Spinner';
+import Icon from '../components/Icon';
 import { gbp, statusLabel, isResearch } from '../utils/format';
 import { useSaved } from '../context/SavedContext';
 import { useAuth } from '../context/AuthContext';
@@ -127,7 +128,7 @@ export default function CarDetail() {
               <div className="mt-4 grid gap-4 sm:grid-cols-2">
                 <div className="rounded-2xl border border-cream-300 bg-cream-100 p-5">
                   <div className="flex items-center gap-2">
-                    <span className="grid h-9 w-9 place-items-center rounded-xl bg-clay-100 text-lg">🧬</span>
+                    <span className="icon-tile h-9 w-9"><Icon name="dna" className="h-5 w-5" /></span>
                     <h3 className="font-display font-bold text-ink-900">Genome</h3>
                   </div>
                   <p className="mt-3 text-sm text-ink-700/80">
@@ -138,7 +139,7 @@ export default function CarDetail() {
                 </div>
                 <div className="rounded-2xl border border-cream-300 bg-cream-100 p-5">
                   <div className="flex items-center gap-2">
-                    <span className="grid h-9 w-9 place-items-center rounded-xl bg-clay-100 text-lg">🏷️</span>
+                    <span className="icon-tile h-9 w-9"><Icon name="tag" className="h-5 w-5" /></span>
                     <h3 className="font-display font-bold text-ink-900">Epigenome</h3>
                   </div>
                   <p className="mt-3 text-sm text-ink-700/80">

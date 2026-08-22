@@ -3,6 +3,7 @@ import { api } from '../api/client';
 import type { Car } from '../types';
 import CarImage from '../components/CarImage';
 import StarRating from '../components/StarRating';
+import Icon from '../components/Icon';
 import { gbp } from '../utils/format';
 import { Link } from 'react-router-dom';
 
@@ -122,7 +123,7 @@ export default function Compare() {
 
       {selected.length === 0 ? (
         <div className="card mt-8 p-12 text-center">
-          <p className="text-4xl">⚖️</p>
+          <span className="icon-tile mx-auto h-16 w-16"><Icon name="scale" className="h-8 w-8" /></span>
           <h3 className="mt-3 font-display text-xl font-bold">No therapies to compare yet</h3>
           <p className="mt-1 text-ink-700/70">Search above to add your first therapy.</p>
         </div>

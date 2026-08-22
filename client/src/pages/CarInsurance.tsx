@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import Icon, { type IconName } from '../components/Icon';
 
-const whyBlocks = [
-  { icon: '💷', title: 'Transparent pricing', body: 'Clear, itemised care-package costs up front — no surprises, with flexible financing options where you need them.' },
-  { icon: '🤝', title: 'Coordinated care', body: 'One team coordinates your consultations, imaging, and treatment across every department involved.' },
-  { icon: '🩺', title: 'Ongoing follow-up', body: 'Structured follow-up and aftercare are built into every package, so your recovery is supported long after treatment.' },
+const whyBlocks: { icon: IconName; title: string; body: string }[] = [
+  { icon: 'banknote', title: 'Transparent pricing', body: 'Clear, itemised care-package costs up front — no surprises, with flexible financing options where you need them.' },
+  { icon: 'users', title: 'Coordinated care', body: 'One team coordinates your consultations, imaging, and treatment across every department involved.' },
+  { icon: 'stethoscope', title: 'Ongoing follow-up', body: 'Structured follow-up and aftercare are built into every package, so your recovery is supported long after treatment.' },
 ];
 
 const steps = [
@@ -75,7 +76,7 @@ export default function CarInsurance() {
           <div className="mt-10 grid gap-6 md:grid-cols-3">
             {whyBlocks.map((b) => (
               <div key={b.title} className="card p-7">
-                <div className="grid h-16 w-16 place-items-center rounded-2xl bg-green-200 text-3xl">{b.icon}</div>
+                <div className="icon-tile h-16 w-16"><Icon name={b.icon} className="h-8 w-8" /></div>
                 <h3 className="mt-5 font-display text-xl font-bold text-ink-900">{b.title}</h3>
                 <p className="mt-2 text-ink-700/70">{b.body}</p>
               </div>

@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import Icon from '../components/Icon';
 
 // ---- The De novo LLM pipeline stages (front-end simulation) ----------------
 const PHASES = [
@@ -151,7 +152,7 @@ export default function Simulator() {
       <section className="relative overflow-hidden bg-ink-900">
         <div className="absolute -right-24 top-0 h-96 w-96 rounded-full bg-clay-500/20 blur-3xl" />
         <div className="container-x relative py-12 sm:py-16">
-          <span className="chip bg-white/10 text-white">🧠 De novo LLM</span>
+          <span className="chip bg-white/10 text-white"><Icon name="brain" className="h-3.5 w-3.5" /> De novo LLM</span>
           <h1 className="mt-4 font-display text-4xl font-extrabold uppercase leading-[0.95] tracking-tight text-white sm:text-6xl">
             Protocol <span className="text-clay-500">Simulator</span>
           </h1>
@@ -182,7 +183,7 @@ export default function Simulator() {
                 className="hidden"
                 onChange={(e) => onFile(e.target.files?.[0] ?? null)}
               />
-              <span className="grid h-12 w-12 place-items-center rounded-xl bg-clay-100 text-2xl">🧬</span>
+              <span className="icon-tile h-12 w-12"><Icon name="dna" className="h-6 w-6" /></span>
               <span className="mt-3 font-semibold text-ink-900">
                 {fileName ? fileName : 'Drop your digital DNA file or browse'}
               </span>
@@ -277,7 +278,7 @@ export default function Simulator() {
               </div>
             ) : (
               <div className="mt-8 grid place-items-center rounded-2xl bg-cream-100 py-20 text-center">
-                <span className="text-5xl">🧬</span>
+                <span className="icon-tile h-16 w-16"><Icon name="dna" className="h-8 w-8" /></span>
                 <p className="mt-4 max-w-xs text-ink-700/60">
                   Upload your digital DNA and run the simulator to generate your protocol.
                 </p>

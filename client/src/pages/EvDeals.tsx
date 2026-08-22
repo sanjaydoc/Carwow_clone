@@ -4,6 +4,7 @@ import { api } from '../api/client';
 import type { Car } from '../types';
 import CarImage from '../components/CarImage';
 import Spinner from '../components/Spinner';
+import Icon from '../components/Icon';
 import { gbp, statusLabel } from '../utils/format';
 
 function EvDealCard({ car, wide = false }: { car: Car; wide?: boolean }) {
@@ -18,7 +19,7 @@ function EvDealCard({ car, wide = false }: { car: Car; wide?: boolean }) {
         <h3 className="font-display text-xl font-extrabold text-ink-900">
           {car.model}
         </h3>
-        <span className="chip bg-clay-100 text-clay-700">🔬 {statusLabel(car.condition)}</span>
+        <span className="chip bg-clay-100 text-clay-700"><Icon name="microscope" className="h-3.5 w-3.5" /> {statusLabel(car.condition)}</span>
       </div>
       <p className="mt-1 text-sm text-ink-700/70">{car.description?.split('.')[0]}.</p>
       <div className="mt-3 flex items-center gap-3">
@@ -106,7 +107,7 @@ export default function EvDeals() {
           {/* Latest trial openings */}
           <section className="container-x py-12">
             <div className="flex items-start gap-3">
-              <span className="text-3xl">🔬</span>
+              <span className="icon-tile h-11 w-11"><Icon name="microscope" className="h-6 w-6" /></span>
               <div>
                 <h2 className="font-display text-2xl font-extrabold text-clay-600 sm:text-3xl">
                   Latest trial openings

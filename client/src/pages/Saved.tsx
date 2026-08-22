@@ -4,6 +4,7 @@ import { api } from '../api/client';
 import type { Car } from '../types';
 import CarCard from '../components/CarCard';
 import Spinner from '../components/Spinner';
+import Icon from '../components/Icon';
 import { useSaved } from '../context/SavedContext';
 
 export default function Saved() {
@@ -32,7 +33,7 @@ export default function Saved() {
 
       {visible.length === 0 ? (
         <div className="card mt-8 p-12 text-center">
-          <p className="text-4xl">❤️</p>
+          <span className="icon-tile mx-auto h-16 w-16 text-clay-500"><Icon name="heart" className="h-8 w-8" /></span>
           <h3 className="mt-3 font-display text-xl font-bold">No saved therapies yet</h3>
           <p className="mt-1 text-ink-700/70">
             Tap the heart on any therapy to save it here for later.

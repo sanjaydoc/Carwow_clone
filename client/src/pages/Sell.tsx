@@ -4,6 +4,7 @@ import { api } from '../api/client';
 import type { SellResult, Car } from '../types';
 import { gbp } from '../utils/format';
 import CarImage from '../components/CarImage';
+import Icon, { type IconName } from '../components/Icon';
 import { useAuth } from '../context/AuthContext';
 import { saveRow } from '../api/supabase';
 
@@ -169,7 +170,7 @@ export default function Sell() {
     <div className="container-x py-10">
       <div className="grid gap-10 lg:grid-cols-[1fr_1.1fr]">
         <div>
-          <span className="chip bg-clay-100 text-clay-700">🩺 Free, no-obligation consultation</span>
+          <span className="chip bg-clay-100 text-clay-700"><Icon name="stethoscope" className="h-3.5 w-3.5" /> Free, no-obligation consultation</span>
           <h1 className="mt-4 font-display text-4xl font-extrabold leading-tight text-ink-900">
             Book a consultation
           </h1>
@@ -363,13 +364,13 @@ export default function Sell() {
           Make the most of your consultation
         </h2>
         <div className="mt-10 grid gap-10 md:grid-cols-3">
-          {[
-            { icon: '🩺', title: 'Come prepared', body: 'Note your symptoms, timeline, and any prior scans so the specialist can advise you quickly.' },
-            { icon: '⏱️', title: 'Save time', body: 'Get matched to the right specialists and indicative options in minutes, with no obligation.' },
-            { icon: '📋', title: 'Ask the right questions', body: 'Our patient guides help you understand your therapy options before you decide.' },
-          ].map((b) => (
+          {([
+            { icon: 'stethoscope', title: 'Come prepared', body: 'Note your symptoms, timeline, and any prior scans so the specialist can advise you quickly.' },
+            { icon: 'clock', title: 'Save time', body: 'Get matched to the right specialists and indicative options in minutes, with no obligation.' },
+            { icon: 'clipboard', title: 'Ask the right questions', body: 'Our patient guides help you understand your therapy options before you decide.' },
+          ] as { icon: IconName; title: string; body: string }[]).map((b) => (
             <div key={b.title}>
-              <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-clay-100 text-3xl">{b.icon}</div>
+              <div className="icon-tile mx-auto h-16 w-16"><Icon name={b.icon} className="h-8 w-8" /></div>
               <h3 className="mt-4 font-display text-xl font-bold text-ink-900">{b.title}</h3>
               <p className="mx-auto mt-2 max-w-xs text-ink-700/70">{b.body}</p>
             </div>

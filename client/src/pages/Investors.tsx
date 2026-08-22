@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import Icon, { type IconName } from '../components/Icon';
 
 const FOUNDER = {
   name: 'Dr. Sanjay Anbu',
@@ -87,19 +88,19 @@ const SHOWCASES = [
 const VISION =
   'Invent a brain-uploading system end to end with an ultrasound + quantum scanner that stores connectome data on an H100 GPU server cluster; the collected data is written into a brain template of 86 billion neurons and 100 trillion synapses, so the uploaded brain can be simulated inside a world-environment simulator.';
 
-const highlights = [
+const highlights: { icon: IconName; title: string; body: string }[] = [
   {
-    icon: '🧬',
+    icon: 'dna',
     title: 'ER-100 — flagship therapy',
     body: 'Partial epigenetic reprogramming to reset biological age at the cellular level, backed by a detailed investor briefing.',
   },
   {
-    icon: '🏥',
+    icon: 'hospital',
     title: '11 departments, 58+ therapies',
     body: 'A broad regenerative-medicine platform spanning Age Rejuvenation, Cardiology, Neurology, Orthopedics and more.',
   },
   {
-    icon: '🤖',
+    icon: 'ai',
     title: 'AI-first patient experience',
     body: 'A multilingual AI care assistant that reads ECGs, scans and lab reports — lowering the cost of patient triage.',
   },
@@ -110,7 +111,7 @@ export default function Investors() {
     <div className="container-x py-10">
       {/* Hero */}
       <div className="mx-auto max-w-3xl text-center">
-        <span className="chip bg-clay-100 text-clay-700">📈 For investors</span>
+        <span className="chip bg-clay-100 text-clay-700"><Icon name="trending" className="h-3.5 w-3.5" /> For investors</span>
         <h1 className="mt-4 font-display text-4xl font-extrabold leading-tight text-ink-900 sm:text-5xl">
           Invest in the future of regenerative medicine
         </h1>
@@ -125,7 +126,7 @@ export default function Investors() {
       <div className="mx-auto mt-12 grid max-w-4xl gap-6 md:grid-cols-3">
         {highlights.map((h) => (
           <div key={h.title} className="card p-6">
-            <div className="grid h-14 w-14 place-items-center rounded-2xl bg-clay-100 text-3xl">{h.icon}</div>
+            <div className="icon-tile h-14 w-14"><Icon name={h.icon} className="h-7 w-7" /></div>
             <h3 className="mt-4 font-display text-lg font-bold text-ink-900">{h.title}</h3>
             <p className="mt-2 text-sm text-ink-700/70">{h.body}</p>
           </div>
@@ -244,7 +245,7 @@ export default function Investors() {
       {/* Founder portfolio */}
       <div className="mx-auto mt-16 max-w-5xl">
         <div className="text-center">
-          <span className="chip bg-clay-100 text-clay-700">🔬 Founder portfolio</span>
+          <span className="chip bg-clay-100 text-clay-700"><Icon name="microscope" className="h-3.5 w-3.5" /> Founder portfolio</span>
           <h2 className="mt-4 font-display text-3xl font-extrabold text-ink-900 sm:text-4xl">
             Research &amp; engineering track record
           </h2>

@@ -4,6 +4,7 @@ import { api } from '../api/client';
 import type { Car, Filters, Pagination } from '../types';
 import CarCard from '../components/CarCard';
 import Spinner from '../components/Spinner';
+import Icon from '../components/Icon';
 import { statusLabel } from '../utils/format';
 
 const sorts = [
@@ -180,7 +181,7 @@ export default function Browse() {
             <Spinner label="Finding therapies…" />
           ) : cars.length === 0 ? (
             <div className="card p-12 text-center">
-              <p className="text-4xl">🧬</p>
+              <span className="icon-tile mx-auto h-16 w-16"><Icon name="dna" className="h-8 w-8" /></span>
               <h3 className="mt-3 font-display text-xl font-bold">No therapies match your filters</h3>
               <p className="mt-1 text-ink-700/70">Try widening your search or clearing filters.</p>
               <button onClick={clearAll} className="btn-primary mt-5">

@@ -8,6 +8,7 @@ import CarTypeIcon from '../components/CarTypeIcon';
 import BrandLogo from '../components/BrandLogo';
 import Spinner from '../components/Spinner';
 import ChatWidget from '../components/ChatWidget';
+import Icon, { type IconName } from '../components/Icon';
 import { gbp, statusLabel, isResearch } from '../utils/format';
 
 const categories = [
@@ -116,11 +117,11 @@ const faqs = [
   { q: 'Can I join a clinical trial?', a: 'Yes — many investigational therapies recruit through our research programme. Visit the clinical-trials section to see what is currently open.' },
 ];
 
-const steps = [
-  { title: 'Digital DNA', body: 'A DNA test sequences your complete genome and converts it into a secure digital DNA file.', icon: '🧬' },
-  { title: 'Protocol Simulator', body: 'Your digital DNA is fed into our De novo LLM, which invents novel biomolecules to reverse cellular ageing and reawaken dormant, aged stem cells into younger ones.', icon: '🧠' },
-  { title: 'In-vitro production', body: 'The novel biomolecules are cultured and multiplied in vitro in our laboratory.', icon: '🧫' },
-  { title: 'Exosome IV therapy', body: 'Your personalised biomolecule exosomes are delivered by IV infusion — then you recover and are monitored for weeks to months during a restorative stay in Ooty.', icon: '💉' },
+const steps: { title: string; body: string; icon: IconName }[] = [
+  { title: 'Digital DNA', body: 'A DNA test sequences your complete genome and converts it into a secure digital DNA file.', icon: 'dna' },
+  { title: 'Protocol Simulator', body: 'Your digital DNA is fed into our De novo LLM, which invents novel biomolecules to reverse cellular ageing and reawaken dormant, aged stem cells into younger ones.', icon: 'brain' },
+  { title: 'In-vitro production', body: 'The novel biomolecules are cultured and multiplied in vitro in our laboratory.', icon: 'dish' },
+  { title: 'Exosome IV therapy', body: 'Your personalised biomolecule exosomes are delivered by IV infusion — then you recover and are monitored for weeks to months during a restorative stay in Ooty.', icon: 'syringe' },
 ];
 
 type Tab = 'find' | 'sell' | 'reviews';
@@ -447,7 +448,7 @@ export default function Home() {
       {trending.length > 0 && (
         <section className="container-x py-8">
           <div className="flex items-center gap-3">
-            <span className="grid h-11 w-11 place-items-center rounded-xl bg-clay-100 text-2xl">🧬</span>
+            <span className="icon-tile h-11 w-11"><Icon name="dna" className="h-6 w-6" /></span>
             <div>
               <h2 className="font-display text-2xl font-extrabold uppercase text-ink-900 sm:text-3xl">
                 Regenerative therapies trending
@@ -608,15 +609,15 @@ export default function Home() {
           </h2>
           <p className="mt-2 text-ink-700/70">From your DNA to a personalised regenerative therapy, in four steps.</p>
           <Link to="/simulator" className="btn-primary mt-5 inline-flex px-6 py-3">
-            🧠 Try the Protocol Simulator
+            <Icon name="brain" className="h-5 w-5" /> Try the Protocol Simulator
           </Link>
         </div>
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {steps.map((s, i) => (
             <div key={s.title} className="card p-7">
               <div className="flex items-center gap-3">
-                <span className="grid h-12 w-12 place-items-center rounded-xl bg-clay-100 text-2xl">
-                  {s.icon}
+                <span className="icon-tile h-12 w-12">
+                  <Icon name={s.icon} className="h-6 w-6" />
                 </span>
                 <span className="font-display text-4xl font-extrabold text-cream-300">{i + 1}</span>
               </div>
@@ -630,7 +631,7 @@ export default function Home() {
       {/* ---------- PATIENT REVIEWS (slider) ---------- */}
       <section className="container-x pb-8">
         <div className="flex items-center gap-3">
-          <span className="grid h-11 w-11 place-items-center rounded-xl bg-clay-100 text-2xl">⭐</span>
+          <span className="icon-tile h-11 w-11"><Icon name="star" className="h-6 w-6" /></span>
           <div>
             <h2 className="font-display text-2xl font-extrabold uppercase text-ink-900 sm:text-3xl">
               This is how care should feel
@@ -649,8 +650,8 @@ export default function Home() {
             >
               <div className="flex gap-1">
                 {[0, 1, 2, 3, 4].map((n) => (
-                  <span key={n} className="grid h-6 w-6 place-items-center bg-green-500 text-xs text-white">
-                    ★
+                  <span key={n} className="grid h-6 w-6 place-items-center rounded bg-green-500 text-white">
+                    <Icon name="star" className="h-3.5 w-3.5" />
                   </span>
                 ))}
               </div>
@@ -665,14 +666,14 @@ export default function Home() {
 
         <p className="mt-2 text-center text-sm text-ink-700/70">
           Rated <b>4.6/5</b> based on <b>4,800+</b> reviews on{' '}
-          <span className="font-semibold text-green-600">★ Trustpilot</span>
+          <span className="inline-flex items-center gap-1 font-semibold text-green-600"><Icon name="star" className="h-4 w-4" /> Trustpilot</span>
         </p>
       </section>
 
       {/* ---------- ACCREDITED & RESEARCH-LED ---------- */}
       <section className="container-x py-10">
         <div className="flex items-start gap-4">
-          <span className="text-4xl text-clay-500">❤</span>
+          <Icon name="heart" className="h-9 w-9 shrink-0 text-clay-500" />
           <div>
             <h2 className="font-display text-2xl font-extrabold text-ink-900 sm:text-3xl">
               Accredited &amp; research-led
@@ -689,8 +690,8 @@ export default function Home() {
       <section className="container-x pb-10">
         <div className="rounded-3xl bg-ink-900 p-8 text-white sm:p-12">
           <div className="flex flex-col items-start gap-6 sm:flex-row">
-            <span className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-clay-500 text-3xl">
-              🧑‍⚕️
+            <span className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-clay-500 text-white">
+              <Icon name="clinician" className="h-8 w-8" />
             </span>
             <div>
               <h2 className="font-display text-3xl font-extrabold uppercase leading-tight sm:text-4xl">
@@ -817,8 +818,8 @@ export default function Home() {
       {trending.length > 0 && (
         <section className="container-x py-14">
           <div className="flex items-start gap-4">
-            <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-clay-500 text-2xl text-white">
-              🧬
+            <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-clay-500 text-white">
+              <Icon name="dna" className="h-7 w-7" />
             </span>
             <div>
               <h2 className="font-display text-2xl font-extrabold text-ink-900 sm:text-3xl">
