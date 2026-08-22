@@ -8,6 +8,7 @@ const links = [
   { to: '/simulator', label: 'Simulator' },
   { to: '/research', label: 'Research' },
   { to: '/compare', label: 'Compare' },
+  { to: '/investors', label: 'Investors' },
 ];
 
 export default function Navbar() {
