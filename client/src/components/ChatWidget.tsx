@@ -30,6 +30,16 @@ const SUGGESTIONS = [
   'What is ER-100 age reversal?',
 ];
 
+// Language code (for speech) → English name (for the reply instruction).
+const LANG_NAME: Record<string, string> = {
+  'en-IN': 'English',
+  'ta-IN': 'Tamil',
+  'hi-IN': 'Hindi',
+  'ml-IN': 'Malayalam',
+  'te-IN': 'Telugu',
+  'kn-IN': 'Kannada',
+};
+
 export default function ChatWidget() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<UIMsg[]>([]);
@@ -240,6 +250,12 @@ export default function ChatWidget() {
       }
     }
     if (text) blocks.push({ type: 'text', text });
+    // If the patient picked a language, instruct the assistant to reply in it
+    // (works even when they type in English/transliteration). Not shown in the
+    // chat bubble — only sent to the model.
+    if (voiceLang && LANG_NAME[voiceLang]) {
+      blocks.push({ type: 'text', text: `(Please reply in ${LANG_NAME[voiceLang]}.)` });
+    }
 
     const uiAttach = attachments.map((a) => ({ name: a.file.name, kind: a.kind }));
     const history: ChatMessage[] = messages.map((m) => ({ role: m.role, content: m.text }));
@@ -447,28 +463,28 @@ export default function ChatWidget() {
                   ))}
                 </div>
               )}
-              {speechSupported && (
-                <div className="mb-2 flex items-center gap-1.5 text-xs text-ink-700/60">
-                  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2">
-                    <rect x="9" y="3" width="6" height="11" rx="3" />
-                    <path d="M5 11a7 7 0 0014 0M12 18v3" strokeLinecap="round" />
-                  </svg>
-                  <span>Speak in</span>
-                  <select
-                    value={voiceLang}
-                    onChange={(e) => setVoiceLang(e.target.value)}
-                    className="rounded-md border border-cream-300 bg-white px-1.5 py-0.5 font-semibold text-ink-800 focus:border-clay-400 focus:outline-none"
-                  >
-                    <option value="">Auto (phone)</option>
-                    <option value="en-IN">English</option>
-                    <option value="ta-IN">தமிழ் (Tamil)</option>
-                    <option value="hi-IN">हिन्दी (Hindi)</option>
-                    <option value="ml-IN">മലയാളം (Malayalam)</option>
-                    <option value="te-IN">తెలుగు (Telugu)</option>
-                    <option value="kn-IN">ಕನ್ನಡ (Kannada)</option>
-                  </select>
-                </div>
-              )}
+              <div className="mb-2 flex items-center gap-1.5 text-xs text-ink-700/60">
+                <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M3 12h18M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18" />
+                </svg>
+                <span>Language</span>
+                <select
+                  value={voiceLang}
+                  onChange={(e) => setVoiceLang(e.target.value)}
+                  className="rounded-md border border-cream-300 bg-white px-1.5 py-0.5 font-semibold text-ink-800 focus:border-clay-400 focus:outline-none"
+                  aria-label="Chat language (typing, voice and replies)"
+                >
+                  <option value="">Auto-detect</option>
+                  <option value="en-IN">English</option>
+                  <option value="ta-IN">தமிழ் (Tamil)</option>
+                  <option value="hi-IN">हिन्दी (Hindi)</option>
+                  <option value="ml-IN">മലയാളം (Malayalam)</option>
+                  <option value="te-IN">తెలుగు (Telugu)</option>
+                  <option value="kn-IN">ಕನ್ನಡ (Kannada)</option>
+                </select>
+                <span className="hidden text-ink-700/45 sm:inline">· replies &amp; voice</span>
+              </div>
               <div className="flex items-end gap-2">
                 <input
                   ref={fileRef}
