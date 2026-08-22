@@ -146,20 +146,41 @@ export default function ChatWidget() {
 
     const ctrl = new AbortController();
     abortRef.current = ctrl;
-    try {
+
+    let acc = '';
+    const runStream = async () => {
+      acc = '';
       await streamChat({
         messages: history,
         signal: ctrl.signal,
-        onText: (chunk) =>
+        onText: (chunk) => {
+          acc += chunk;
           setMessages((m) => {
             const copy = [...m];
-            copy[copy.length - 1] = {
-              ...copy[copy.length - 1],
-              text: copy[copy.length - 1].text + chunk,
-            };
+            copy[copy.length - 1] = { ...copy[copy.length - 1], text: acc };
             return copy;
-          }),
+          });
+        },
       });
+    };
+
+    try {
+      await runStream();
+      // Empty reply = a transient hiccup (brief model overload / dropped
+      // stream). Retry once automatically before giving up.
+      if (!acc.trim() && !ctrl.signal.aborted) {
+        await runStream();
+      }
+      if (!acc.trim() && !ctrl.signal.aborted) {
+        setMessages((m) => {
+          const copy = [...m];
+          copy[copy.length - 1] = {
+            ...copy[copy.length - 1],
+            text: '⚠️ No reply came back — please tap send to try again.',
+          };
+          return copy;
+        });
+      }
     } catch (e: any) {
       if (e?.name !== 'AbortError') {
         const detail = (e?.message || 'Could not reach the assistant.').toString();
@@ -167,10 +188,7 @@ export default function ChatWidget() {
           const copy = [...m];
           const last = copy[copy.length - 1];
           if (last && last.role === 'assistant' && !last.text) {
-            copy[copy.length - 1] = {
-              ...last,
-              text: `⚠️ ${detail}`,
-            };
+            copy[copy.length - 1] = { ...last, text: `⚠️ ${detail}` };
           }
           return copy;
         });
