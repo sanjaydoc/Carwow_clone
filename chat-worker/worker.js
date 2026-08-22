@@ -157,45 +157,12 @@ export default {
       return json(502, { error: detail }, cors);
     }
 
-    // Parse Anthropic's SSE stream and re-emit just the text deltas as plain text.
-    const reader = upstream.body.getReader();
-    const decoder = new TextDecoder();
-    const encoder = new TextEncoder();
-    let buffer = '';
-
-    const stream = new ReadableStream({
-      async pull(controller) {
-        const { value, done } = await reader.read();
-        if (done) {
-          controller.close();
-          return;
-        }
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || '';
-        for (const line of lines) {
-          const trimmed = line.trim();
-          if (!trimmed.startsWith('data:')) continue;
-          const data = trimmed.slice(5).trim();
-          if (!data || data === '[DONE]') continue;
-          try {
-            const evt = JSON.parse(data);
-            if (evt.type === 'content_block_delta' && evt.delta?.type === 'text_delta') {
-              controller.enqueue(encoder.encode(evt.delta.text));
-            }
-          } catch {
-            /* ignore partial/keepalive lines */
-          }
-        }
-      },
-      cancel() {
-        reader.cancel();
-      },
-    });
-
-    return new Response(stream, {
+    // Pipe Anthropic's SSE stream straight through to the browser. Doing the
+    // parsing here would burn the Worker's (free-plan) CPU budget and truncate
+    // long replies, so the client parses the event stream instead.
+    return new Response(upstream.body, {
       headers: {
-        'Content-Type': 'text/plain; charset=utf-8',
+        'Content-Type': 'text/event-stream; charset=utf-8',
         'Cache-Control': 'no-store',
         ...cors,
       },

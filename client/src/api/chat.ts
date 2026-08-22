@@ -61,16 +61,61 @@ export async function streamChat(opts: {
   const reader = res.body.getReader();
   const decoder = new TextDecoder();
   let full = '';
+
+  // Two Worker formats are supported so the site never breaks mid-upgrade:
+  //  - text/event-stream: the proxy pipes Anthropic's raw SSE (parsed here, so
+  //    the CPU-limited Worker no longer truncates long replies).
+  //  - text/plain: the older proxy already extracted the text.
+  const isSSE = (res.headers.get('content-type') || '').includes('event-stream');
+
+  if (!isSSE) {
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      const chunk = decoder.decode(value, { stream: true });
+      if (chunk) {
+        full += chunk;
+        opts.onText(chunk);
+      }
+    }
+    return full;
+  }
+
+  let buffer = '';
+
+  const handleLine = (line: string) => {
+    const trimmed = line.trim();
+    if (!trimmed.startsWith('data:')) return;
+    const data = trimmed.slice(5).trim();
+    if (!data || data === '[DONE]') return;
+    try {
+      const evt = JSON.parse(data);
+      if (evt.type === 'content_block_delta' && evt.delta?.type === 'text_delta') {
+        const t = evt.delta.text as string;
+        if (t) {
+          full += t;
+          opts.onText(t);
+        }
+      } else if (evt.type === 'error') {
+        throw new Error(evt.error?.message || 'Stream error');
+      }
+    } catch (e) {
+      // Re-throw genuine stream errors; ignore partial/keepalive JSON.
+      if (e instanceof Error && e.message && data.includes('"type":"error"')) throw e;
+    }
+  };
+
   // eslint-disable-next-line no-constant-condition
   while (true) {
     const { value, done } = await reader.read();
     if (done) break;
-    const chunk = decoder.decode(value, { stream: true });
-    if (chunk) {
-      full += chunk;
-      opts.onText(chunk);
-    }
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split('\n');
+    buffer = lines.pop() || '';
+    for (const line of lines) handleLine(line);
   }
+  if (buffer) handleLine(buffer);
   return full;
 }
 
