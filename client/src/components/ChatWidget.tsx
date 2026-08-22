@@ -90,9 +90,6 @@ export default function ChatWidget() {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
 
-  const escHtml = (s: string) =>
-    s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-
   const transcriptHtml = () => {
     // Render the assistant's Markdown to clean HTML so exports show bold,
     // headings and bullets instead of raw ** and ## symbols.
