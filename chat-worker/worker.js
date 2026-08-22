@@ -14,6 +14,7 @@
  *   RATE_LIMIT         (KV, optional)  simple per-IP throttling
  */
 
+// Auto-deploy enabled via Git (Workers Builds). Pushes to main deploy this.
 const DEFAULT_MODEL = 'claude-sonnet-4-5-20250929';
 const MAX_TOKENS = 4096;
 const MAX_MESSAGES = 24; // trim very long histories
