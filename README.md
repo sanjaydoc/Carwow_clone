@@ -8,9 +8,10 @@
 
 <br/>
 
-### 🌐 Website: **[sanjaydoc.github.io/Stemcellsprotocol](https://sanjaydoc.github.io/Stemcellsprotocol/)**
+### 🌐 Website: **[stemcellsprotocol.com](https://stemcellsprotocol.com)**
 
-[![Live demo](https://img.shields.io/badge/▶_Live_demo-sanjaydoc.github.io%2FStemcellsprotocol-4285F4?style=for-the-badge)](https://sanjaydoc.github.io/Stemcellsprotocol/)
+[![Live site](https://img.shields.io/badge/▶_Live_site-stemcellsprotocol.com-4285F4?style=for-the-badge)](https://stemcellsprotocol.com)
+[![AI chat](https://img.shields.io/badge/AI_chat-Claude-4285F4?style=for-the-badge)](https://stemcellsprotocol.com)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-4285F4.svg?style=flat-square)](LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org)
@@ -27,13 +28,40 @@
 
 ---
 
-## 🌐 Live demo
+## 🌐 Live site
 
-The **full interactive app** is deployed on GitHub Pages (a backend-free build that runs entirely in the browser), so you can click through every page, flow and animation:
+The **full interactive app** is live on a custom domain (a backend-free build that runs entirely in the browser, hosted on GitHub Pages), so you can click through every page, flow and animation:
 
-### 👉 **https://sanjaydoc.github.io/Stemcellsprotocol/**
+### 👉 **https://stemcellsprotocol.com**
 
 > Therapy cards use real, **bundled** stem-cell clinic & lab photography (cryo storage, cleanrooms, cell processing) — no external image CDN — with a department glyph as a fallback, so cards always load cleanly.
+
+---
+
+## 📸 Screenshots
+
+|  |  |
+|---|---|
+| **Home + AI assistant** | **AI chat — ask, or attach an ECG/scan** |
+| ![Home with AI chat](docs/screenshots/home-hero-v2.png) | ![AI chat assistant](docs/screenshots/chat-open-v2.png) |
+| **Home (mobile)** | **Chat (mobile)** |
+| ![Home mobile](docs/screenshots/home-mobile-v2.png) | ![Chat mobile](docs/screenshots/chat-mobile-v2.png) |
+
+---
+
+## 🤖 AI care assistant
+
+A theme-matched, collapsible chat widget on the homepage, powered by **Claude** through a secure **Cloudflare Worker** proxy — so the API key never touches the browser.
+
+- **Ask anything medical** — therapies, recovery & post-operative care, medications, primary/emergency care, in plain language.
+- **📎 Upload & explain** — attach an **ECG, X-ray/MRI, prescription or lab report** and get a structured read plus a simple patient summary (*In simple terms · Is it serious? · What you can do next*).
+- **🎤 Voice input** — patients can speak their question (Web Speech API).
+- **🌍 Multi-language** — replies in the same language the patient writes in.
+- **🧠 Conversation memory** — follow-up questions in context.
+- **💾 Save the chat** — export the conversation as **PDF, Word (.doc) or text**.
+- **🛡️ Safe & guarded** — streaming replies with markdown, per-IP rate limiting, a monthly spend cap, and clear "not a diagnosis — confirm with your doctor" framing that routes emergencies to urgent care.
+
+> The chat proxy lives in [`chat-worker/`](chat-worker/) and auto-deploys via Cloudflare Workers Builds; the static site auto-deploys via GitHub Pages.
 
 ---
 
