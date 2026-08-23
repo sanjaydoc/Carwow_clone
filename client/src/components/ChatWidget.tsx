@@ -56,16 +56,37 @@ const LANG_NAME: Record<string, string> = {
   'ms-MY': 'Malay',
 };
 
+// Persist the conversation so history + memory survive closing the widget,
+// navigating away, or reloading the page.
+const STORAGE_KEY = 'stemcells_chat_history_v1';
+const LANG_KEY = 'stemcells_chat_lang_v1';
+
+function loadMessages(): UIMsg[] {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
 export default function ChatWidget() {
   const [open, setOpen] = useState(false);
-  const [messages, setMessages] = useState<UIMsg[]>([]);
+  const [messages, setMessages] = useState<UIMsg[]>(loadMessages);
   const [input, setInput] = useState('');
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [listening, setListening] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
-  const [voiceLang, setVoiceLang] = useState('');
+  const [voiceLang, setVoiceLang] = useState(() => {
+    try {
+      return localStorage.getItem(LANG_KEY) || '';
+    } catch {
+      return '';
+    }
+  });
   const scrollRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const abortRef = useRef<AbortController | null>(null);
@@ -183,6 +204,26 @@ export default function ChatWidget() {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages, open, busy]);
+
+  // Persist the conversation (keep the last 60 turns to stay well under quota).
+  useEffect(() => {
+    try {
+      if (messages.length === 0) localStorage.removeItem(STORAGE_KEY);
+      else localStorage.setItem(STORAGE_KEY, JSON.stringify(messages.slice(-60)));
+    } catch {
+      /* storage unavailable — ignore */
+    }
+  }, [messages]);
+
+  // Remember the chosen language across visits.
+  useEffect(() => {
+    try {
+      if (voiceLang) localStorage.setItem(LANG_KEY, voiceLang);
+      else localStorage.removeItem(LANG_KEY);
+    } catch {
+      /* ignore */
+    }
+  }, [voiceLang]);
 
   // Clean up object URLs.
   useEffect(() => {
@@ -352,6 +393,18 @@ export default function ChatWidget() {
 
   const stop = () => abortRef.current?.abort();
 
+  const clearChat = () => {
+    abortRef.current?.abort();
+    setMessages([]);
+    setError('');
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch {
+      /* ignore */
+    }
+    setExportOpen(false);
+  };
+
   const onKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -422,6 +475,13 @@ export default function ChatWidget() {
                       </button>
                       <button onClick={exportText} className="block w-full px-3 py-2 text-left text-sm hover:bg-cream-100">
                         📃 Text (.txt)
+                      </button>
+                      <div className="my-1 border-t border-cream-300" />
+                      <button
+                        onClick={clearChat}
+                        className="block w-full px-3 py-2 text-left text-sm font-semibold text-red-600 hover:bg-red-50"
+                      >
+                        Clear chat
                       </button>
                     </div>
                   )}
