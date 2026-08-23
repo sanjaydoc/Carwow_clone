@@ -201,7 +201,7 @@ export default function Home() {
           <div className="mt-5 flex flex-col items-start gap-1.5">
             {([
               { icon: 'dna', label: 'Upload Digital DNA' },
-              { icon: 'brain', label: 'De Novo LLM' },
+              { icon: 'brain', label: 'De Novo LLM (chat)' },
               { icon: 'clinician', label: 'Personalised Healthcare' },
             ] as { icon: IconName; label: string }[]).map((s, i) => (
               <div key={s.label} className="flex flex-col items-start gap-1.5">
