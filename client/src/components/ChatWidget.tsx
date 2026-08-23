@@ -371,7 +371,7 @@ export default function ChatWidget() {
             <SparkIcon />
           </span>
           <span className="min-w-0 flex-1">
-            <span className="block font-bold text-white">Ask our AI care assistant</span>
+            <span className="block font-bold text-white">Ask our De Novo AI assistant</span>
             <span className="block truncate text-sm text-white/60">
               Therapies, recovery &amp; post-op care, medications — attach a report too
             </span>
