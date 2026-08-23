@@ -645,6 +645,43 @@ export default function Home() {
             </div>
           ))}
         </div>
+
+        {/* Sample & sequencing — what "digital DNA" actually is */}
+        <div className="mt-8 rounded-3xl bg-cream-200 p-6 sm:p-8">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-center">
+            <div className="lg:w-1/2">
+              <h3 className="font-display text-xl font-extrabold text-ink-900 sm:text-2xl">
+                What is your “digital DNA”?
+              </h3>
+              <p className="mt-2 text-ink-700/75">
+                To engineer a therapy for your body, we read two data layers from a simple sample —
+                and they are not the same test.
+              </p>
+              <Link to="/simulator" className="mt-4 inline-flex items-center gap-1.5 font-semibold text-clay-600 hover:underline">
+                See sample &amp; sequencing details
+                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+              </Link>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2 lg:w-1/2">
+              <div className="rounded-2xl bg-white p-5 shadow-sm">
+                <div className="flex items-center gap-2">
+                  <span className="icon-tile h-9 w-9"><Icon name="dish" className="h-5 w-5" /></span>
+                  <span className="text-xs font-bold uppercase tracking-wide text-clay-600">Essential</span>
+                </div>
+                <h4 className="mt-3 font-display font-bold text-ink-900">Methylation sequencing</h4>
+                <p className="mt-1 text-sm text-ink-700/70">Reads your epigenome — what defines biological age and every reversal target.</p>
+              </div>
+              <div className="rounded-2xl bg-white p-5 shadow-sm">
+                <div className="flex items-center gap-2">
+                  <span className="icon-tile h-9 w-9"><Icon name="dna" className="h-5 w-5" /></span>
+                  <span className="text-xs font-bold uppercase tracking-wide text-ink-700/50">Recommended</span>
+                </div>
+                <h4 className="mt-3 font-display font-bold text-ink-900">Whole genome sequencing</h4>
+                <p className="mt-1 text-sm text-ink-700/70">Reads your genome — for safety screening and deeper per-DNA personalisation.</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* ---------- PATIENT REVIEWS (slider) ---------- */}

@@ -345,6 +345,79 @@ export default function Simulator() {
           )}
         </div>
       </section>
+
+      {/* ---------- WHAT IS DIGITAL DNA — SAMPLE & SEQUENCING ---------- */}
+      <section className="container-x pb-16">
+        <div className="rounded-3xl bg-cream-200 p-6 sm:p-10">
+          <span className="chip bg-clay-100 text-clay-700"><Icon name="dna" className="h-3.5 w-3.5" /> Your digital DNA</span>
+          <h2 className="mt-4 font-display text-2xl font-extrabold text-ink-900 sm:text-3xl">
+            What we need to read from you
+          </h2>
+          <p className="mt-3 max-w-3xl text-ink-700/80">
+            To engineer a therapy for <b>your</b> body, we first have to read your biology. Two data
+            layers matter — and they are not the same test.
+          </p>
+
+          <div className="mt-6 grid gap-5 md:grid-cols-2">
+            <div className="card p-6">
+              <div className="flex items-center gap-3">
+                <span className="icon-tile h-11 w-11"><Icon name="dish" className="h-6 w-6" /></span>
+                <div>
+                  <h3 className="font-display text-lg font-bold text-ink-900">Methylation sequencing</h3>
+                  <span className="text-xs font-bold uppercase tracking-wide text-clay-600">Essential</span>
+                </div>
+              </div>
+              <p className="mt-3 text-sm text-ink-700/75">
+                Reads your <b>epigenome</b> — the chemical marks on top of your DNA. Your biological
+                (epigenetic) age and every age-reversal target are defined here. This is what the
+                therapy actually acts on.
+              </p>
+            </div>
+            <div className="card p-6">
+              <div className="flex items-center gap-3">
+                <span className="icon-tile h-11 w-11"><Icon name="dna" className="h-6 w-6" /></span>
+                <div>
+                  <h3 className="font-display text-lg font-bold text-ink-900">Whole genome sequencing</h3>
+                  <span className="text-xs font-bold uppercase tracking-wide text-ink-700/50">Recommended</span>
+                </div>
+              </div>
+              <p className="mt-3 text-sm text-ink-700/75">
+                Reads your <b>genome</b> — the A, T, G, C sequence. Used for safety screening before
+                treatment and for deeper, per-DNA personalisation. Not needed just to read the
+                epigenetic clock, but strongly recommended.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-5 overflow-x-auto">
+            <table className="w-full min-w-[420px] overflow-hidden rounded-2xl bg-white text-left text-sm">
+              <thead>
+                <tr className="bg-cream-100 text-ink-700/60">
+                  <th className="px-5 py-3 font-semibold">Tier</th>
+                  <th className="px-5 py-3 font-semibold">What is sequenced</th>
+                  <th className="px-5 py-3 font-semibold">Illustrative cost (India)</th>
+                </tr>
+              </thead>
+              <tbody className="text-ink-900">
+                <tr className="border-t border-cream-300">
+                  <td className="px-5 py-3 font-bold">Minimum viable</td>
+                  <td className="px-5 py-3">Methylation only — EPIC array (~850k CpG sites)</td>
+                  <td className="px-5 py-3 font-semibold">₹15,000 – ₹30,000</td>
+                </tr>
+                <tr className="border-t border-cream-300">
+                  <td className="px-5 py-3 font-bold">Full / safer</td>
+                  <td className="px-5 py-3">Methylation (WGBS / EM-seq) + WGS for safety &amp; personalisation</td>
+                  <td className="px-5 py-3 font-semibold">₹80,000 – ₹1,50,000+</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p className="mt-3 text-xs italic text-ink-700/50">
+            Costs are illustrative early-2026 retail estimates and vary by lab; this is educational
+            information, not a quote or medical advice.
+          </p>
+        </div>
+      </section>
     </div>
   );
 }
