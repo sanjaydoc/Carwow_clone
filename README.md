@@ -13,7 +13,7 @@
 [![Live site](https://img.shields.io/badge/▶_Live_site-stemcellsprotocol.com-4285F4?style=for-the-badge)](https://stemcellsprotocol.com)
 [![AI chat](https://img.shields.io/badge/AI_chat-Claude-4285F4?style=for-the-badge)](https://stemcellsprotocol.com)
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-4285F4.svg?style=flat-square)](LICENSE)
+[![License: Proprietary](https://img.shields.io/badge/License-Proprietary-4285F4.svg?style=flat-square)](LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org)
 [![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
@@ -262,7 +262,11 @@ Stemcellsprotocol/
 
 ## 📝 License
 
-Released under the [MIT License](LICENSE).
+**Proprietary — All Rights Reserved.** This repository is source-available for
+reference only; it is **not** open source. You may view the code, but copying,
+reuse, modification, or redistribution is not permitted without written
+permission. See the [LICENSE](LICENSE) for full terms. For permissions, contact
+**dr.sanjayanbu@gmail.com**.
 
 <div align="center">
 
