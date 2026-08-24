@@ -467,7 +467,7 @@ export default function ChatWidget() {
                 <p className="font-bold leading-tight">StemCells Protocol AI</p>
                 {busy ? (
                   <p className="flex items-center gap-2 text-xs text-white/70">
-                    <DnaLoader /> Generating…
+                    <CellLoader /> Generating…
                   </p>
                 ) : (
                   <p className="flex items-center gap-1.5 text-xs text-white/60">
@@ -753,7 +753,7 @@ function Bubble({
         ) : (
           <>
             {text && <div className="chat-md" dangerouslySetInnerHTML={{ __html: mdToHtml(text) }} />}
-            {loading && <DnaLoader className={text ? 'mt-2' : ''} />}
+            {loading && <CellLoader className={text ? 'mt-2 inline-block' : ''} />}
           </>
         )}
       </div>
@@ -818,15 +818,13 @@ function mdToHtml(src: string): string {
   return html;
 }
 
-// Spinning DNA-helix loader — shown while the assistant is generating.
-function DnaLoader({ className = '' }: { className?: string }) {
+// Dividing stem-cell loader — shown while the assistant is generating.
+function CellLoader({ className = '' }: { className?: string }) {
   return (
-    <span className={`dna-loader ${className}`} role="status" aria-label="Generating answer">
-      {Array.from({ length: 6 }).map((_, i) => (
-        <i key={i}>
-          <span />
-        </i>
-      ))}
+    <span className={`cell-loader ${className}`} role="status" aria-label="Generating answer">
+      <span className="m" />
+      <span className="n" />
+      <span className="bud" />
     </span>
   );
 }
