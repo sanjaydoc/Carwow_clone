@@ -1,0 +1,323 @@
+import { useEffect, useRef, useState } from 'react';
+import Icon from '../components/Icon';
+import {
+  analyze,
+  assembleConstruct,
+  engines,
+  interpret,
+  listSamples,
+  reportCsv,
+  reportPdf,
+  startDesign,
+  streamJob,
+} from '../api/simulator';
+
+/**
+ * Real-mode Simulator — talks to the local Python backend (localhost:8000).
+ * Only rendered when the backend is reachable; otherwise the illustrative
+ * Simulator is shown instead, so the public site is unaffected.
+ */
+export default function SimulatorLocal() {
+  const [methFile, setMethFile] = useState<File | null>(null);
+  const [genoFile, setGenoFile] = useState<File | null>(null);
+  const [samples, setSamples] = useState<string[]>([]);
+  const [sample, setSample] = useState('');
+  const [age, setAge] = useState<string>('');
+
+  const [analysis, setAnalysis] = useState<any>(null);
+  const [construct, setConstruct] = useState<any>(null);
+  const [ranked, setRanked] = useState<any>(null);
+  const [interpretation, setInterpretation] = useState<string | null>(null);
+
+  const [engineReady, setEngineReady] = useState<{ available: boolean; reason: string } | null>(null);
+  const [busy, setBusy] = useState('');
+  const [log, setLog] = useState<string[]>([]);
+  const [error, setError] = useState('');
+  const methRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    engines().then((e) => setEngineReady(e['denovo-llm'])).catch(() => {});
+  }, []);
+
+  const pickMeth = async (f: File | null) => {
+    setMethFile(f);
+    setSamples([]);
+    setSample('');
+    if (f) {
+      try {
+        setSamples(await listSamples(f));
+      } catch {
+        /* single-sample file — no columns to pick */
+      }
+    }
+  };
+
+  const runAnalyze = async () => {
+    if (!methFile) return;
+    setError('');
+    setBusy('Computing epigenetic age…');
+    setAnalysis(null);
+    setConstruct(null);
+    setRanked(null);
+    setInterpretation(null);
+    try {
+      const res = await analyze({
+        methylation: methFile,
+        genotype: genoFile,
+        sample: sample || undefined,
+        chronologicalAge: age ? Number(age) : null,
+      });
+      setAnalysis(res);
+    } catch (e: any) {
+      setError(e.message || 'Analyze failed');
+    } finally {
+      setBusy('');
+    }
+  };
+
+  const runConstruct = async () => {
+    setBusy('Assembling OSK Tet-On construct…');
+    try {
+      setConstruct(await assembleConstruct({ objectives: analysis?.objectives || [] }));
+    } finally {
+      setBusy('');
+    }
+  };
+
+  const runDesign = async () => {
+    setError('');
+    setRanked(null);
+    setLog([]);
+    setBusy('Generating candidate molecules…');
+    try {
+      const jobId = await startDesign({
+        modality: 'smiles',
+        n: 100,
+        property: 'qed',
+        mode: 'max',
+        objectives: analysis?.objectives || [],
+      });
+      const final = await streamJob(jobId, (ev) => {
+        if (ev.message) setLog((l) => [...l, ev.message]);
+      });
+      if (final.status === 'error') setError(final.error || 'Generation failed');
+      else setRanked(final.result);
+    } catch (e: any) {
+      setError(e.message || 'Design failed');
+    } finally {
+      setBusy('');
+    }
+  };
+
+  const runInterpret = async () => {
+    setBusy('Writing plain-language summary…');
+    try {
+      const payload = buildPayload(analysis, construct, ranked);
+      setInterpretation((await interpret(payload)) || '(interpretation unavailable offline)');
+    } finally {
+      setBusy('');
+    }
+  };
+
+  const payload = () => buildPayload(analysis, construct, ranked, interpretation);
+
+  const ea = analysis?.epigenetic_age;
+
+  return (
+    <div className="container-x py-10">
+      {/* Connected banner */}
+      <div className="mb-6 flex items-center gap-3 rounded-2xl border border-green-200 bg-green-50 px-4 py-3">
+        <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-green-500" />
+        <p className="text-sm font-semibold text-green-800">
+          Local research pipeline connected — your data stays on this machine.
+        </p>
+      </div>
+
+      <div className="flex items-center gap-3">
+        <span className="icon-tile h-12 w-12"><Icon name="dna" className="h-6 w-6" /></span>
+        <div>
+          <h1 className="font-display text-3xl font-extrabold text-ink-900">Protocol Simulator — live</h1>
+          <p className="text-ink-700/70">Real epigenetic age + target discovery → construct + De Novo LLM molecules.</p>
+        </div>
+      </div>
+
+      {error && <p className="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</p>}
+
+      {/* 1. Upload + analyze */}
+      <section className="mt-6 grid gap-6 lg:grid-cols-[1fr_1.3fr]">
+        <div className="card p-6">
+          <h2 className="font-display text-lg font-bold text-ink-900">1 · Your data</h2>
+          <label className="mt-4 block text-sm font-semibold text-ink-800">Methylation file (beta values)</label>
+          <input ref={methRef} type="file" accept=".csv,.txt,.tsv,.gz" className="mt-1 w-full text-sm"
+                 onChange={(e) => pickMeth(e.target.files?.[0] ?? null)} />
+          {samples.length > 0 && (
+            <>
+              <label className="mt-3 block text-sm font-semibold text-ink-800">Sample</label>
+              <select value={sample} onChange={(e) => setSample(e.target.value)} className="input mt-1">
+                <option value="">First sample</option>
+                {samples.map((s) => <option key={s} value={s}>{s}</option>)}
+              </select>
+            </>
+          )}
+          <label className="mt-3 block text-sm font-semibold text-ink-800">Genotype (optional)</label>
+          <input type="file" accept=".txt,.csv,.vcf,.gz" className="mt-1 w-full text-sm"
+                 onChange={(e) => setGenoFile(e.target.files?.[0] ?? null)} />
+          <label className="mt-3 block text-sm font-semibold text-ink-800">Chronological age (optional)</label>
+          <input value={age} onChange={(e) => setAge(e.target.value)} inputMode="numeric" placeholder="e.g. 39" className="input mt-1" />
+          <button onClick={runAnalyze} disabled={!methFile || !!busy}
+                  className="btn-primary mt-5 w-full py-3 disabled:opacity-50">
+            {busy === 'Computing epigenetic age…' ? 'Computing…' : 'Compute epigenetic age'}
+          </button>
+        </div>
+
+        {/* Epigenetic age result */}
+        <div className="card p-6">
+          <h2 className="font-display text-lg font-bold text-ink-900">2 · Epigenetic age</h2>
+          {!ea ? (
+            <p className="mt-4 text-ink-700/60">Upload methylation data and compute to see the real Horvath-clock result.</p>
+          ) : (
+            <div className="mt-4">
+              <div className="flex flex-wrap gap-6">
+                <Stat label="Biological (DNAm) age" value={`${ea.dnam_age} yr`} big />
+                {ea.chronological_age != null && <Stat label="Chronological" value={`${ea.chronological_age} yr`} />}
+                {ea.age_acceleration != null && (
+                  <Stat label="Age acceleration"
+                        value={`${ea.age_acceleration > 0 ? '+' : ''}${ea.age_acceleration} yr`}
+                        tone={ea.age_acceleration > 0 ? 'bad' : 'good'} />
+                )}
+                <Stat label="CpG coverage" value={`${Math.round(ea.coverage * 100)}%`} />
+              </div>
+              <p className="mt-2 text-xs text-ink-700/50">Clock: {ea.clock} · {ea.n_used}/{ea.n_total} CpGs.</p>
+
+              {/* Targets */}
+              {analysis.targets?.length > 0 && (
+                <div className="mt-5 overflow-x-auto">
+                  <table className="w-full min-w-[460px] text-left text-sm">
+                    <thead className="text-ink-700/60">
+                      <tr><th className="py-1 pr-3">CpG</th><th className="pr-3">Gene</th><th className="pr-3">Action</th><th>Contribution</th></tr>
+                    </thead>
+                    <tbody>
+                      {analysis.targets.slice(0, 8).map((t: any) => (
+                        <tr key={t.cpg} className="border-t border-cream-200">
+                          <td className="py-1.5 pr-3 font-mono text-xs">{t.cpg}</td>
+                          <td className="pr-3 font-semibold text-ink-900">{t.gene || '—'}</td>
+                          <td className="pr-3"><span className="chip bg-clay-50 text-clay-700">{t.direction}</span></td>
+                          <td className="font-mono text-xs">{t.contribution}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* 3 + 4: Track A construct & Track B molecules */}
+      {analysis && (
+        <section className="mt-6 grid gap-6 lg:grid-cols-2">
+          {/* Track A */}
+          <div className="card p-6">
+            <h2 className="font-display text-lg font-bold text-ink-900">3 · OSK Tet-On construct <span className="text-xs font-normal text-ink-700/50">· Track A</span></h2>
+            {!construct ? (
+              <button onClick={runConstruct} disabled={!!busy} className="btn-outline mt-4 px-5 py-2.5 disabled:opacity-50">Assemble construct</button>
+            ) : (
+              <div className="mt-3 text-sm">
+                <p><b>Strategy:</b> {construct.strategy} · <b>Capsid:</b> {construct.capsid_desc}</p>
+                {construct.vectors.map((v: any) => (
+                  <div key={v.name} className="mt-2 rounded-xl bg-cream-100 p-3">
+                    <p className="font-semibold text-ink-900">{v.name} — {v.length_bp} bp {v.fits_aav ? '✓ fits AAV' : '✗ over limit'}</p>
+                    <p className="mt-1 break-words text-xs text-ink-700/70">{v.features.map((f: any) => `${f.name}(${f.length})`).join(' → ')}</p>
+                  </div>
+                ))}
+                <p className="mt-2 text-xs italic text-ink-700/50">{construct.dox_protocol.logic}</p>
+              </div>
+            )}
+          </div>
+
+          {/* Track B */}
+          <div className="card p-6">
+            <h2 className="font-display text-lg font-bold text-ink-900">4 · De Novo molecules <span className="text-xs font-normal text-ink-700/50">· Track B</span></h2>
+            {engineReady && !engineReady.available && (
+              <p className="mt-2 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">De-Novo-LLM not detected: {engineReady.reason}</p>
+            )}
+            {!ranked ? (
+              <>
+                <button onClick={runDesign} disabled={!!busy} className="btn-primary mt-4 px-5 py-2.5 disabled:opacity-50">
+                  {busy === 'Generating candidate molecules…' ? 'Generating…' : 'Generate candidates'}
+                </button>
+                {busy === 'Generating candidate molecules…' && (
+                  <div className="mt-3 flex items-center gap-2 text-sm text-ink-700/70">
+                    <span className="cell-loader"><span className="m" /><span className="n" /><span className="bud" /></span>
+                    {log[log.length - 1] || 'working…'}
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="mt-3 text-sm">
+                <p className="text-ink-700/70">
+                  {ranked.n_valid}/{ranked.n_generated} valid · {ranked.n_unique} unique
+                  {ranked.rdkit ? '' : ' · (install RDKit for validity/QED)'}
+                </p>
+                <div className="mt-2 max-h-64 overflow-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead className="text-ink-700/60"><tr><th className="pr-2">#</th><th className="pr-2">SMILES</th><th className="pr-2">rank</th><th>QED</th></tr></thead>
+                    <tbody>
+                      {ranked.candidates.slice(0, 25).map((c: any, i: number) => (
+                        <tr key={i} className="border-t border-cream-200">
+                          <td className="pr-2">{i + 1}</td>
+                          <td className="pr-2 font-mono">{c.seq}</td>
+                          <td className="pr-2">{c.scores?.rank_score ?? '—'}</td>
+                          <td>{c.scores?.qed ?? '—'}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <p className="mt-2 text-xs italic text-ink-700/50">Research hypotheses — not validated or synthesizable therapeutics.</p>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* Export + interpret */}
+      {analysis && (
+        <section className="mt-6 flex flex-wrap items-center gap-3">
+          <button onClick={() => reportPdf(payload())} className="btn-outline px-5 py-2.5 text-sm">Export PDF</button>
+          <button onClick={() => reportCsv(payload())} disabled={!ranked} className="btn-outline px-5 py-2.5 text-sm disabled:opacity-40">Export CSV</button>
+          <button onClick={runInterpret} disabled={!!busy} className="btn-ghost px-4 py-2 text-sm">Plain-language summary</button>
+        </section>
+      )}
+      {interpretation && (
+        <div className="card mt-4 whitespace-pre-wrap p-6 text-sm text-ink-800">{interpretation}</div>
+      )}
+
+      <p className="mt-8 text-center text-xs text-ink-700/50">
+        Local research tool. Epigenetic age is real (Horvath 2013). The construct and molecules are illustrative research
+        outputs — not medical advice, not validated therapeutics.
+      </p>
+    </div>
+  );
+}
+
+function Stat({ label, value, big, tone }: { label: string; value: string; big?: boolean; tone?: 'good' | 'bad' }) {
+  const color = tone === 'bad' ? 'text-red-600' : tone === 'good' ? 'text-green-600' : 'text-ink-900';
+  return (
+    <div>
+      <p className="text-xs uppercase tracking-wide text-ink-700/50">{label}</p>
+      <p className={`font-display font-extrabold ${big ? 'text-3xl' : 'text-xl'} ${color}`}>{value}</p>
+    </div>
+  );
+}
+
+function buildPayload(analysis: any, construct: any, ranked: any, interpretation?: string | null) {
+  return {
+    epigenetic_age: analysis?.epigenetic_age,
+    targets: analysis?.targets,
+    construct,
+    candidates: ranked?.candidates,
+    interpretation: interpretation || undefined,
+  };
+}

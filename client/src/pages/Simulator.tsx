@@ -1,6 +1,8 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Icon from '../components/Icon';
+import SimulatorLocal from './SimulatorLocal';
+import { checkBackend } from '../api/simulator';
 
 // ---- The De novo LLM pipeline stages (front-end simulation) ----------------
 const PHASES = [
@@ -87,6 +89,18 @@ export default function Simulator() {
   const timers = useRef<number[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // If the local research backend is reachable (only on the user's laptop),
+  // switch to the real pipeline. On the public site this stays false, so the
+  // illustrative demo below renders unchanged.
+  const [backendReady, setBackendReady] = useState<boolean | null>(null);
+  useEffect(() => {
+    let alive = true;
+    checkBackend().then((ok) => alive && setBackendReady(ok));
+    return () => {
+      alive = false;
+    };
+  }, []);
+
   const clearTimers = () => {
     timers.current.forEach((t) => clearTimeout(t));
     timers.current = [];
@@ -145,6 +159,9 @@ export default function Simulator() {
   };
 
   const progress = status === 'done' ? 100 : status === 'running' ? ((phase + 1) / PHASES.length) * 100 : 0;
+
+  // Real pipeline when the local backend is up; otherwise the illustrative demo.
+  if (backendReady) return <SimulatorLocal />;
 
   return (
     <div>

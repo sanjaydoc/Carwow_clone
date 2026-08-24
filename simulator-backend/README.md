@@ -30,17 +30,39 @@ machine.
 
 ## Quick start
 
+**1. Backend (the pipeline):**
 ```bash
 cd simulator-backend
 python3.12 -m venv .venv
 source .venv/bin/activate            # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-cp .env.example .env                 # then edit paths if needed
+cp .env.example .env                 # edit DENOVO_LLM_DIR for Track B
 uvicorn app.main:app --reload --port 8000
-# open http://localhost:8000  (API docs at http://localhost:8000/docs)
 ```
 
-Or use the helper: `./run.sh` (Linux/macOS) — see `run.sh`.
+**2. The Simulator UI** (built once, then served by the backend):
+```bash
+cd ../client
+npm install
+npm run build:local                  # → client/dist-local, served by the backend
+```
+Now open **http://localhost:8000** — the Simulator page detects the backend and
+switches to the **live** pipeline (upload methylation → real epigenetic age →
+targets → construct → molecules). Refresh/redeploy the backend to pick up a new
+UI build.
+
+**Without building the UI**, you can still drive everything from the built-in
+**API docs at http://localhost:8000/docs** (upload files, run `/analyze`,
+`/construct`, `/design`).
+
+Helper: `./run.sh` (Linux/macOS) starts the backend.
+
+### Get real data to test with
+- **Methylation with ages** (epigenetic clock): GEO **GSE40279** —
+  `https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE40279`
+- **Genotype** (patient-style upload): **openSNP** — `https://opensnp.org/genotypes`
+- A tiny **built-in fixture** ships in `data/samples/` so it works before you
+  download anything (Horvath's example — predicted vs real age 39→39.8, 28→26.4).
 
 ## Layout
 
