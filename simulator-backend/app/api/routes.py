@@ -11,7 +11,7 @@ import json
 from pathlib import Path
 
 from fastapi import APIRouter, Body, File, Form, HTTPException, UploadFile
-from fastapi.responses import StreamingResponse
+from fastapi.responses import Response, StreamingResponse
 
 from ..config import get_settings
 from ..construct import assemble_osk_teton
@@ -21,6 +21,7 @@ from ..epiage.targets import design_objectives
 from ..ingest import load_genotype, load_methylation
 from ..ingest.methylation import list_samples
 from ..jobs import manager
+from ..report import build_pdf, candidates_csv, interpret_results
 from ..scoring import rank_candidates
 
 router = APIRouter()
@@ -158,3 +159,33 @@ async def job_stream(job_id: str) -> StreamingResponse:
         yield f"data: {json.dumps(job.public())}\n\n"  # final snapshot with result
 
     return StreamingResponse(gen(), media_type="text/event-stream")
+
+
+# ---- Reports (D6) --------------------------------------------------------
+@router.post("/report/csv")
+async def report_csv(payload: dict = Body(default={})) -> Response:
+    csv_text = candidates_csv(payload.get("candidates", []))
+    return Response(
+        content=csv_text,
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=candidates.csv"},
+    )
+
+
+@router.post("/report/pdf")
+async def report_pdf(payload: dict = Body(default={})) -> Response:
+    pdf = build_pdf(payload)
+    return Response(
+        content=pdf,
+        media_type="application/pdf",
+        headers={"Content-Disposition": "attachment; filename=simulator-report.pdf"},
+    )
+
+
+@router.post("/interpret")
+async def interpret(payload: dict = Body(default={})) -> dict:
+    """Optional plain-language write-up via the existing Worker (best-effort)."""
+    text = await asyncio.to_thread(interpret_results, payload, payload.get("endpoint")
+                                   or "https://stemcells-chat.dr-sanjayanbu.workers.dev",
+                                   payload.get("mode", "concise"))
+    return {"interpretation": text, "available": text is not None}
