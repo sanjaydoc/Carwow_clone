@@ -446,9 +446,15 @@ export default function ChatWidget() {
               </span>
               <div className="min-w-0 flex-1">
                 <p className="font-bold leading-tight">StemCells Protocol AI</p>
-                <p className="flex items-center gap-1.5 text-xs text-white/60">
-                  <span className="h-2 w-2 rounded-full bg-green-400" /> Online · general info only
-                </p>
+                {busy ? (
+                  <p className="flex items-center gap-2 text-xs text-white/70">
+                    <DnaLoader /> Generating…
+                  </p>
+                ) : (
+                  <p className="flex items-center gap-1.5 text-xs text-white/60">
+                    <span className="h-2 w-2 rounded-full bg-green-400" /> Online · general info only
+                  </p>
+                )}
               </div>
               {messages.length > 0 && (
                 <div className="relative">
@@ -520,7 +526,7 @@ export default function ChatWidget() {
                   role={m.role}
                   text={m.text}
                   attachments={m.attachments}
-                  typing={busy && i === messages.length - 1 && m.role === 'assistant' && !m.text}
+                  loading={busy && i === messages.length - 1 && m.role === 'assistant'}
                 />
               ))}
             </div>
@@ -668,12 +674,12 @@ function Bubble({
   role,
   text,
   attachments,
-  typing,
+  loading,
 }: {
   role: 'user' | 'assistant';
   text: string;
   attachments?: { name: string; kind: 'image' | 'document' }[];
-  typing?: boolean;
+  loading?: boolean;
 }) {
   const isUser = role === 'user';
   return (
@@ -700,12 +706,13 @@ function Bubble({
             ))}
           </div>
         )}
-        {typing ? (
-          <TypingDots />
-        ) : isUser ? (
+        {isUser ? (
           text
         ) : (
-          <div className="chat-md" dangerouslySetInnerHTML={{ __html: mdToHtml(text) }} />
+          <>
+            {text && <div className="chat-md" dangerouslySetInnerHTML={{ __html: mdToHtml(text) }} />}
+            {loading && <DnaLoader className={text ? 'mt-2' : ''} />}
+          </>
         )}
       </div>
     </div>
@@ -769,12 +776,15 @@ function mdToHtml(src: string): string {
   return html;
 }
 
-function TypingDots() {
+// Spinning DNA-helix loader — shown while the assistant is generating.
+function DnaLoader({ className = '' }: { className?: string }) {
   return (
-    <span className="flex gap-1 py-1">
-      <span className="h-2 w-2 animate-bounce rounded-full bg-ink-700/40 [animation-delay:-0.3s]" />
-      <span className="h-2 w-2 animate-bounce rounded-full bg-ink-700/40 [animation-delay:-0.15s]" />
-      <span className="h-2 w-2 animate-bounce rounded-full bg-ink-700/40" />
+    <span className={`dna-loader ${className}`} role="status" aria-label="Generating answer">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <i key={i}>
+          <span />
+        </i>
+      ))}
     </span>
   );
 }
