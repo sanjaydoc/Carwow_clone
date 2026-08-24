@@ -6,15 +6,22 @@ Current endpoints (more land with Track A/B):
 """
 from __future__ import annotations
 
+import asyncio
+import json
 from pathlib import Path
 
-from fastapi import APIRouter, File, Form, UploadFile
+from fastapi import APIRouter, Body, File, Form, HTTPException, UploadFile
+from fastapi.responses import StreamingResponse
 
 from ..config import get_settings
+from ..construct import assemble_osk_teton
+from ..design import DesignRequest, get_engine
 from ..epiage import discover_targets, load_horvath
 from ..epiage.targets import design_objectives
 from ..ingest import load_genotype, load_methylation
 from ..ingest.methylation import list_samples
+from ..jobs import manager
+from ..scoring import rank_candidates
 
 router = APIRouter()
 settings = get_settings()
@@ -71,3 +78,83 @@ async def analyze(
             "n_variants": geno.n_variants,
         }
     return out
+
+
+@router.post("/construct")
+async def construct(spec: dict = Body(default={})) -> dict:
+    """Track A (D9): assemble the OSK Tet-On vector; split across AAVs if needed."""
+    result = assemble_osk_teton(
+        constitutive_promoter=spec.get("constitutive_promoter", "efs"),
+        polya=spec.get("polya", "min_polya"),
+        include_wpre=spec.get("include_wpre", True),
+        capsid=spec.get("capsid", "aav9"),
+        objectives=spec.get("objectives", []),
+    )
+    return result.public()
+
+
+@router.get("/engines")
+async def engines() -> dict:
+    """Track B engine availability (does the De-Novo-LLM repo run here?)."""
+    engine = get_engine("denovo-llm")
+    ok, reason = engine.available()
+    return {"denovo-llm": {"available": ok, "reason": reason}}
+
+
+@router.post("/design")
+async def design(spec: dict = Body(default={})) -> dict:
+    """Track B (D4+D5): generate novel candidate molecules for the targets.
+
+    Runs as a background job (generation is slow + GPU-serialized). Returns a
+    job id; stream progress at /api/jobs/{id}/stream.
+    """
+    req = DesignRequest(
+        modality=spec.get("modality", "smiles"),
+        n=int(spec.get("n", 50)),
+        property=spec.get("property"),
+        mode=spec.get("mode", "max"),
+        target_value=spec.get("target_value"),
+        model=spec.get("model"),
+        config=spec.get("config"),
+        objectives=spec.get("objectives", []),
+    )
+    engine = get_engine("denovo-llm")
+
+    async def body(job) -> dict:
+        # Serialize GPU work (6 GB VRAM: one model at a time).
+        async with manager.gpu_lock:
+            job.emit("acquiring GPU / launching De-Novo-LLM…", progress=0.1)
+            candidates = await asyncio.to_thread(engine.generate, req, job.emit)
+        job.emit(f"scoring {len(candidates)} candidates…", progress=0.85)
+        ranked = rank_candidates(candidates)
+        ranked["modality"] = req.modality
+        ranked["disclaimer"] = (
+            "Candidates are AI-generated research hypotheses — not validated, "
+            "synthesizable, or approved therapeutics."
+        )
+        return ranked
+
+    job = manager.start("design", body)
+    return {"job_id": job.id}
+
+
+@router.get("/jobs/{job_id}")
+async def job_status(job_id: str) -> dict:
+    job = manager.get(job_id)
+    if not job:
+        raise HTTPException(404, "job not found")
+    return job.public()
+
+
+@router.get("/jobs/{job_id}/stream")
+async def job_stream(job_id: str) -> StreamingResponse:
+    job = manager.get(job_id)
+    if not job:
+        raise HTTPException(404, "job not found")
+
+    async def gen():
+        async for event in manager.stream(job):
+            yield f"data: {json.dumps(event)}\n\n"
+        yield f"data: {json.dumps(job.public())}\n\n"  # final snapshot with result
+
+    return StreamingResponse(gen(), media_type="text/event-stream")
