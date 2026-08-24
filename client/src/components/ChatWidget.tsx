@@ -60,6 +60,7 @@ const LANG_NAME: Record<string, string> = {
 // navigating away, or reloading the page.
 const STORAGE_KEY = 'stemcells_chat_history_v1';
 const LANG_KEY = 'stemcells_chat_lang_v1';
+const DOCTOR_KEY = 'stemcells_chat_doctor_v1';
 
 function loadMessages(): UIMsg[] {
   try {
@@ -85,6 +86,13 @@ export default function ChatWidget() {
       return localStorage.getItem(LANG_KEY) || '';
     } catch {
       return '';
+    }
+  });
+  const [doctorMode, setDoctorMode] = useState(() => {
+    try {
+      return localStorage.getItem(DOCTOR_KEY) === '1';
+    } catch {
+      return false;
     }
   });
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -225,6 +233,16 @@ export default function ChatWidget() {
     }
   }, [voiceLang]);
 
+  // Remember the Doctor-mode preference across visits.
+  useEffect(() => {
+    try {
+      if (doctorMode) localStorage.setItem(DOCTOR_KEY, '1');
+      else localStorage.removeItem(DOCTOR_KEY);
+    } catch {
+      /* ignore */
+    }
+  }, [doctorMode]);
+
   // Clean up object URLs.
   useEffect(() => {
     return () => attachments.forEach((a) => a.previewUrl && URL.revokeObjectURL(a.previewUrl));
@@ -336,6 +354,7 @@ export default function ChatWidget() {
       await streamChat({
         messages: history,
         signal: ctrl.signal,
+        mode: doctorMode ? 'doctor' : 'concise',
         onText: (chunk) => {
           acc += chunk;
           setMessages((m) => {
@@ -554,7 +573,7 @@ export default function ChatWidget() {
                   ))}
                 </div>
               )}
-              <div className="mb-2 flex items-center gap-1.5 text-xs text-ink-700/60">
+              <div className="mb-2 flex flex-wrap items-center gap-x-1.5 gap-y-2 text-xs text-ink-700/60">
                 <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2">
                   <circle cx="12" cy="12" r="9" />
                   <path d="M3 12h18M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18" />
@@ -594,6 +613,29 @@ export default function ChatWidget() {
                   </optgroup>
                 </select>
                 <span className="hidden text-ink-700/45 sm:inline">· replies &amp; voice</span>
+
+                <button
+                  type="button"
+                  onClick={() => setDoctorMode((v) => !v)}
+                  aria-pressed={doctorMode}
+                  title="Doctor mode: full, detailed clinical answers. Off: short, patient-friendly answers."
+                  className={`ml-auto flex items-center gap-1.5 rounded-full px-1.5 py-0.5 font-semibold transition ${
+                    doctorMode ? 'text-clay-700' : 'text-ink-700/70 hover:text-ink-900'
+                  }`}
+                >
+                  <span
+                    className={`relative h-4 w-7 shrink-0 rounded-full transition-colors ${
+                      doctorMode ? 'bg-clay-500' : 'bg-cream-300'
+                    }`}
+                  >
+                    <span
+                      className={`absolute top-0.5 h-3 w-3 rounded-full bg-white shadow transition-all ${
+                        doctorMode ? 'left-3.5' : 'left-0.5'
+                      }`}
+                    />
+                  </span>
+                  Doctor mode
+                </button>
               </div>
               <div className="flex items-end gap-2">
                 <input

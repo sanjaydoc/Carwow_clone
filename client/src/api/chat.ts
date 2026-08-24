@@ -35,6 +35,7 @@ export async function streamChat(opts: {
   messages: ChatMessage[];
   onText: (chunk: string) => void;
   signal?: AbortSignal;
+  mode?: 'concise' | 'doctor';
 }): Promise<string> {
   const endpoint = chatEndpoint();
   if (!endpoint) {
@@ -44,7 +45,7 @@ export async function streamChat(opts: {
   const res = await fetch(endpoint, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ messages: opts.messages }),
+    body: JSON.stringify({ messages: opts.messages, mode: opts.mode || 'concise' }),
     signal: opts.signal,
   });
 

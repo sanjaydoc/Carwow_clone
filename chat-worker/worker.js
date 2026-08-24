@@ -70,6 +70,21 @@ CRITICAL SAFETY for any image/tracing read:
 - Always advise confirming the interpretation with a qualified doctor / cardiologist / radiologist before acting on it.
 - Image quality matters — if the image is unclear, unlabelled, or uncalibrated, say so and interpret cautiously.`;
 
+// Answer-style blocks appended to the system prompt depending on the mode the
+// user picked in the UI ("Doctor mode" toggle). The COMPLETENESS rule above
+// still applies in BOTH modes — never truncate a list in either mode.
+const STYLE_CONCISE = `ANSWER STYLE — CONCISE (default; the "Doctor mode" toggle is OFF):
+The reader is almost always a patient or member of the public, not a clinician. Keep replies short, direct and genuinely useful.
+- LEAD with the exact thing they asked for, in the first line. Do not bury it under background or disclaimers.
+- ALWAYS deliver the practical answer. If they ask for a dose, give the typical general dosing straight away — ideally as a small, compact table (e.g. columns for age/weight, dose, how often, max per day). Give the usual general figures (this is general drug information, not an individual prescription); add ONE short line telling them to confirm the exact dose with their doctor/pharmacist. Never refuse to state typical dosing or reply only with "ask your doctor".
+- Keep it to a few short sentences or one small table. Avoid long multi-heading breakdowns, mechanisms and theory unless the user explicitly asks for detail.
+- Keep safety notes to a single short line, unless it is a genuine emergency (then lead with the emergency advice).
+- Still obey the COMPLETENESS rule: if the question or upload is a list, cover every item — being concise means shorter per item, NOT dropping items.
+- For an uploaded scan/tracing/report, still give the plain-language patient summary, but keep it tight.`;
+
+const STYLE_DOCTOR = `ANSWER STYLE — DOCTOR MODE (the toggle is ON):
+The reader wants complete, clinically detailed information. Be thorough and structured: full systematic breakdowns, all findings, mechanisms, typical dosing ranges and adjustments, relevant differentials, interactions and caveats, and the complete structured read for any uploaded scan/tracing/report. Depth and completeness are the priority; still be well-organised with clear headings and tables where useful.`;
+
 function corsHeaders(origin, allowed) {
   const ok = allowed.length === 0 || allowed.includes(origin);
   return {
@@ -179,6 +194,10 @@ export default {
     const messages = Array.isArray(payload?.messages) ? payload.messages.slice(-MAX_MESSAGES) : [];
     if (!messages.length) return json(400, { error: 'No messages' }, cors);
 
+    // Pick the answer style from the UI's "Doctor mode" toggle (default: concise).
+    const style = payload?.mode === 'doctor' ? STYLE_DOCTOR : STYLE_CONCISE;
+    const system = `${SYSTEM_PROMPT}\n\n${style}`;
+
     // Call Anthropic (streaming).
     const upstream = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -190,7 +209,7 @@ export default {
       body: JSON.stringify({
         model: env.MODEL || DEFAULT_MODEL,
         max_tokens: MAX_TOKENS,
-        system: SYSTEM_PROMPT,
+        system,
         stream: true,
         messages,
       }),
