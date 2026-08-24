@@ -1,0 +1,17 @@
+# StemCells Protocol Simulator backend — local research app.
+# Kept intentionally light; the heavy ML deps live in the De-Novo-LLM repo,
+# which this backend drives as a subprocess (Track B).
+
+fastapi>=0.111
+uvicorn[standard]>=0.30
+pydantic>=2.7
+pydantic-settings>=2.3
+python-multipart>=0.0.9   # file uploads
+numpy>=1.26
+pandas>=2.2
+PyYAML>=6.0
+reportlab>=4.2            # PDF report export (D6)
+
+# Optional — enables in-backend SMILES scoring (D5). If absent, the backend
+# falls back to `denovo evaluate` from the De-Novo-LLM repo.
+#   pip install rdkit
