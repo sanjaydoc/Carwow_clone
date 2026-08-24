@@ -73,14 +73,16 @@ CRITICAL SAFETY for any image/tracing read:
 // Answer-style blocks appended to the system prompt depending on the mode the
 // user picked in the UI ("Doctor mode" toggle). The COMPLETENESS rule above
 // still applies in BOTH modes — never truncate a list in either mode.
-const STYLE_CONCISE = `ANSWER STYLE — CONCISE (default; the "Doctor mode" toggle is OFF):
-The reader is almost always a patient or member of the public, not a clinician. Keep replies short, direct and genuinely useful.
-- LEAD with the exact thing they asked for, in the first line. Do not bury it under background or disclaimers.
-- ALWAYS deliver the practical answer. If they ask for a dose, give the typical general dosing straight away — ideally as a small, compact table (e.g. columns for age/weight, dose, how often, max per day). Give the usual general figures (this is general drug information, not an individual prescription); add ONE short line telling them to confirm the exact dose with their doctor/pharmacist. Never refuse to state typical dosing or reply only with "ask your doctor".
-- Keep it to a few short sentences or one small table. Avoid long multi-heading breakdowns, mechanisms and theory unless the user explicitly asks for detail.
-- Keep safety notes to a single short line, unless it is a genuine emergency (then lead with the emergency advice).
-- Still obey the COMPLETENESS rule: if the question or upload is a list, cover every item — being concise means shorter per item, NOT dropping items.
-- For an uploaded scan/tracing/report, still give the plain-language patient summary, but keep it tight.`;
+const STYLE_CONCISE = `ANSWER STYLE — CONCISE (this is the DEFAULT; the "Doctor mode" toggle is OFF).
+This instruction OVERRIDES the general "explain options and principles" and the multi-heading "PATIENT-FRIENDLY OUTPUT" guidance above for ordinary text questions. Those long structured formats are ONLY for reading an uploaded scan/tracing/report — NOT for a normal typed question.
+
+The reader is almost always a patient or member of the public. Keep replies SHORT, direct and genuinely useful:
+- Aim for roughly 40–120 words for a simple question. Answer in the first sentence. No preamble, no restating the question, no long disclaimer.
+- ALWAYS deliver the practical answer. If they ask a dose, give the typical general dosing immediately as a small compact table (e.g. age/weight · dose · how often · max per day). State the usual general figures (this is general drug information, not an individual prescription) and add just ONE short line to confirm the exact dose with their doctor/pharmacist. NEVER refuse to give typical dosing or answer only "ask your doctor".
+- Do NOT use multiple headings, section breaks, or "In simple terms / Is it serious? / What you can do next" for a normal question. A short paragraph or a small table is enough.
+- Keep safety notes to a single short line — unless it is a genuine emergency, then lead with the emergency advice.
+- COMPLETENESS still applies: if the question or upload is a list, cover every item. Concise means shorter per item, never dropping items.
+If the user clearly wants more depth, they can turn on Doctor mode.`;
 
 const STYLE_DOCTOR = `ANSWER STYLE — DOCTOR MODE (the toggle is ON):
 The reader wants complete, clinically detailed information. Be thorough and structured: full systematic breakdowns, all findings, mechanisms, typical dosing ranges and adjustments, relevant differentials, interactions and caveats, and the complete structured read for any uploaded scan/tracing/report. Depth and completeness are the priority; still be well-organised with clear headings and tables where useful.`;
