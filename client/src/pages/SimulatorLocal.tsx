@@ -155,6 +155,7 @@ export default function SimulatorLocal() {
         sample: sample || undefined,
         chronologicalAge: age ? Number(age) : null,
         tissueKey: disease?.tissue_key,
+        department: disease?.department,
       });
       setAnalysis(res);
     } catch (e: any) {
@@ -433,6 +434,37 @@ export default function SimulatorLocal() {
           )}
         </div>
       </section>
+
+      {/* Genome personalization (when a genotype was uploaded) */}
+      {analysis?.genotype?.personalization && (
+        <section className="mt-6 card p-6">
+          <h2 className="font-display text-lg font-bold text-ink-900">Genome personalization <span className="text-xs font-normal text-ink-700/50">· {analysis.genotype.source} · {analysis.genotype.n_variants.toLocaleString()} variants</span></h2>
+          <p className="text-sm text-ink-700/60">{analysis.genotype.personalization.summary}</p>
+          <div className="mt-3 overflow-x-auto">
+            <table className="w-full min-w-[560px] text-left text-sm">
+              <thead className="text-ink-700/60"><tr><th className="py-1 pr-3">Gene</th><th className="pr-3">Variant</th><th className="pr-3">You</th><th className="pr-3">Meaning</th><th>Relevant</th></tr></thead>
+              <tbody>
+                {analysis.genotype.personalization.findings
+                  .filter((f: any) => f.risk_level !== 'typical' || f.relevant)
+                  .slice(0, 12)
+                  .map((f: any) => (
+                    <tr key={f.rsid} className="border-t border-cream-200 align-top">
+                      <td className="py-1.5 pr-3 font-semibold text-ink-900">{f.gene}</td>
+                      <td className="pr-3 font-mono text-xs">{f.rsid}</td>
+                      <td className="pr-3 font-mono text-xs">{f.genotype}</td>
+                      <td className="pr-3 text-xs">
+                        <span className={`chip mr-1 ${f.risk_level === 'higher' ? 'bg-red-50 text-red-700' : f.risk_level === 'protective' ? 'bg-green-50 text-green-700' : 'bg-cream-100 text-ink-700'}`}>{f.risk_level}</span>
+                        {f.interpretation}
+                      </td>
+                      <td>{f.relevant ? <span className="chip bg-clay-50 text-clay-700">★ {disease?.department}</span> : '—'}</td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="mt-2 text-xs italic text-ink-700/50">{analysis.genotype.personalization.disclaimer}</p>
+        </section>
+      )}
 
       {/* Batch case-vs-control compare (curated dataset) */}
       {disease?.dataset_ready && datasetLabel && (

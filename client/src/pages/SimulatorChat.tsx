@@ -47,6 +47,7 @@ export default function SimulatorChat({ onExit }: { onExit?: () => void }) {
   const [downloading, setDownloading] = useState(false);
   const [dlMsg, setDlMsg] = useState('');
   const [methFile, setMethFile] = useState<File | null>(null);
+  const [genoFile, setGenoFile] = useState<File | null>(null);
   const [samples, setSamples] = useState<string[]>([]);
   const [sample, setSample] = useState('');
   const [age, setAge] = useState('');
@@ -93,6 +94,7 @@ export default function SimulatorChat({ onExit }: { onExit?: () => void }) {
     setDiseaseKey(d.key);
     setDatasetLabel('');
     setMethFile(null);
+    setGenoFile(null);
     setSamples([]);
     setSample('');
     setAnalysis(null);
@@ -149,9 +151,9 @@ export default function SimulatorChat({ onExit }: { onExit?: () => void }) {
     say('user', <span>Compute epigenetic age{sample ? ` for ${sample}` : ''}.</span>);
     try {
       const res = await analyze({
-        methylation: methFile, dataset: datasetLabel || undefined,
+        methylation: methFile, dataset: datasetLabel || undefined, genotype: genoFile,
         sample: sample || undefined, chronologicalAge: age ? Number(age) : null,
-        tissueKey: disease?.tissue_key,
+        tissueKey: disease?.tissue_key, department: disease?.department,
       });
       setAnalysis(res);
       const ea = res.epigenetic_age;
@@ -173,6 +175,22 @@ export default function SimulatorChat({ onExit }: { onExit?: () => void }) {
           <p className="mt-2">How would you like to build the therapy?</p>
         </div>
       ));
+      const pz = res.genotype?.personalization;
+      if (pz) {
+        const hits = pz.findings.filter((f: any) => f.relevant && f.risk_level !== 'typical').slice(0, 4);
+        say('assistant', (
+          <div>
+            <p><b>Genome</b> ({res.genotype.source}, {res.genotype.n_variants.toLocaleString()} variants): {pz.summary}</p>
+            {hits.length > 0 && (
+              <ul className="mt-1 list-disc pl-4 text-xs text-ink-700/70">
+                {hits.map((f: any) => (
+                  <li key={f.rsid}><b>{f.gene}</b> ({f.genotype}) — <span className={f.risk_level === 'protective' ? 'text-green-700' : 'text-red-700'}>{f.risk_level}</span>: {f.interpretation}</li>
+                ))}
+              </ul>
+            )}
+          </div>
+        ));
+      }
       setStage('approach');
     } catch (e: any) { setError(e.message || 'Analyze failed'); }
     finally { setBusy(''); }
@@ -335,6 +353,10 @@ export default function SimulatorChat({ onExit }: { onExit?: () => void }) {
                 <label className="btn-outline cursor-pointer px-4 py-2 text-sm">
                   Upload methylation
                   <input type="file" accept=".csv,.txt,.tsv,.gz" className="hidden" onChange={(e) => pickMeth(e.target.files?.[0] ?? null)} />
+                </label>
+                <label className={`cursor-pointer px-4 py-2 text-sm ${genoFile ? 'btn-primary' : 'btn-ghost'}`}>
+                  {genoFile ? '✓ Genome added' : '+ Genome (optional)'}
+                  <input type="file" accept=".txt,.csv,.vcf,.gz" className="hidden" onChange={(e) => setGenoFile(e.target.files?.[0] ?? null)} />
                 </label>
                 {samples.length > 0 && (
                   <select value={sample} onChange={(e) => setSample(e.target.value)} className="input w-40">

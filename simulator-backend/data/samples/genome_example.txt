@@ -1,0 +1,17 @@
+# Example genotype file (23andMe raw-data format) for testing the Simulator's
+# genome personalization. Illustrative demo variants — NOT a real person.
+# rsid	chromosome	position	genotype
+rs333	3	46414947	DI
+rs2476601	1	114377568	AG
+rs4349859	6	31213013	AA
+rs34637584	12	40340400	GG
+rs7903146	10	112998590	TT
+rs2187668	6	32605884	CT
+rs1333049	9	22125503	CC
+rs2802292	6	108587315	GG
+rs429358	19	45411941	CT
+rs7412	19	45412079	CC
+rs4244285	10	96541616	AG
+rs1142345	6	18130918	AG
+rs9923231	16	31107689	TT
+rs1801133	1	11856378	CT

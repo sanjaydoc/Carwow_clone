@@ -89,7 +89,8 @@ def _load_array(path: Path, fmt: str, build: str | None) -> Genotype:
             else:
                 geno = parts[3]
             geno = geno.strip().upper()
-            if geno and geno not in ("--", "00", "II", "DD", "DI"):
+            # Keep real indel calls (D/I) — CCR5-Δ32 (rs333) is an indel; only drop no-calls.
+            if geno and geno not in ("--", "00", "NN", "__"):
                 calls[rsid] = geno
     return Genotype(source=fmt, calls=calls, n_variants=len(calls), build=build)
 

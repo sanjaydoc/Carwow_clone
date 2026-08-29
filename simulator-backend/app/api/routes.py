@@ -35,6 +35,7 @@ from ..construct.parts import CAPSIDS
 from ..design import DesignRequest, get_engine
 from ..epiage import discover_targets, load_horvath
 from ..epiage.targets import design_objectives
+from ..genome import personalize as personalize_genome
 from ..ingest import load_genotype, load_methylation
 from ..ingest.methylation import list_samples
 from ..jobs import manager
@@ -164,6 +165,7 @@ async def analyze(
     sample: str | None = Form(None),
     chronological_age: float | None = Form(None),
     tissue_key: str | None = Form(None),
+    department: str | None = Form(None),
     top_targets: int = Form(20),
 ) -> dict:
     """Compute the REAL epigenetic age + target CpGs (no data leaves the machine).
@@ -204,6 +206,7 @@ async def analyze(
             "source": geno.source,
             "build": geno.build,
             "n_variants": geno.n_variants,
+            "personalization": personalize_genome(geno, department),
         }
     return out
 
