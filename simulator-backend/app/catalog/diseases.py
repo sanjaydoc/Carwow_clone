@@ -46,7 +46,9 @@ DATASETS: dict[str, dict] = {
         "platform": "Illumina 450K", "tissue": "Whole blood", "n": 656,
         "has_age": True, "condition": "Healthy ageing cohort (Hannum et al.)",
         "beta_file": "GSE40279_average_beta.txt.gz",
-        "note": "Large (~2 GB beta matrix); the downloader slices a few samples.",
+        "pick": "oldest",
+        "note": "Large (~1.2 GB); the downloader slices the OLDEST samples (with ages) "
+        "so you can see a big age-reversal projection.",
     },
     "GSE179571": {
         "accession": "GSE179571", "method": "suppl_avgbeta",

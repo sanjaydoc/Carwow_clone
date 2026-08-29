@@ -163,18 +163,20 @@ def _prep_suppl_avgbeta(src: Path, out_dir: Path, label: str, n: int, emit: Emit
 
 # ---- prep: GSE40279 (two files) ----------------------------------------------
 def _prep_gse40279(beta_src: Path, series_src: Path | None, out_dir: Path,
-                   label: str, n: int, emit: Emit) -> dict:
+                   label: str, n: int, emit: Emit, pick: str = "oldest") -> dict:
     # GSE40279's beta-matrix columns are internal labels (e.g. "X1001") that do
-    # NOT match the GSM accessions in the series-matrix — the ages line up with
-    # !Sample_title instead. Build BOTH maps (title + GSM) and resolve tolerantly
-    # (also handles an R-style leading "X" prefix on the beta-column names).
+    # NOT match the GSM accessions in the series-matrix — label matching is
+    # unreliable. The beta columns are, however, in the SAME ORDER as the samples
+    # in the series-matrix, so we pair ages by column POSITION (the epigenetic
+    # clock itself confirms the pairing: a sample labelled 80 should compute ~80).
+    # We also keep the label maps as a secondary check.
     gsm_age: dict[str, str] = {}
     title_age: dict[str, str] = {}
+    age_list: list[str] = []
     if series_src and series_src.exists():
         with _open(series_src) as fh:
             gsms: list[str] = []
             titles: list[str] = []
-            age_list: list[str] = []
             for line in fh:
                 if line.startswith("!Sample_geo_accession"):
                     gsms = [c.strip().strip('"') for c in line.rstrip("\n").split("\t")[1:]]
@@ -187,21 +189,33 @@ def _prep_gse40279(beta_src: Path, series_src: Path | None, out_dir: Path,
             gsm_age = {g: a for g, a in zip(gsms, age_list)}
             title_age = {t: a for t, a in zip(titles, age_list)}
 
-    def _resolve_age(name: str) -> str:
-        for key in (name, name.lstrip("X"), "X" + name, name.lstrip("X").lstrip("_")):
-            if key in title_age:
-                return title_age[key]
-            if key in gsm_age:
-                return gsm_age[key]
-        return ""
+    def _num(a: str) -> float | None:
+        try:
+            return float(a)
+        except (TypeError, ValueError):
+            return None
 
     meth_path = out_dir / f"methylation_{label}.csv"
     emit("parsing GSE40279 beta matrix…", progress=0.65)
     with _open(beta_src) as fh:
         rd = csv.reader(fh, delimiter="\t")
         header = next(rd)
-        keep = [0] + list(range(1, 1 + min(n, len(header) - 1)))
-        names = [header[i] for i in keep[1:]]
+        n_cols = len(header) - 1  # sample columns (col 0 = probe id)
+
+        # Decide which sample columns to keep. Column i (1-based sample index)
+        # pairs with age_list[i-1] positionally.
+        if pick == "oldest" and age_list:
+            ranked = sorted(
+                (i for i in range(1, n_cols + 1) if _num(age_list[i - 1] if i - 1 < len(age_list) else "") is not None),
+                key=lambda i: _num(age_list[i - 1]),
+                reverse=True,
+            )
+            chosen = ranked[:n] or list(range(1, 1 + min(n, n_cols)))
+        else:
+            chosen = list(range(1, 1 + min(n, n_cols)))
+
+        keep = [0] + chosen
+        names = [header[i] for i in chosen]
         rows = 0
         with open(meth_path, "w", newline="", encoding="utf-8") as mf:
             w = csv.writer(mf)
@@ -210,7 +224,19 @@ def _prep_gse40279(beta_src: Path, series_src: Path | None, out_dir: Path,
                 if len(row) > max(keep):
                     w.writerow([row[i] for i in keep])
                     rows += 1
-    resolved = {n_: _resolve_age(n_) for n_ in names}
+
+    def _resolve_age(name: str, col_index: int) -> str:
+        # Positional first (reliable for GSE40279), label maps as backup.
+        if col_index - 1 < len(age_list) and age_list[col_index - 1]:
+            return age_list[col_index - 1]
+        for key in (name, name.lstrip("X"), "X" + name):
+            if key in title_age:
+                return title_age[key]
+            if key in gsm_age:
+                return gsm_age[key]
+        return ""
+
+    resolved = {header[ci]: _resolve_age(header[ci], ci) for ci in chosen}
     _write_ages(out_dir, label, names, resolved, {})
     return {"samples": names, "ages": resolved,
             "diseases": {}, "n_probes": rows, "methylation_file": meth_path.name}
@@ -265,7 +291,8 @@ def download_and_prep(dataset: dict, out_dir: Path, download_dir: Path,
             except Exception as exc:  # ages optional
                 emit(f"ages unavailable ({exc}); continuing without ages", progress=0.6)
                 series = None
-        result = _prep_gse40279(beta, series, out_dir, label, n, emit)
+        result = _prep_gse40279(beta, series, out_dir, label, n, emit,
+                                pick=dataset.get("pick", "oldest"))
 
     else:
         raise RuntimeError(f"unknown dataset method: {method}")
