@@ -39,6 +39,7 @@ export interface DiseaseEntry {
   route: string;
   status: string;
   default_approach: string;
+  tissue_key: string;
   tissue: string;
   capsid: string;
   construct_route: string;
@@ -114,6 +115,16 @@ export async function analyze(opts: {
 
 export async function assembleConstruct(spec: any = {}): Promise<any> {
   const res = await fetch(api('/api/construct'), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(spec),
+  });
+  return res.json();
+}
+
+/** Design an IV exosome carrier for a novel small molecule (Track B). */
+export async function deliverExosome(spec: any = {}): Promise<any> {
+  const res = await fetch(api('/api/deliver/exosome'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(spec),

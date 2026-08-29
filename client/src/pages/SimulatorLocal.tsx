@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Icon from '../components/Icon';
+import SimulatorChat from './SimulatorChat';
 import {
   analyze,
   assembleConstruct,
@@ -29,6 +30,7 @@ import {
 type Approach = 'both' | 'er100' | 'molecules';
 
 export default function SimulatorLocal() {
+  const [mode, setMode] = useState<'chat' | 'advanced'>('chat');
   const [catalog, setCatalog] = useState<Catalog | null>(null);
   const [diseaseKey, setDiseaseKey] = useState('');
   const [approach, setApproach] = useState<Approach>('both');
@@ -209,6 +211,8 @@ export default function SimulatorLocal() {
   const showA = approach !== 'molecules';
   const showB = approach !== 'er100';
 
+  if (mode === 'chat') return <SimulatorChat onExit={() => setMode('advanced')} />;
+
   return (
     <div className="container-x py-10">
       {/* Connected banner */}
@@ -219,12 +223,15 @@ export default function SimulatorLocal() {
         </p>
       </div>
 
-      <div className="flex items-center gap-3">
-        <span className="icon-tile h-12 w-12"><Icon name="dna" className="h-6 w-6" /></span>
-        <div>
-          <h1 className="font-display text-3xl font-extrabold text-ink-900">Protocol Simulator — live</h1>
-          <p className="text-ink-700/70">Pick a disease → dataset → real epigenetic age → ER-100 construct &amp; De Novo LLM molecules.</p>
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <span className="icon-tile h-12 w-12"><Icon name="dna" className="h-6 w-6" /></span>
+          <div>
+            <h1 className="font-display text-3xl font-extrabold text-ink-900">Protocol Simulator — live</h1>
+            <p className="text-ink-700/70">Pick a disease → dataset → real epigenetic age → ER-100 construct &amp; De Novo LLM molecules.</p>
+          </div>
         </div>
+        <button onClick={() => setMode('chat')} className="btn-ghost shrink-0 px-3 py-1.5 text-xs">← Chat view</button>
       </div>
 
       {error && <p className="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</p>}

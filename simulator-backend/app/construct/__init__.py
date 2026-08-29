@@ -7,6 +7,7 @@ checks the AAV packaging limit.
 """
 
 from .assembler import ConstructResult, assemble_osk_teton
+from .exosome import design_exosome_delivery
 from .parts import PARTS, Part
 
-__all__ = ["ConstructResult", "assemble_osk_teton", "PARTS", "Part"]
+__all__ = ["ConstructResult", "assemble_osk_teton", "design_exosome_delivery", "PARTS", "Part"]

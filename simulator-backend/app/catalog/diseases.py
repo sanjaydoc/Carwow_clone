@@ -209,6 +209,7 @@ def disease_catalog() -> dict:
             "route": route,
             "status": status,
             "default_approach": mapping.get("approach", "both"),
+            "tissue_key": tissue_key,
             "tissue": preset["tissue"],
             "capsid": preset["capsid"],
             "construct_route": preset["route"],

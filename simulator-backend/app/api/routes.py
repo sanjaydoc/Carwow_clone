@@ -29,7 +29,7 @@ from ..catalog import (
     download_and_prep,
 )
 from ..config import get_settings
-from ..construct import assemble_osk_teton
+from ..construct import assemble_osk_teton, design_exosome_delivery
 from ..construct.parts import CAPSIDS
 from ..design import DesignRequest, get_engine
 from ..epiage import discover_targets, load_horvath
@@ -189,7 +189,14 @@ async def dataset_samples(label: str) -> dict:
 
 @router.post("/construct")
 async def construct(spec: dict = Body(default={})) -> dict:
-    """Track A (D9): assemble the OSK Tet-On vector; split across AAVs if needed."""
+    """Track A: assemble the ER-100 OSK Tet-On payload and design its carrier.
+
+    carrier='aav'     → AAV vector(s), split across two AAVs if over the packaging
+                        limit (capsid from the disease preset).
+    carrier='exosome' → IV exosome delivery spec — OSK rides as tri-cistronic mRNA
+                        (no AAV size ceiling), tissue-targeted by a homing ligand.
+    """
+    carrier = spec.get("carrier", "aav")
     result = assemble_osk_teton(
         constitutive_promoter=spec.get("constitutive_promoter", "efs"),
         polya=spec.get("polya", "min_polya"),
@@ -197,7 +204,26 @@ async def construct(spec: dict = Body(default={})) -> dict:
         capsid=spec.get("capsid", "aav9"),
         objectives=spec.get("objectives", []),
     )
-    return result.public()
+    out = result.public()
+    out["carrier"] = carrier
+    if carrier == "exosome":
+        out["exosome"] = design_exosome_delivery(
+            payload="osk",
+            tissue_key=spec.get("tissue_key", "systemic"),
+            tissue_label=spec.get("tissue_label", ""),
+        )
+    return out
+
+
+@router.post("/deliver/exosome")
+async def deliver_exosome(spec: dict = Body(default={})) -> dict:
+    """Design an IV exosome carrier for a novel small molecule (Track B carrier)."""
+    return design_exosome_delivery(
+        payload="molecule",
+        tissue_key=spec.get("tissue_key", "systemic"),
+        tissue_label=spec.get("tissue_label", ""),
+        molecule_smiles=spec.get("smiles"),
+    )
 
 
 @router.get("/engines")
