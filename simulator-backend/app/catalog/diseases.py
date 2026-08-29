@@ -33,6 +33,7 @@ TISSUE_PRESETS: dict[str, dict] = {
     "gut":         {"tissue": "Gut mucosa",                   "capsid": "aav9",  "route": "Local / IV"},
     "bone":        {"tissue": "Bone / dental",                "capsid": "aav5",  "route": "Local implant"},
     "kidney":      {"tissue": "Kidney (tubule / glomerulus)", "capsid": "aav9",  "route": "IV infusion"},
+    "muscle":      {"tissue": "Skeletal muscle",              "capsid": "aav9",  "route": "IV infusion"},
 }
 
 # --- curated methylation datasets (S5) ----------------------------------------
@@ -96,6 +97,13 @@ DATASETS: dict[str, dict] = {
         "has_age": True, "condition": "Normoglycaemia / prediabetes / type 2 diabetes",
         "note": "Best-effort pin — verify it downloads; one-line swappable if it 404s.",
     },
+    "GSE241366": {
+        "accession": "GSE241366", "method": "series_matrix",
+        "platform": "Illumina EPIC", "tissue": "Liver", "n": 60,
+        "has_age": True, "condition": "Liver disease (MASH/steatohepatitis) vs healthy",
+        "note": "Best-effort pin — liver tissue; cirrhosis is end-stage MASH/fibrosis. "
+        "Verify on download; one-line swappable if it 404s.",
+    },
 }
 
 # Generic fallback so EVERY therapy has a downloadable dataset. This is a real
@@ -126,6 +134,9 @@ _DISEASE_MAP: dict[str, dict] = {
     "Stroke Recovery MSC": {"tissue": "cns"},
     "Spinal Cord Injury NSC": {"tissue": "cns"},
     "ALS / MND MSC Therapy": {"tissue": "cns"},
+    "Muscular Dystrophy": {"tissue": "muscle"},
+    # Gastroenterology / Cardiology (specific cohorts)
+    "Liver Cirrhosis MSC Therapy": {"tissue": "liver", "dataset": "GSE241366"},
     # Diabetes
     "Type 1 Diabetes": {"tissue": "pancreas", "dataset": "GSE142512"},
     "Type 2 Diabetes": {"tissue": "pancreas", "dataset": "GSE311226"},
@@ -211,6 +222,7 @@ _THERAPIES: list[tuple[str, str, str, str, str]] = [
     ("Neurology", "Stroke Recovery MSC", "MSC", "IV infusion", "research"),
     ("Neurology", "Parkinson’s iPSC Dopaminergic", "iPSC", "Surgical implant", "research"),
     ("Neurology", "ALS / MND MSC Therapy", "MSC", "Intrathecal", "research"),
+    ("Neurology", "Muscular Dystrophy", "MSC", "IV infusion", "research"),
     ("Pulmonology", "COPD MSC Therapy", "MSC", "IV infusion", "research"),
     ("Pulmonology", "Pulmonary Fibrosis (IPF) MSC", "MSC", "IV infusion", "research"),
     ("Pulmonology", "ARDS MSC Therapy", "MSC", "IV infusion", "research"),

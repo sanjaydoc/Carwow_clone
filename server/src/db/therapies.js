@@ -452,6 +452,14 @@ export const therapies = [
     economy_mpg: 18, rating: 3.9, review_count: 90, accent: NEURO,
     description: 'MSCs engineered to secrete neurotrophic factors, delivered intrathecally to slow motor-neuron loss in ALS. Investigational.'
   },
+  {
+    make: 'Neurology', model: 'Muscular Dystrophy', trim: 'Myogenic progenitor / gene-corrected cells', year: 2024,
+    price: 28000, monthly_price: 1167, body_type: 'MSC', fuel_type: 'Allogeneic', transmission: 'IV infusion',
+    mileage: 120, color: 'Day-case', condition: 'used', seats: 200, doors: 1,
+    engine: 'MSC / satellite-cell-derived myogenic progenitors', power_bhp: 44, zero_to_sixty: 6, top_speed: 3,
+    economy_mpg: 24, rating: 3.8, review_count: 26, accent: NEURO,
+    description: 'A regenerative programme for Duchenne and limb-girdle muscular dystrophies — the inherited loss of muscle-protecting proteins that drives progressive weakness. Systemically infused myogenic progenitor cells (and, in research, gene-corrected autologous cells restoring dystrophin) aim to replenish the muscle stem-cell pool, deliver functional protein, and slow fibre loss, alongside AAV micro-dystrophin gene therapy. Delivered as a monitored infusion with muscle strength and function tracked as read-outs. Investigational — trials are ongoing and benefit is not established.'
+  },
 
   // ── Pulmonology ─────────────────────────────────────────────────────────
   {

@@ -1305,6 +1305,32 @@ export const CARS: Car[] = [
   },
   {
     "id": 51,
+    "make": "Neurology",
+    "model": "Muscular Dystrophy",
+    "trim": "Myogenic progenitor / gene-corrected cells",
+    "year": 2024,
+    "price": 28000,
+    "monthly_price": 1167,
+    "body_type": "MSC",
+    "fuel_type": "Allogeneic",
+    "transmission": "IV infusion",
+    "mileage": 120,
+    "color": "Day-case",
+    "condition": "used",
+    "seats": 200,
+    "doors": 1,
+    "engine": "MSC / satellite-cell-derived myogenic progenitors",
+    "power_bhp": 44,
+    "zero_to_sixty": 6,
+    "top_speed": 3,
+    "economy_mpg": 24,
+    "rating": 3.8,
+    "review_count": 26,
+    "accent": "#7c3aed",
+    "description": "A regenerative programme for Duchenne and limb-girdle muscular dystrophies — the inherited loss of muscle-protecting proteins that drives progressive weakness. Systemically infused myogenic progenitor cells (and, in research, gene-corrected autologous cells restoring dystrophin) aim to replenish the muscle stem-cell pool, deliver functional protein, and slow fibre loss, alongside AAV micro-dystrophin gene therapy. Delivered as a monitored infusion with muscle strength and function tracked as read-outs. Investigational — trials are ongoing and benefit is not established."
+  },
+  {
+    "id": 52,
     "make": "Pulmonology",
     "model": "COPD MSC Therapy",
     "trim": "Allogeneic MSC",
@@ -1330,7 +1356,7 @@ export const CARS: Car[] = [
     "description": "Anti-inflammatory MSC infusions studied to slow lung decline and improve quality of life in chronic obstructive pulmonary disease. Clinical-trial stage."
   },
   {
-    "id": 52,
+    "id": 53,
     "make": "Pulmonology",
     "model": "Pulmonary Fibrosis (IPF) MSC",
     "trim": "Allogeneic UC-MSC",
@@ -1356,7 +1382,7 @@ export const CARS: Car[] = [
     "description": "Investigational cord-tissue MSC therapy aiming to dampen the scarring process of idiopathic pulmonary fibrosis. Research use only."
   },
   {
-    "id": 53,
+    "id": 54,
     "make": "Pulmonology",
     "model": "ARDS MSC Therapy",
     "trim": "Allogeneic MSC",
@@ -1382,7 +1408,7 @@ export const CARS: Car[] = [
     "description": "Intravenous MSCs studied for acute respiratory distress syndrome, including viral pneumonia, to reduce lung inflammation and injury. Investigational."
   },
   {
-    "id": 54,
+    "id": 55,
     "make": "Pulmonology",
     "model": "Airway Epithelial Regeneration",
     "trim": "Autologous basal cell",
@@ -1408,7 +1434,7 @@ export const CARS: Car[] = [
     "description": "Early research using a patient’s own airway stem cells to regenerate damaged bronchial lining. Pre-clinical / first-in-human."
   },
   {
-    "id": 55,
+    "id": 56,
     "make": "Cosmetic",
     "model": "Facial Fat Grafting + SVF",
     "trim": "Autologous SVF",
@@ -1434,7 +1460,7 @@ export const CARS: Car[] = [
     "description": "Enriches transferred facial fat with the stromal vascular fraction, improving graft survival for natural, long-lasting volume restoration."
   },
   {
-    "id": 56,
+    "id": 57,
     "make": "Cosmetic",
     "model": "Hair Restoration Exosome",
     "trim": "Exosome + PRP",
@@ -1460,7 +1486,7 @@ export const CARS: Car[] = [
     "description": "Scalp injections of regenerative exosomes and PRP that stimulate dormant follicles to thicken hair and slow early-stage hair loss."
   },
   {
-    "id": 57,
+    "id": 58,
     "make": "Cosmetic",
     "model": "Skin Rejuvenation Exosomes",
     "trim": "Exosome microneedling",
@@ -1486,7 +1512,7 @@ export const CARS: Car[] = [
     "description": "Exosome serums driven into the skin with microneedling to boost collagen, calm redness and brighten tone with minimal downtime."
   },
   {
-    "id": 58,
+    "id": 59,
     "make": "Cosmetic",
     "model": "Scar & Wound MSC Therapy",
     "trim": "Autologous MSC",
@@ -1512,7 +1538,7 @@ export const CARS: Car[] = [
     "description": "Targeted stem-cell injections that soften scars and accelerate healing of difficult wounds by remodelling collagen and improving blood supply."
   },
   {
-    "id": 59,
+    "id": 60,
     "make": "Nephrology",
     "model": "Chronic Kidney Disease (CKD) MSC Therapy",
     "trim": "Allogeneic UC-MSC",
@@ -1538,7 +1564,7 @@ export const CARS: Car[] = [
     "description": "Intravenous mesenchymal stem-cell infusions studied to slow the decline of kidney function in chronic kidney disease. MSCs release anti-inflammatory and anti-fibrotic signals that aim to protect surviving nephrons, calm interstitial inflammation and reduce scarring (fibrosis) — the process that drives CKD toward dialysis. Delivered as a monitored day-case infusion, usually repeated over several cycles with eGFR and proteinuria tracked as read-outs. Investigational — trials are ongoing and benefit is not established."
   },
   {
-    "id": 60,
+    "id": 61,
     "make": "Nephrology",
     "model": "Acute Kidney Injury (AKI) MSC Therapy",
     "trim": "Autologous/allogeneic BM-MSC",
@@ -1564,7 +1590,7 @@ export const CARS: Car[] = [
     "description": "A regenerative programme for acute kidney injury — the sudden loss of kidney function after sepsis, major surgery, or nephrotoxic drugs. Infused MSCs home to the injured tubules, dampening the inflammatory storm and secreting growth factors that support tubular epithelial repair, with the goal of speeding recovery and preventing progression to chronic kidney disease. Given in the inpatient setting alongside standard supportive care. Investigational."
   },
   {
-    "id": 61,
+    "id": 62,
     "make": "Nephrology",
     "model": "Diabetic Kidney Disease Exosome Therapy",
     "trim": "MSC-derived exosomes",
@@ -1590,7 +1616,7 @@ export const CARS: Car[] = [
     "description": "Cell-free therapy using MSC-derived exosomes — nanoscale vesicles carrying reparative RNA and proteins — for diabetic kidney disease, the leading cause of kidney failure. The exosomes are studied to deliver anti-fibrotic and podocyte-protective cargo to the glomerulus without the risks of whole-cell infusion, aiming to preserve filtration and reduce protein leak. Early-stage research."
   },
   {
-    "id": 62,
+    "id": 63,
     "make": "Nephrology",
     "model": "ER-100 Renal Epigenetic Reprogramming",
     "trim": "OSK partial reprogramming (OCT4 · SOX2 · KLF4)",
