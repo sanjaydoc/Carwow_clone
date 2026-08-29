@@ -164,19 +164,37 @@ def _prep_suppl_avgbeta(src: Path, out_dir: Path, label: str, n: int, emit: Emit
 # ---- prep: GSE40279 (two files) ----------------------------------------------
 def _prep_gse40279(beta_src: Path, series_src: Path | None, out_dir: Path,
                    label: str, n: int, emit: Emit) -> dict:
-    ages: dict[str, str] = {}
+    # GSE40279's beta-matrix columns are internal labels (e.g. "X1001") that do
+    # NOT match the GSM accessions in the series-matrix — the ages line up with
+    # !Sample_title instead. Build BOTH maps (title + GSM) and resolve tolerantly
+    # (also handles an R-style leading "X" prefix on the beta-column names).
+    gsm_age: dict[str, str] = {}
+    title_age: dict[str, str] = {}
     if series_src and series_src.exists():
         with _open(series_src) as fh:
             gsms: list[str] = []
+            titles: list[str] = []
             age_list: list[str] = []
             for line in fh:
                 if line.startswith("!Sample_geo_accession"):
                     gsms = [c.strip().strip('"') for c in line.rstrip("\n").split("\t")[1:]]
+                elif line.startswith("!Sample_title"):
+                    titles = [c.strip().strip('"') for c in line.rstrip("\n").split("\t")[1:]]
                 elif line.startswith("!Sample_characteristics_ch1") and "age" in line.lower():
                     for c in line.rstrip("\n").split("\t")[1:]:
                         v = c.strip().strip('"')
                         age_list.append(v.split(":")[-1].strip() if ":" in v else v)
-            ages = {g: a for g, a in zip(gsms, age_list)}
+            gsm_age = {g: a for g, a in zip(gsms, age_list)}
+            title_age = {t: a for t, a in zip(titles, age_list)}
+
+    def _resolve_age(name: str) -> str:
+        for key in (name, name.lstrip("X"), "X" + name, name.lstrip("X").lstrip("_")):
+            if key in title_age:
+                return title_age[key]
+            if key in gsm_age:
+                return gsm_age[key]
+        return ""
+
     meth_path = out_dir / f"methylation_{label}.csv"
     emit("parsing GSE40279 beta matrix…", progress=0.65)
     with _open(beta_src) as fh:
@@ -192,8 +210,9 @@ def _prep_gse40279(beta_src: Path, series_src: Path | None, out_dir: Path,
                 if len(row) > max(keep):
                     w.writerow([row[i] for i in keep])
                     rows += 1
-    _write_ages(out_dir, label, names, ages, {})
-    return {"samples": names, "ages": {n_: ages.get(n_, "") for n_ in names},
+    resolved = {n_: _resolve_age(n_) for n_ in names}
+    _write_ages(out_dir, label, names, resolved, {})
+    return {"samples": names, "ages": resolved,
             "diseases": {}, "n_probes": rows, "methylation_file": meth_path.name}
 
 
