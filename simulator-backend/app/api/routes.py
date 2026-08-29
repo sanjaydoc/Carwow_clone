@@ -1,8 +1,17 @@
-"""REST routes (D1) exposing the real pipeline.
+"""REST routes exposing the real pipeline.
 
-Current endpoints (more land with Track A/B):
-  POST /api/analyze   — upload methylation (+ optional genotype) → epigenetic age + targets
-  POST /api/samples   — list sample columns of a methylation matrix (for the picker)
+Endpoints:
+  GET  /api/catalog            — disease dropdown: 58 therapies + ER-100 presets + dataset-ready flags
+  POST /api/dataset/download   — download+prep a curated GEO methylation dataset (async job)
+  GET  /api/dataset/samples    — list samples of an already-downloaded curated dataset
+  POST /api/samples            — list sample columns (upload or curated dataset)
+  POST /api/analyze            — epigenetic age + targets (upload or curated dataset)
+  POST /api/construct          — Track A: assemble the OSK Tet-On vector
+  GET  /api/engines            — Track B engine availability
+  POST /api/design             — Track B: generate novel molecules (async job)
+  GET  /api/jobs/{id}[/stream] — job status / SSE progress
+  POST /api/report/{csv,pdf}   — export
+  POST /api/interpret          — plain-language summary
 """
 from __future__ import annotations
 
@@ -13,8 +22,15 @@ from pathlib import Path
 from fastapi import APIRouter, Body, File, Form, HTTPException, UploadFile
 from fastapi.responses import Response, StreamingResponse
 
+from ..catalog import (
+    dataset_for_disease,
+    disease_by_key,
+    disease_catalog,
+    download_and_prep,
+)
 from ..config import get_settings
 from ..construct import assemble_osk_teton
+from ..construct.parts import CAPSIDS
 from ..design import DesignRequest, get_engine
 from ..epiage import discover_targets, load_horvath
 from ..epiage.targets import design_objectives
@@ -27,8 +43,19 @@ from ..scoring import rank_candidates
 router = APIRouter()
 settings = get_settings()
 
+# On-device data folder (curated downloads + prepped sample slices).
+DATA_DIR = Path(__file__).resolve().parents[2] / "data"
+SAMPLES_DIR = DATA_DIR / "samples"
+DOWNLOADS_DIR = DATA_DIR / "downloads"
+
 # Load the real clock once at startup.
 _clock = load_horvath()
+
+
+def _dataset_path(label: str) -> Path:
+    """Server-side prepped methylation file for a curated dataset label."""
+    safe = "".join(c for c in label if c.isalnum() or c in "-_").lower()
+    return SAMPLES_DIR / f"methylation_{safe}.csv"
 
 
 def _save_upload(upload: UploadFile, subdir: str) -> Path:
@@ -44,21 +71,43 @@ def _save_upload(upload: UploadFile, subdir: str) -> Path:
 
 
 @router.post("/samples")
-async def samples(methylation: UploadFile = File(...)) -> dict:
-    path = _save_upload(methylation, "uploads")
+async def samples(
+    methylation: UploadFile | None = File(None),
+    dataset: str | None = Form(None),
+) -> dict:
+    """List sample columns — from an upload, or a server-side curated dataset."""
+    if dataset:
+        path = _dataset_path(dataset)
+        if not path.is_file():
+            raise HTTPException(404, f"dataset '{dataset}' not downloaded yet")
+    elif methylation is not None:
+        path = _save_upload(methylation, "uploads")
+    else:
+        raise HTTPException(400, "provide a methylation file or a dataset label")
     return {"samples": list_samples(path)}
 
 
 @router.post("/analyze")
 async def analyze(
-    methylation: UploadFile = File(...),
+    methylation: UploadFile | None = File(None),
     genotype: UploadFile | None = File(None),
+    dataset: str | None = Form(None),
     sample: str | None = Form(None),
     chronological_age: float | None = Form(None),
     top_targets: int = Form(20),
 ) -> dict:
-    """Compute the REAL epigenetic age + target CpGs (no data leaves the machine)."""
-    meth_path = _save_upload(methylation, "uploads")
+    """Compute the REAL epigenetic age + target CpGs (no data leaves the machine).
+
+    Input is either an uploaded methylation file OR a curated `dataset` label
+    (already downloaded/prepped server-side via /dataset/download)."""
+    if dataset:
+        meth_path = _dataset_path(dataset)
+        if not meth_path.is_file():
+            raise HTTPException(404, f"dataset '{dataset}' not downloaded yet")
+    elif methylation is not None:
+        meth_path = _save_upload(methylation, "uploads")
+    else:
+        raise HTTPException(400, "provide a methylation file or a dataset label")
     meth = load_methylation(meth_path, sample=sample)
     result = _clock.predict(meth.betas, chronological_age=chronological_age)
     targets = discover_targets(result, _clock, meth.betas, top_n=top_targets)
@@ -82,6 +131,60 @@ async def analyze(
             "n_variants": geno.n_variants,
         }
     return out
+
+
+# ---- Disease catalogue + curated datasets (S1/S3/S5) ---------------------
+@router.get("/catalog")
+async def catalog() -> dict:
+    """Disease dropdown data: every therapy with its ER-100 tissue/capsid preset
+    and whether a curated methylation dataset is one-click ready."""
+    data = disease_catalog()
+    data["capsids"] = CAPSIDS
+    # Mark which curated datasets are already downloaded on this machine.
+    for item in data["diseases"]:
+        ds = item.get("dataset")
+        if ds:
+            label = ds["accession"].lower()
+            ds["downloaded"] = _dataset_path(label).is_file()
+            ds["label"] = label
+    return data
+
+
+@router.post("/dataset/download")
+async def dataset_download(spec: dict = Body(default={})) -> dict:
+    """Download + prep a curated methylation dataset for a disease (async job).
+
+    Runs entirely on this machine (public GEO FTP only). Stream progress at
+    /api/jobs/{id}/stream; the final result carries the sample list + ages."""
+    disease_key = spec.get("disease")
+    n = int(spec.get("samples", 8))
+    ds = dataset_for_disease(disease_key) if disease_key else None
+    if not ds:
+        raise HTTPException(404, "no curated dataset for that disease — upload your own file")
+    label = ds["accession"].lower()
+
+    async def body(job) -> dict:
+        result = await asyncio.to_thread(
+            download_and_prep, ds, SAMPLES_DIR, DOWNLOADS_DIR, label, n, job.emit
+        )
+        result["label"] = label
+        result["disclaimer"] = (
+            "Public research dataset from NCBI GEO, used illustratively. Samples "
+            "are not identified individuals and carry no clinical claim."
+        )
+        return result
+
+    job = manager.start("download", body)
+    return {"job_id": job.id, "accession": ds["accession"], "label": label}
+
+
+@router.get("/dataset/samples")
+async def dataset_samples(label: str) -> dict:
+    """List samples of an already-downloaded curated dataset."""
+    path = _dataset_path(label)
+    if not path.is_file():
+        raise HTTPException(404, f"dataset '{label}' not downloaded yet")
+    return {"label": label.lower(), "samples": list_samples(path)}
 
 
 @router.post("/construct")

@@ -30,6 +30,61 @@ export async function health(): Promise<any> {
   return (await fetch(api('/api/health'))).json();
 }
 
+// --- Disease catalogue + curated datasets (disease-driven flow) -------------
+export interface DiseaseEntry {
+  key: string;
+  department: string;
+  disease: string;
+  category: string;
+  route: string;
+  status: string;
+  default_approach: string;
+  tissue: string;
+  capsid: string;
+  construct_route: string;
+  dataset_ready: boolean;
+  dataset: null | {
+    accession: string;
+    platform: string;
+    tissue: string;
+    condition: string;
+    has_age: boolean;
+    n: number;
+    note: string;
+    label: string;
+    downloaded: boolean;
+  };
+}
+
+export interface Catalog {
+  departments: string[];
+  diseases: DiseaseEntry[];
+  capsids: Record<string, string>;
+}
+
+export async function getCatalog(): Promise<Catalog> {
+  const res = await fetch(api('/api/catalog'));
+  if (!res.ok) throw new Error('catalog failed');
+  return res.json();
+}
+
+/** Kick off a curated dataset download+prep; returns the job id + label. */
+export async function startDatasetDownload(diseaseKey: string, samples = 8): Promise<{ job_id: string; label: string; accession: string }> {
+  const res = await fetch(api('/api/dataset/download'), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ disease: diseaseKey, samples }),
+  });
+  if (!res.ok) throw new Error((await res.json()).detail || 'Download failed');
+  return res.json();
+}
+
+export async function datasetSamples(label: string): Promise<string[]> {
+  const res = await fetch(api(`/api/dataset/samples?label=${encodeURIComponent(label)}`));
+  if (!res.ok) return [];
+  return (await res.json()).samples || [];
+}
+
 export async function listSamples(methylation: File): Promise<string[]> {
   const fd = new FormData();
   fd.append('methylation', methylation);
@@ -38,14 +93,16 @@ export async function listSamples(methylation: File): Promise<string[]> {
 }
 
 export async function analyze(opts: {
-  methylation: File;
+  methylation?: File | null;
+  dataset?: string | null;
   genotype?: File | null;
   sample?: string;
   chronologicalAge?: number | null;
   topTargets?: number;
 }): Promise<any> {
   const fd = new FormData();
-  fd.append('methylation', opts.methylation);
+  if (opts.methylation) fd.append('methylation', opts.methylation);
+  if (opts.dataset) fd.append('dataset', opts.dataset);
   if (opts.genotype) fd.append('genotype', opts.genotype);
   if (opts.sample) fd.append('sample', opts.sample);
   if (opts.chronologicalAge != null) fd.append('chronological_age', String(opts.chronologicalAge));

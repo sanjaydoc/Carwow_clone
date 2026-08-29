@@ -82,5 +82,7 @@ CAPSIDS = {
     "aav9": "AAV9 — broad, crosses BBB (CNS/systemic)",
     "aav2": "AAV2 — classic; retina (intravitreal, ER-100-style)",
     "aav5": "AAV5 — airway/CNS",
+    "aav6": "AAV6 — airway/lung, muscle",
+    "aav8": "AAV8 — liver, pancreas",
     "aavdj": "AAV-DJ — engineered broad tropism",
 }

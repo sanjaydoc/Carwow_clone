@@ -5,3 +5,8 @@ __pycache__/
 .env
 outputs/
 generated/
+# Large downloaded/prepped datasets stay local (only the tiny built-in fixtures are tracked).
+data/downloads/
+data/samples/methylation_gse*.csv
+data/samples/ages_gse*.csv
+data/Ankylosing-spondylitis/
