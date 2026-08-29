@@ -38,10 +38,12 @@ class DenovoLLMEngine(DesignEngine):
         """The base command to invoke the denovo CLI."""
         if settings.denovo_python:
             return [settings.denovo_python, "-m", "denovo.cli"]
-        # Prefer the repo venv if present, else module form, else PATH script.
-        venv_py = self.repo / ".venv" / "bin" / "python"
-        if venv_py.exists():
-            return [str(venv_py), "-m", "denovo.cli"]
+        # Prefer the repo venv's python (Windows Scripts/ or POSIX bin/),
+        # else fall back to `denovo` on PATH.
+        for rel in ((".venv", "Scripts", "python.exe"), (".venv", "bin", "python")):
+            venv_py = self.repo.joinpath(*rel)
+            if venv_py.exists():
+                return [str(venv_py), "-m", "denovo.cli"]
         return ["denovo"]
 
     def available(self) -> tuple[bool, str]:
