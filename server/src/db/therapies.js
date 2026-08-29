@@ -460,6 +460,14 @@ export const therapies = [
     economy_mpg: 24, rating: 3.8, review_count: 26, accent: NEURO,
     description: 'A regenerative programme for Duchenne and limb-girdle muscular dystrophies — the inherited loss of muscle-protecting proteins that drives progressive weakness. Systemically infused myogenic progenitor cells (and, in research, gene-corrected autologous cells restoring dystrophin) aim to replenish the muscle stem-cell pool, deliver functional protein, and slow fibre loss, alongside AAV micro-dystrophin gene therapy. Delivered as a monitored infusion with muscle strength and function tracked as read-outs. Investigational — trials are ongoing and benefit is not established.'
   },
+  {
+    make: 'Neurology', model: 'FSHD (Facioscapulohumeral Dystrophy)', trim: 'DUX4 epigenetic silencing', year: 2026,
+    price: 44000, monthly_price: 1833, body_type: 'iPSC', fuel_type: 'Autologous', transmission: 'IV infusion',
+    mileage: 90, color: 'Day-case', condition: 'used', seats: null, doors: 1,
+    engine: 'Epigenetic editor (D4Z4 re-methylation / DUX4 silencing)', power_bhp: 52, zero_to_sixty: 2, top_speed: 7,
+    economy_mpg: 12, rating: 4.0, review_count: 14, accent: NEURO,
+    description: 'Unlike Duchenne, facioscapulohumeral dystrophy is fundamentally an EPIGENETIC disease: loss of methylation at the D4Z4 macrosatellite repeat de-represses the normally-silent DUX4 gene, whose toxic protein kills muscle. That makes it uniquely suited to the epigenetic-reprogramming platform — rather than correcting a gene, the therapy restores the missing methylation / re-silences DUX4 (epigenetic editing, CRISPRi, or ER-100-style epigenetic reprogramming) to switch the toxic gene back off, without altering the DNA sequence. Delivered systemically to muscle. First-in-class research concept — investigational, benefit not established.'
+  },
 
   // ── Pulmonology ─────────────────────────────────────────────────────────
   {

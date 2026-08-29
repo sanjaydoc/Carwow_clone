@@ -135,6 +135,7 @@ _DISEASE_MAP: dict[str, dict] = {
     "Spinal Cord Injury NSC": {"tissue": "cns"},
     "ALS / MND MSC Therapy": {"tissue": "cns"},
     "Muscular Dystrophy": {"tissue": "muscle"},
+    "FSHD (Facioscapulohumeral Dystrophy)": {"tissue": "muscle", "approach": "er100"},
     # Gastroenterology / Cardiology (specific cohorts)
     "Liver Cirrhosis MSC Therapy": {"tissue": "liver", "dataset": "GSE241366"},
     # Diabetes
@@ -223,6 +224,7 @@ _THERAPIES: list[tuple[str, str, str, str, str]] = [
     ("Neurology", "Parkinson’s iPSC Dopaminergic", "iPSC", "Surgical implant", "research"),
     ("Neurology", "ALS / MND MSC Therapy", "MSC", "Intrathecal", "research"),
     ("Neurology", "Muscular Dystrophy", "MSC", "IV infusion", "research"),
+    ("Neurology", "FSHD (Facioscapulohumeral Dystrophy)", "iPSC", "IV infusion", "research"),
     ("Pulmonology", "COPD MSC Therapy", "MSC", "IV infusion", "research"),
     ("Pulmonology", "Pulmonary Fibrosis (IPF) MSC", "MSC", "IV infusion", "research"),
     ("Pulmonology", "ARDS MSC Therapy", "MSC", "IV infusion", "research"),
