@@ -78,7 +78,8 @@ def _delim(line: str) -> str:
 
 
 # ---- prep: series_matrix (betas inline + ages) -------------------------------
-def _prep_series_matrix(src: Path, out_dir: Path, label: str, n: int, emit: Emit) -> dict:
+def _prep_series_matrix(src: Path, out_dir: Path, label: str, n: int, emit: Emit,
+                        pick: str = "oldest") -> dict:
     gsms: list[str] = []
     ages: list[str] = []
     diseases: list[str] = []
@@ -86,6 +87,8 @@ def _prep_series_matrix(src: Path, out_dir: Path, label: str, n: int, emit: Emit
     header: list[str] = []
     keep_idx: list[int] = []
     names: list[str] = []
+    _chosen_age: dict[str, str] = {}
+    _chosen_dis: dict[str, str] = {}
     rows = 0
     meth_path = out_dir / f"methylation_{label}.csv"
     mf = open(meth_path, "w", newline="", encoding="utf-8")
@@ -113,9 +116,28 @@ def _prep_series_matrix(src: Path, out_dir: Path, label: str, n: int, emit: Emit
             if not header:
                 header = row
                 sample_cols = header[1:]
-                take = min(n, len(sample_cols))
-                keep_idx = [0] + list(range(1, 1 + take))
-                names = [header[i] for i in keep_idx[1:]]
+                # Prefer the OLDEST samples when ages are available (column j pairs
+                # with ages[j-1] positionally); else keep the first n.
+                def _num(a: str) -> float | None:
+                    try:
+                        return float(a)
+                    except (TypeError, ValueError):
+                        return None
+
+                if pick == "oldest" and ages:
+                    ranked = sorted(
+                        (j for j in range(1, len(sample_cols) + 1)
+                         if j - 1 < len(ages) and _num(ages[j - 1]) is not None),
+                        key=lambda j: _num(ages[j - 1]), reverse=True,
+                    )
+                    chosen = ranked[:n] or list(range(1, 1 + min(n, len(sample_cols))))
+                else:
+                    chosen = list(range(1, 1 + min(n, len(sample_cols))))
+                keep_idx = [0] + chosen
+                names = [header[i] for i in chosen]
+                # Ages/diseases keyed positionally to the chosen columns.
+                _chosen_age = {header[j]: (ages[j - 1] if j - 1 < len(ages) else "") for j in chosen}
+                _chosen_dis = {header[j]: (diseases[j - 1] if j - 1 < len(diseases) else "") for j in chosen}
                 w.writerow(["Name", *names])
                 continue
             if len(row) > max(keep_idx):
@@ -126,8 +148,8 @@ def _prep_series_matrix(src: Path, out_dir: Path, label: str, n: int, emit: Emit
     mf.close()
     if not names:
         raise RuntimeError("series_matrix had no inline beta table; use the supplementary file instead.")
-    age_map = {g: a for g, a in zip(gsms, ages)} if ages else {}
-    dis_map = {g: d for g, d in zip(gsms, diseases)} if diseases else {}
+    age_map = _chosen_age if ages else {}
+    dis_map = _chosen_dis if diseases else {}
     _write_ages(out_dir, label, names, age_map, dis_map)
     return {"samples": names, "ages": age_map, "diseases": dis_map, "n_probes": rows,
             "methylation_file": meth_path.name}
@@ -269,7 +291,8 @@ def download_and_prep(dataset: dict, out_dir: Path, download_dir: Path,
             _download(series_matrix_url(acc), raw, emit)
         else:
             emit("using cached download", progress=0.6)
-        result = _prep_series_matrix(raw, out_dir, label, n, emit)
+        result = _prep_series_matrix(raw, out_dir, label, n, emit,
+                                     pick=dataset.get("pick", "oldest"))
 
     elif method == "suppl_avgbeta":
         fname = dataset["beta_file"]

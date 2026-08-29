@@ -79,8 +79,10 @@ DATASETS: dict[str, dict] = {
     "GSE89093": {
         "accession": "GSE89093", "method": "series_matrix",
         "platform": "Illumina 450K", "tissue": "Kidney / blood", "n": 92,
-        "has_age": False, "condition": "Chronic kidney disease methylation",
-        "note": "Best-effort pin — verify it downloads on your machine; the entry is one-line swappable.",
+        "has_age": True, "condition": "Chronic kidney disease methylation",
+        "note": "Best-effort pin — grabs the oldest patients (uses ages if the series "
+        "carries them). CKD reads epigenetically old regardless. Verify it downloads; "
+        "the entry is one-line swappable if it 404s.",
     },
 }
 
