@@ -58,11 +58,29 @@ UI build.
 Helper: `./run.sh` (Linux/macOS) starts the backend.
 
 ### Get real data to test with
-- **Methylation with ages** (epigenetic clock): GEO **GSE40279** —
-  `https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE40279`
-- **Genotype** (patient-style upload): **openSNP** — `https://opensnp.org/genotypes`
-- A tiny **built-in fixture** ships in `data/samples/` so it works before you
-  download anything (Horvath's example — predicted vs real age 39→39.8, 28→26.4).
+
+**A tiny built-in fixture** ships in `data/samples/` so it works before you
+download anything (Horvath's example — predicted vs real age 39→39.8, 28→26.4).
+
+**Run a real person (GSE40279 — Hannum et al., methylation + ages):**
+1. Download both files:
+   - beta matrix: `https://ftp.ncbi.nlm.nih.gov/geo/series/GSE40nnn/GSE40279/suppl/GSE40279_average_beta.txt.gz`
+   - ages/meta: `https://ftp.ncbi.nlm.nih.gov/geo/series/GSE40nnn/GSE40279/matrix/GSE40279_series_matrix.txt.gz`
+2. The beta matrix is ~2 GB (656 people) — **don't upload it whole.** Slice out a
+   few samples + their ages with the helper:
+   ```bash
+   python scripts/prep_gse40279.py --beta GSE40279_average_beta.txt.gz \
+       --series GSE40279_series_matrix.txt.gz --n 3
+   ```
+   This writes `data/samples/methylation_gse40279.csv` (small) and
+   `data/samples/ages_gse40279.csv` (the ages to type in).
+3. In the Simulator, upload `methylation_gse40279.csv`, pick a sample, enter its
+   age from `ages_gse40279.csv`, and Compute. You'll see the real epigenetic age
+   for that actual person, then targets → construct → molecules.
+
+**Genotype (optional, patient-style upload):** grab any raw file from
+**openSNP** (`https://opensnp.org/genotypes`) — it's small (~20 MB) and uploads
+directly; the parser handles 23andMe/Ancestry/VCF formats.
 
 ## Layout
 

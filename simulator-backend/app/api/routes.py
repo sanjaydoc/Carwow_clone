@@ -35,8 +35,11 @@ def _save_upload(upload: UploadFile, subdir: str) -> Path:
     dest_dir = settings.work_dir / subdir
     dest_dir.mkdir(parents=True, exist_ok=True)
     dest = dest_dir / (upload.filename or "upload.dat")
+    # Stream in chunks so large methylation files don't load fully into RAM.
+    import shutil
+
     with open(dest, "wb") as fh:
-        fh.write(upload.file.read())
+        shutil.copyfileobj(upload.file, fh, length=1024 * 1024)
     return dest
 
 
