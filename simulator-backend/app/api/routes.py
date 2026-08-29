@@ -28,6 +28,7 @@ from ..catalog import (
     disease_catalog,
     download_and_prep,
 )
+from ..catalog.geo import extract_all_samples
 from ..config import get_settings
 from ..construct import assemble_osk_teton, design_exosome_delivery
 from ..construct.parts import CAPSIDS
@@ -250,6 +251,158 @@ async def dataset_download(spec: dict = Body(default={})) -> dict:
 
     job = manager.start("download", body)
     return {"job_id": job.id, "accession": ds["accession"], "label": label}
+
+
+# ---- Batch: case vs control across all samples (S4) ----------------------
+_CONTROL_TOKENS = ("control", "ctrl", "ctl", "healthy", "normal", "hc ", " hc", "non-", "unaffected")
+
+
+def _norm_condition(cond: str, name: str) -> str:
+    """Collapse a raw condition/sample-name into 'control' or 'case'."""
+    s = f"{cond} {name}".lower()
+    return "control" if any(tok in s for tok in _CONTROL_TOKENS) else "case"
+
+
+def _mean(xs: list[float]) -> float:
+    return sum(xs) / len(xs) if xs else 0.0
+
+
+def _var(xs: list[float]) -> float:
+    if len(xs) < 2:
+        return 0.0
+    m = _mean(xs)
+    return sum((x - m) ** 2 for x in xs) / (len(xs) - 1)
+
+
+def _betacf(a: float, b: float, x: float) -> float:
+    import math
+    MAXIT, EPS, FPMIN = 200, 3e-12, 1e-300
+    qab, qap, qam = a + b, a + 1.0, a - 1.0
+    c = 1.0
+    d = 1.0 - qab * x / qap
+    if abs(d) < FPMIN:
+        d = FPMIN
+    d = 1.0 / d
+    h = d
+    for m in range(1, MAXIT + 1):
+        m2 = 2 * m
+        aa = m * (b - m) * x / ((qam + m2) * (a + m2))
+        d = 1.0 + aa * d
+        if abs(d) < FPMIN:
+            d = FPMIN
+        c = 1.0 + aa / c
+        if abs(c) < FPMIN:
+            c = FPMIN
+        d = 1.0 / d
+        h *= d * c
+        aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2))
+        d = 1.0 + aa * d
+        if abs(d) < FPMIN:
+            d = FPMIN
+        c = 1.0 + aa / c
+        if abs(c) < FPMIN:
+            c = FPMIN
+        d = 1.0 / d
+        de = d * c
+        h *= de
+        if abs(de - 1.0) < EPS:
+            break
+    return h
+
+
+def _betai(a: float, b: float, x: float) -> float:
+    import math
+    if x <= 0.0:
+        return 0.0
+    if x >= 1.0:
+        return 1.0
+    bt = math.exp(math.lgamma(a + b) - math.lgamma(a) - math.lgamma(b)
+                  + a * math.log(x) + b * math.log(1.0 - x))
+    if x < (a + 1.0) / (a + b + 2.0):
+        return bt * _betacf(a, b, x) / a
+    return 1.0 - bt * _betacf(b, a, 1.0 - x) / b
+
+
+def _welch_ttest(a: list[float], b: list[float]) -> dict:
+    """Welch's two-sample t-test with a real two-sided p-value (no scipy)."""
+    na, nb = len(a), len(b)
+    if na < 2 or nb < 2:
+        return {"t": None, "df": None, "p_value": None}
+    va, vb = _var(a), _var(b)
+    se2 = va / na + vb / nb
+    if se2 <= 0:
+        return {"t": None, "df": None, "p_value": None}
+    t = (_mean(a) - _mean(b)) / (se2 ** 0.5)
+    df = se2 ** 2 / ((va / na) ** 2 / (na - 1) + (vb / nb) ** 2 / (nb - 1))
+    p = _betai(df / 2.0, 0.5, df / (df + t * t))
+    return {"t": round(t, 3), "df": round(df, 1), "p_value": p}
+
+
+@router.post("/batch")
+async def batch(spec: dict = Body(default={})) -> dict:
+    """Score EVERY sample of a curated dataset and compare case vs control.
+
+    Runs as a background job (streams progress). Uses the cached raw download —
+    no re-download. Groups samples by condition (metadata, else sample-name), and
+    reports each group's mean DNAm age + a Welch t-test on the gap.
+    """
+    disease_key = spec.get("disease")
+    ds = dataset_for_disease(disease_key) if disease_key else None
+    if not ds:
+        raise HTTPException(404, "no curated dataset for that disease")
+    cap = int(spec.get("cap", 400))
+    clock_cpgs = set(_clock.by_cpg.keys())
+
+    async def body(job) -> dict:
+        data = await asyncio.to_thread(
+            extract_all_samples, ds, DOWNLOADS_DIR, clock_cpgs, job.emit, cap
+        )
+        samples = data["samples"]
+        job.emit(f"scoring {len(samples)} samples with the clock…", progress=0.6)
+        rows = []
+        for nm in samples:
+            betas = data["betas"].get(nm, {})
+            if len(betas) < 50:  # too few clock CpGs → skip
+                continue
+            res = _clock.predict(betas)
+            age_raw = (data["ages"].get(nm) or "").strip()
+            try:
+                chrono = float(age_raw) if age_raw else None
+            except ValueError:
+                chrono = None
+            rows.append({
+                "sample": nm,
+                "dnam_age": round(res.dnam_age, 2),
+                "chronological_age": chrono,
+                "coverage": round(res.coverage, 3),
+                "group": _norm_condition(data["conditions"].get(nm, ""), nm),
+                "condition_raw": data["conditions"].get(nm, ""),
+            })
+
+        cases = [r["dnam_age"] for r in rows if r["group"] == "case"]
+        ctrls = [r["dnam_age"] for r in rows if r["group"] == "control"]
+        groups = []
+        for label, xs in (("case", cases), ("control", ctrls)):
+            if xs:
+                groups.append({"label": label, "n": len(xs),
+                               "mean_dnam_age": round(_mean(xs), 2),
+                               "sd": round(_var(xs) ** 0.5, 2)})
+        stats = _welch_ttest(cases, ctrls) if cases and ctrls else {"t": None, "df": None, "p_value": None}
+        gap = round(_mean(cases) - _mean(ctrls), 2) if cases and ctrls else None
+        job.emit("done", progress=1.0)
+        return {
+            "accession": ds["accession"],
+            "n_scored": len(rows),
+            "groups": groups,
+            "gap_dnam_age": gap,
+            "welch": ({**stats, "p_value": (round(stats["p_value"], 5) if stats.get("p_value") is not None else None)}),
+            "samples": sorted(rows, key=lambda r: r["dnam_age"], reverse=True),
+            "note": "Groups inferred from condition metadata (or sample name). Case−control "
+            "gap in mean DNAm age; Welch two-sided p. Illustrative research analysis.",
+        }
+
+    job = manager.start("batch", body)
+    return {"job_id": job.id, "accession": ds["accession"]}
 
 
 @router.get("/dataset/samples")

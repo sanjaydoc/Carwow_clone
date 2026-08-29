@@ -80,6 +80,17 @@ export async function startDatasetDownload(diseaseKey: string, samples = 8): Pro
   return res.json();
 }
 
+/** Kick off a case-vs-control batch compare across all samples of a disease's dataset. */
+export async function startBatch(diseaseKey: string, cap = 400): Promise<{ job_id: string; accession: string }> {
+  const res = await fetch(api('/api/batch'), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ disease: diseaseKey, cap }),
+  });
+  if (!res.ok) throw new Error((await res.json()).detail || 'Batch failed');
+  return res.json();
+}
+
 export async function datasetSamples(label: string): Promise<string[]> {
   const res = await fetch(api(`/api/dataset/samples?label=${encodeURIComponent(label)}`));
   if (!res.ok) return [];

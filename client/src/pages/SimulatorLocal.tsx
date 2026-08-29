@@ -11,6 +11,7 @@ import {
   listSamples,
   reportCsv,
   reportPdf,
+  startBatch,
   startDatasetDownload,
   startDesign,
   streamJob,
@@ -56,6 +57,9 @@ export default function SimulatorLocal() {
   const [error, setError] = useState('');
   const [optimizeFor, setOptimizeFor] = useState('qed');
   const [customLogp, setCustomLogp] = useState('2.5');
+  const [batch, setBatch] = useState<any>(null);
+  const [batchBusy, setBatchBusy] = useState(false);
+  const [batchLog, setBatchLog] = useState('');
   const methRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -79,6 +83,7 @@ export default function SimulatorLocal() {
     setConstruct(null);
     setRanked(null);
     setInterpretation(null);
+    setBatch(null);
     setError('');
     const d = catalog?.diseases.find((x) => x.key === key);
     if (d?.default_approach) setApproach(d.default_approach as Approach);
@@ -195,6 +200,24 @@ export default function SimulatorLocal() {
       setError(e.message || 'Design failed');
     } finally {
       setBusy('');
+    }
+  };
+
+  const runBatch = async () => {
+    if (!disease) return;
+    setBatchBusy(true);
+    setBatch(null);
+    setBatchLog('starting…');
+    setError('');
+    try {
+      const { job_id } = await startBatch(disease.key, 400);
+      const final = await streamJob(job_id, (ev) => ev.message && setBatchLog(ev.message));
+      if (final.status === 'error') setError(final.error || 'Batch failed');
+      else setBatch(final.result);
+    } catch (e: any) {
+      setError(e.message || 'Batch failed');
+    } finally {
+      setBatchBusy(false);
     }
   };
 
@@ -408,6 +431,86 @@ export default function SimulatorLocal() {
           )}
         </div>
       </section>
+
+      {/* Batch case-vs-control compare (curated dataset) */}
+      {disease?.dataset_ready && datasetLabel && (
+        <section className="mt-6 card p-6">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 className="font-display text-lg font-bold text-ink-900">Batch — case vs control <span className="text-xs font-normal text-ink-700/50">· all samples</span></h2>
+              <p className="text-sm text-ink-700/60">Scores every sample in {disease.dataset?.accession} with the clock, groups by condition, and tests whether cases are epigenetically older.</p>
+            </div>
+            <button onClick={runBatch} disabled={batchBusy} className="btn-primary px-5 py-2.5 text-sm disabled:opacity-50">
+              {batchBusy ? 'Running…' : 'Run compare'}
+            </button>
+          </div>
+
+          {batchBusy && (
+            <div className="mt-3 flex items-center gap-2 text-sm text-ink-700/70">
+              <span className="cell-loader"><span className="m" /><span className="n" /><span className="bud" /></span>
+              {batchLog}
+            </div>
+          )}
+
+          {batch && (
+            <div className="mt-4">
+              <div className="flex flex-wrap items-end gap-6">
+                {batch.groups.map((g: any) => (
+                  <div key={g.label}>
+                    <p className="text-xs uppercase tracking-wide text-ink-700/50">{g.label} (n={g.n})</p>
+                    <p className="font-display text-2xl font-extrabold text-ink-900">{g.mean_dnam_age} yr <span className="text-sm font-normal text-ink-700/50">± {g.sd}</span></p>
+                  </div>
+                ))}
+                {batch.gap_dnam_age != null && (
+                  <div>
+                    <p className="text-xs uppercase tracking-wide text-ink-700/50">Case − control gap</p>
+                    <p className={`font-display text-2xl font-extrabold ${batch.gap_dnam_age > 0 ? 'text-red-600' : 'text-green-600'}`}>
+                      {batch.gap_dnam_age > 0 ? '+' : ''}{batch.gap_dnam_age} yr
+                    </p>
+                  </div>
+                )}
+                {batch.welch?.p_value != null && (
+                  <div>
+                    <p className="text-xs uppercase tracking-wide text-ink-700/50">Welch p</p>
+                    <p className={`font-display text-2xl font-extrabold ${batch.welch.p_value < 0.05 ? 'text-green-600' : 'text-ink-900'}`}>
+                      {batch.welch.p_value < 0.001 ? batch.welch.p_value.toExponential(1) : batch.welch.p_value}
+                    </p>
+                  </div>
+                )}
+              </div>
+              {batch.gap_dnam_age != null && batch.welch?.p_value != null && (
+                <p className="mt-2 text-sm text-ink-800">
+                  Cases are epigenetically <b>{Math.abs(batch.gap_dnam_age)} yr {batch.gap_dnam_age > 0 ? 'older' : 'younger'}</b> than controls on average
+                  {batch.welch.p_value < 0.05 ? ' — statistically significant' : ' — not significant at p<0.05'} (n={batch.n_scored}).
+                </p>
+              )}
+              {batch.groups.length < 2 && (
+                <p className="mt-2 text-sm text-amber-700">Only one group found ({batch.groups[0]?.label}) — this cohort has no case/control split, so there's nothing to compare (still shows the mean).</p>
+              )}
+              <details className="mt-3">
+                <summary className="cursor-pointer text-sm font-semibold text-clay-700">Per-sample ({batch.n_scored})</summary>
+                <div className="mt-2 max-h-56 overflow-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead className="text-ink-700/60"><tr><th className="pr-3">Sample</th><th className="pr-3">Group</th><th className="pr-3">DNAm age</th><th className="pr-3">Chrono</th><th>Cov</th></tr></thead>
+                    <tbody>
+                      {batch.samples.map((s: any) => (
+                        <tr key={s.sample} className="border-t border-cream-200">
+                          <td className="pr-3 font-mono">{s.sample}</td>
+                          <td className="pr-3"><span className={`chip ${s.group === 'case' ? 'bg-red-50 text-red-700' : 'bg-green-50 text-green-700'}`}>{s.group}</span></td>
+                          <td className="pr-3 font-semibold">{s.dnam_age}</td>
+                          <td className="pr-3">{s.chronological_age ?? '—'}</td>
+                          <td>{Math.round(s.coverage * 100)}%</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </details>
+              <p className="mt-2 text-xs italic text-ink-700/50">{batch.note}</p>
+            </div>
+          )}
+        </section>
+      )}
 
       {/* 4 + 5: Track A construct & Track B molecules */}
       {analysis && (

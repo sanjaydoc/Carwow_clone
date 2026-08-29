@@ -323,3 +323,153 @@ def download_and_prep(dataset: dict, out_dir: Path, download_dir: Path,
     result["accession"] = acc
     emit(f"prepared {result['methylation_file']} · {len(result['samples'])} samples", progress=1.0)
     return result
+
+
+# ---- batch: score EVERY sample (case vs control) -----------------------------
+def _raw_for(dataset: dict, download_dir: Path) -> tuple[Path | None, Path | None]:
+    """Locate the already-downloaded raw file(s) for a dataset (no re-download)."""
+    acc = dataset["accession"]
+    method = dataset["method"]
+    if method == "series_matrix":
+        p = download_dir / f"{acc}_series_matrix.txt.gz"
+        return (p if p.exists() else None, None)
+    if method == "suppl_avgbeta":
+        p = download_dir / dataset["beta_file"]
+        return (p if p.exists() else None, None)
+    if method == "suppl_gse40279":
+        beta = download_dir / dataset["beta_file"]
+        series = download_dir / f"{acc}_series_matrix.txt.gz"
+        return (beta if beta.exists() else None, series if series.exists() else None)
+    return (None, None)
+
+
+def extract_all_samples(dataset: dict, download_dir: Path, clock_cpgs: set[str],
+                        emit: Emit, cap: int = 400) -> dict:
+    """Stream the cached raw file and pull the clock-CpG betas for EVERY sample
+    (up to `cap`), plus condition + age labels. Only the ~353 clock rows are kept,
+    so memory stays tiny even for a 450K × hundreds matrix.
+
+    Returns {samples, betas{sample:{cpg:beta}}, conditions{sample:str}, ages{sample:str}}.
+    """
+    raw, series = _raw_for(dataset, download_dir)
+    if not raw:
+        raise RuntimeError("dataset not downloaded yet — download it first")
+    method = dataset["method"]
+
+    conditions: dict[str, str] = {}
+    ages: dict[str, str] = {}
+    betas: dict[str, dict[str, float]] = {}
+    names: list[str] = []
+
+    if method == "series_matrix":
+        gsms: list[str] = []
+        age_list: list[str] = []
+        cond_list: list[str] = []
+        in_table = False
+        keep: list[int] = []
+        header: list[str] = []
+        emit("scanning series matrix…", progress=0.2)
+        with _open(raw) as fh:
+            for line in fh:
+                if not in_table:
+                    if line.startswith("!Sample_geo_accession"):
+                        gsms = [c.strip().strip('"') for c in line.rstrip("\n").split("\t")[1:]]
+                    elif line.startswith("!Sample_characteristics_ch1"):
+                        low = line.lower()
+                        vals = [c.strip().strip('"') for c in line.rstrip("\n").split("\t")[1:]]
+                        vals = [v.split(":")[-1].strip() if ":" in v else v for v in vals]
+                        if "age" in low and not age_list:
+                            age_list = vals
+                        if any(k in low for k in ("disease", "status", "diagnosis", "group")) and not cond_list:
+                            cond_list = vals
+                    elif line.startswith("!series_matrix_table_begin"):
+                        in_table = True
+                    continue
+                if line.startswith("!series_matrix_table_end"):
+                    break
+                delim = "\t"
+                cut = line.find(delim)
+                if cut < 0:
+                    continue
+                first = line[:cut].strip().strip('"')
+                if not header:
+                    header = line.rstrip("\n").split(delim)
+                    take = min(cap, len(header) - 1)
+                    keep = list(range(1, 1 + take))
+                    names = [header[i].strip('"') for i in keep]
+                    for nm in names:
+                        betas[nm] = {}
+                    ages = {header[i].strip('"'): (age_list[i - 1] if i - 1 < len(age_list) else "") for i in keep}
+                    conditions = {header[i].strip('"'): (cond_list[i - 1] if i - 1 < len(cond_list) else "") for i in keep}
+                    continue
+                if first in clock_cpgs:
+                    parts = line.rstrip("\n").split(delim)
+                    for i in keep:
+                        try:
+                            betas[names[i - 1]][first] = float(parts[i])
+                        except (ValueError, IndexError):
+                            pass
+
+    elif method == "suppl_avgbeta":
+        emit("scanning supplementary matrix…", progress=0.2)
+        with _open(raw) as fh:
+            first_line = fh.readline()
+            delim = _delim(first_line)
+            head = first_line.rstrip("\n").split(delim)
+            beta_idx = [i for i, h in enumerate(head) if h.endswith(BETA_SUFFIX)]
+            if not beta_idx:
+                beta_idx = [i for i, h in enumerate(head[1:], 1) if not h.endswith(PVAL_SUFFIX)]
+            beta_idx = beta_idx[:cap]
+            names = [head[i][:-len(BETA_SUFFIX)] if head[i].endswith(BETA_SUFFIX) else head[i] for i in beta_idx]
+            for nm in names:
+                betas[nm] = {}
+            for line in fh:
+                cut = line.find(delim)
+                if cut < 0:
+                    continue
+                cpg = line[:cut].strip().strip('"')
+                if cpg in clock_cpgs:
+                    parts = line.rstrip("\n").split(delim)
+                    for nm, i in zip(names, beta_idx):
+                        try:
+                            betas[nm][cpg] = float(parts[i])
+                        except (ValueError, IndexError):
+                            pass
+
+    elif method == "suppl_gse40279":
+        # ages via series (positional); no case/control in this cohort.
+        age_list: list[str] = []
+        if series and series.exists():
+            with _open(series) as fh:
+                for line in fh:
+                    if line.startswith("!Sample_characteristics_ch1") and "age" in line.lower():
+                        for c in line.rstrip("\n").split("\t")[1:]:
+                            v = c.strip().strip('"')
+                            age_list.append(v.split(":")[-1].strip() if ":" in v else v)
+                        break
+        emit("scanning GSE40279 beta matrix…", progress=0.2)
+        with _open(raw) as fh:
+            head = fh.readline().rstrip("\n").split("\t")
+            take = min(cap, len(head) - 1)
+            keep = list(range(1, 1 + take))
+            names = [head[i] for i in keep]
+            for nm in names:
+                betas[nm] = {}
+            ages = {head[i]: (age_list[i - 1] if i - 1 < len(age_list) else "") for i in keep}
+            for line in fh:
+                cut = line.find("\t")
+                if cut < 0:
+                    continue
+                cpg = line[:cut].strip().strip('"')
+                if cpg in clock_cpgs:
+                    parts = line.rstrip("\n").split("\t")
+                    for i in keep:
+                        try:
+                            betas[names[i - 1]][cpg] = float(parts[i])
+                        except (ValueError, IndexError):
+                            pass
+    else:
+        raise RuntimeError(f"batch unsupported for method {method}")
+
+    emit(f"loaded {len(names)} samples", progress=0.55)
+    return {"samples": names, "betas": betas, "conditions": conditions, "ages": ages}
