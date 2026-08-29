@@ -91,6 +91,7 @@ CAPSIDS = {
 # describes the real delivery rationale instead of a generic serotype blurb.
 _CAPSID_TISSUE_NOTE = {
     "kidney": "broad systemic serotype; reaches the kidney via IV infusion",
+    "muscle": "muscle-tropic; transduces skeletal muscle after IV infusion (AAV9/rh74-style)",
     "cns": "crosses the blood–brain barrier for CNS delivery (IV/intrathecal)",
     "retina": "gold-standard ocular serotype (intravitreal, ER-100-style)",
     "heart": "strong cardiac and systemic tropism (intracoronary/IV)",
