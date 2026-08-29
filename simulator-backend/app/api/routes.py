@@ -52,10 +52,38 @@ DOWNLOADS_DIR = DATA_DIR / "downloads"
 _clock = load_horvath()
 
 
+def _safe_label(label: str) -> str:
+    return "".join(c for c in label if c.isalnum() or c in "-_").lower()
+
+
 def _dataset_path(label: str) -> Path:
     """Server-side prepped methylation file for a curated dataset label."""
-    safe = "".join(c for c in label if c.isalnum() or c in "-_").lower()
-    return SAMPLES_DIR / f"methylation_{safe}.csv"
+    return SAMPLES_DIR / f"methylation_{_safe_label(label)}.csv"
+
+
+def _dataset_age(label: str, sample: str | None) -> float | None:
+    """Look up a sample's chronological age from the prepped ages_<label>.csv."""
+    import csv as _csv
+
+    path = SAMPLES_DIR / f"ages_{_safe_label(label)}.csv"
+    if not path.is_file():
+        return None
+    try:
+        with open(path, encoding="utf-8") as fh:
+            rows = list(_csv.DictReader(fh))
+    except Exception:
+        return None
+    if not rows:
+        return None
+    row = None
+    if sample:
+        row = next((r for r in rows if r.get("sample") == sample), None)
+    row = row or rows[0]
+    val = (row.get("age") or "").strip()
+    try:
+        return float(val) if val else None
+    except ValueError:
+        return None
 
 
 def _save_upload(upload: UploadFile, subdir: str) -> Path:
@@ -109,6 +137,10 @@ async def analyze(
     else:
         raise HTTPException(400, "provide a methylation file or a dataset label")
     meth = load_methylation(meth_path, sample=sample)
+    # For a curated dataset, auto-fill the age from its prepped ages file when the
+    # user leaves the box blank (so age-acceleration appears without a lookup).
+    if chronological_age is None and dataset:
+        chronological_age = _dataset_age(dataset, meth.sample)
     result = _clock.predict(meth.betas, chronological_age=chronological_age)
     targets = discover_targets(result, _clock, meth.betas, top_n=top_targets)
 
