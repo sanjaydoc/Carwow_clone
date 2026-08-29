@@ -33,6 +33,8 @@ export default function SimulatorLocal() {
   const [busy, setBusy] = useState('');
   const [log, setLog] = useState<string[]>([]);
   const [error, setError] = useState('');
+  const [optimizeFor, setOptimizeFor] = useState('qed');
+  const [customLogp, setCustomLogp] = useState('2.5');
   const methRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -93,8 +95,7 @@ export default function SimulatorLocal() {
       const jobId = await startDesign({
         modality: 'smiles',
         n: 100,
-        property: 'qed',
-        mode: 'max',
+        ...designProps(optimizeFor, customLogp),
         objectives: analysis?.objectives || [],
       });
       const final = await streamJob(jobId, (ev) => {
@@ -244,7 +245,23 @@ export default function SimulatorLocal() {
             )}
             {!ranked ? (
               <>
-                <button onClick={runDesign} disabled={!!busy} className="btn-primary mt-4 px-5 py-2.5 disabled:opacity-50">
+                <label className="mt-4 block text-sm font-semibold text-ink-800">Optimize for</label>
+                <select value={optimizeFor} onChange={(e) => setOptimizeFor(e.target.value)} className="input mt-1">
+                  <option value="qed">Drug-likeness (QED)</option>
+                  <option value="cns">CNS-penetrant (logP ≈ 2.5, crosses BBB)</option>
+                  <option value="soluble">More soluble (low logP)</option>
+                  <option value="lipophilic">More lipophilic (high logP)</option>
+                  <option value="custom">Custom logP target…</option>
+                </select>
+                {optimizeFor === 'custom' && (
+                  <input value={customLogp} onChange={(e) => setCustomLogp(e.target.value)} inputMode="decimal"
+                         placeholder="target logP, e.g. 2.5" className="input mt-2" />
+                )}
+                <p className="mt-1 text-xs text-ink-700/50">
+                  Biases generation toward this physicochemical property. Note: this tunes
+                  drug-likeness/deliverability — not binding to a specific target.
+                </p>
+                <button onClick={runDesign} disabled={!!busy} className="btn-primary mt-3 px-5 py-2.5 disabled:opacity-50">
                   {busy === 'Generating candidate molecules…' ? 'Generating…' : 'Generate candidates'}
                 </button>
                 {busy === 'Generating candidate molecules…' && (
@@ -310,6 +327,23 @@ function Stat({ label, value, big, tone }: { label: string; value: string; big?:
       <p className={`font-display font-extrabold ${big ? 'text-3xl' : 'text-xl'} ${color}`}>{value}</p>
     </div>
   );
+}
+
+// Map the "Optimize for" choice to De-Novo-LLM property-conditioning params.
+function designProps(optimizeFor: string, customLogp: string) {
+  switch (optimizeFor) {
+    case 'cns':
+      return { property: 'logp', mode: 'target', target_value: 2.5 };
+    case 'soluble':
+      return { property: 'logp', mode: 'min' };
+    case 'lipophilic':
+      return { property: 'logp', mode: 'max' };
+    case 'custom':
+      return { property: 'logp', mode: 'target', target_value: Number(customLogp) || 2.5 };
+    case 'qed':
+    default:
+      return { property: 'qed', mode: 'max' };
+  }
 }
 
 function buildPayload(analysis: any, construct: any, ranked: any, interpretation?: string | null) {
