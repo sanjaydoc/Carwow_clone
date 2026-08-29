@@ -54,6 +54,7 @@ export interface DiseaseEntry {
     note: string;
     label: string;
     downloaded: boolean;
+    proxy?: boolean;
   };
 }
 

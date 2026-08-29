@@ -309,14 +309,15 @@ export default function SimulatorLocal() {
                 <dt className="text-ink-700/50">AAV capsid</dt><dd className="font-semibold text-ink-900">{disease.capsid.toUpperCase()}</dd>
                 <dt className="text-ink-700/50">Delivery</dt><dd className="font-semibold text-ink-900">{disease.construct_route}</dd>
               </dl>
-              {disease.dataset ? (
+              {disease.dataset && !disease.dataset.proxy ? (
                 <p className="mt-3 rounded-lg bg-green-50 px-3 py-2 text-xs text-green-800">
                   Curated dataset: <b>{disease.dataset.accession}</b> · {disease.dataset.platform} · {disease.dataset.tissue}
                   {disease.dataset.has_age ? ' · has ages' : ' · no ages'} · {disease.dataset.condition}
                 </p>
               ) : (
                 <p className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">
-                  No curated dataset wired yet — upload your own methylation file below.
+                  No disease-specific cohort yet — a <b>generic blood-methylation baseline</b> ({disease.dataset?.accession}) is
+                  available to run the pipeline, or upload your own {disease.disease} methylation file.
                 </p>
               )}
             </div>
@@ -332,7 +333,7 @@ export default function SimulatorLocal() {
           {/* Curated one-click download */}
           {disease?.dataset && (
             <div className="mt-4 rounded-xl border border-cream-300 p-4">
-              <p className="text-sm font-semibold text-ink-800">Curated dataset — {disease.dataset.accession}</p>
+              <p className="text-sm font-semibold text-ink-800">{disease.dataset.proxy ? 'Baseline dataset' : 'Curated dataset'} — {disease.dataset.accession}</p>
               <p className="mt-0.5 text-xs text-ink-700/60">{disease.dataset.note || 'Downloads to your data folder, then slices a few samples.'}</p>
               <button
                 onClick={runDownload}

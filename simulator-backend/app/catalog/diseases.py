@@ -84,7 +84,25 @@ DATASETS: dict[str, dict] = {
         "carries them). CKD reads epigenetically old regardless. Verify it downloads; "
         "the entry is one-line swappable if it 404s.",
     },
+    "GSE142512": {
+        "accession": "GSE142512", "method": "series_matrix",
+        "platform": "Illumina 450K", "tissue": "Whole blood", "n": 174,
+        "has_age": True, "condition": "Type 1 diabetes vs control (DAISY cohort)",
+        "note": "Best-effort pin — verify it downloads; one-line swappable if it 404s.",
+    },
+    "GSE311226": {
+        "accession": "GSE311226", "method": "series_matrix",
+        "platform": "Illumina EPIC/450K", "tissue": "Whole blood", "n": 200,
+        "has_age": True, "condition": "Normoglycaemia / prediabetes / type 2 diabetes",
+        "note": "Best-effort pin — verify it downloads; one-line swappable if it 404s.",
+    },
 }
+
+# Generic fallback so EVERY therapy has a downloadable dataset. This is a real
+# human blood epigenome (healthy-ageing cohort) used as a *baseline* to run the
+# pipeline — the epigenetic age it gives is valid, it is simply not specific to
+# the selected disease. Diseases with their own cohort above never use this.
+DEFAULT_DATASET_KEY = "GSE40279"
 
 # --- disease → (tissue preset, dataset) ---------------------------------------
 # Keyed by the exact therapy `model` name from the public catalogue. Only the
@@ -108,6 +126,9 @@ _DISEASE_MAP: dict[str, dict] = {
     "Stroke Recovery MSC": {"tissue": "cns"},
     "Spinal Cord Injury NSC": {"tissue": "cns"},
     "ALS / MND MSC Therapy": {"tissue": "cns"},
+    # Diabetes
+    "Type 1 Diabetes": {"tissue": "pancreas", "dataset": "GSE142512"},
+    "Type 2 Diabetes": {"tissue": "pancreas", "dataset": "GSE311226"},
     # Nephrology (kidney)
     "Chronic Kidney Disease (CKD) MSC Therapy": {"tissue": "kidney", "dataset": "GSE89093"},
     "Acute Kidney Injury (AKI) MSC Therapy": {"tissue": "kidney", "dataset": "GSE89093"},
@@ -221,7 +242,8 @@ def disease_catalog() -> dict:
         tissue_key = mapping.get("tissue") or _DEPT_TISSUE.get(dept, "systemic")
         preset = TISSUE_PRESETS[tissue_key]
         ds_key = mapping.get("dataset")
-        ds = DATASETS.get(ds_key) if ds_key else None
+        proxy = ds_key is None
+        ds = DATASETS.get(ds_key) if ds_key else DATASETS.get(DEFAULT_DATASET_KEY)
         items.append({
             "key": _slug(dept, model),
             "department": dept,
@@ -239,10 +261,14 @@ def disease_catalog() -> dict:
                 "accession": ds["accession"],
                 "platform": ds["platform"],
                 "tissue": ds["tissue"],
-                "condition": ds["condition"],
+                "condition": (f"Generic blood-methylation baseline — not {model}-specific"
+                              if proxy else ds["condition"]),
                 "has_age": ds["has_age"],
                 "n": ds["n"],
-                "note": ds.get("note", ""),
+                "note": ("A real human blood epigenome used as a baseline to run the pipeline; "
+                         "no disease-specific cohort is wired for this therapy yet — upload your "
+                         "own for a specific analysis." if proxy else ds.get("note", "")),
+                "proxy": proxy,
             } if ds else None),
         })
     return {
@@ -253,11 +279,11 @@ def disease_catalog() -> dict:
 
 
 def dataset_for_disease(disease_key: str) -> dict | None:
-    """Resolve a disease key back to its curated dataset entry (full record)."""
+    """Resolve a disease key to its dataset (specific cohort, else the baseline)."""
     for dept, model, *_ in _THERAPIES:
         if _slug(dept, model) == disease_key:
-            ds_key = (_DISEASE_MAP.get(model) or {}).get("dataset")
-            return DATASETS.get(ds_key) if ds_key else None
+            ds_key = (_DISEASE_MAP.get(model) or {}).get("dataset") or DEFAULT_DATASET_KEY
+            return DATASETS.get(ds_key)
     return None
 
 

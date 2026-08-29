@@ -107,9 +107,9 @@ export default function SimulatorChat({ onExit }: { onExit?: () => void }) {
     say('assistant', (
       <div>
         <p><b>{d.disease}</b> — {d.department}. For an ER-100 reprogramming construct I’d target <b>{d.tissue}</b> (capsid {d.capsid.toUpperCase()}).</p>
-        {d.dataset
+        {d.dataset && !d.dataset.proxy
           ? <p className="mt-1">A curated methylation dataset is available (<b>{d.dataset.accession}</b>, {d.dataset.tissue}). Download it, or upload your own file.</p>
-          : <p className="mt-1">No curated dataset for this one yet — upload the patient’s methylation file below.</p>}
+          : <p className="mt-1">No disease-specific cohort yet — a generic blood-methylation baseline (<b>{d.dataset?.accession}</b>) is available, or upload your own file.</p>}
       </div>
     ));
     setStage('data');
