@@ -61,6 +61,34 @@ def _dataset_path(label: str) -> Path:
     return SAMPLES_DIR / f"methylation_{_safe_label(label)}.csv"
 
 
+# ER-100 partial-reprogramming projection (illustrative model, not a measurement).
+YOUTH_SETPOINT = 20.0        # young-adult epigenetic reference (Horvath adult-age anchor)
+REPROG_EFFICIENCY = 0.35     # fraction of epigenetic age (above setpoint) OSK aims to reverse
+
+
+def _project_rejuvenation(dnam_age: float, coverage: float) -> dict:
+    """Projected ER-100 outcome from an illustrative partial-reprogramming model.
+
+    Reversal = a fraction of the epigenetic age accumulated above a young-adult
+    setpoint; the tissue-rejuvenation index scales that potential by data
+    confidence (CpG coverage). This is a PROJECTION for planning, not a measured
+    result — a real reversal requires an after-treatment methylation sample.
+    """
+    gap = max(0.0, dnam_age - YOUTH_SETPOINT)
+    years_reversed = round(REPROG_EFFICIENCY * gap, 1)
+    return {
+        "years_reversed": years_reversed,
+        "projected_age": round(dnam_age - years_reversed, 1),
+        "tissue_rejuvenation_index": round(REPROG_EFFICIENCY * 100 * coverage),
+        "youth_setpoint": YOUTH_SETPOINT,
+        "efficiency": REPROG_EFFICIENCY,
+        "basis": "Projected from an illustrative partial-reprogramming model "
+        f"({int(REPROG_EFFICIENCY * 100)}% of epigenetic age above a {int(YOUTH_SETPOINT)}-yr "
+        "setpoint), scaled by CpG coverage — not a measured outcome. Confirm with a "
+        "post-treatment sample.",
+    }
+
+
 def _dataset_age(label: str, sample: str | None) -> float | None:
     """Look up a sample's chronological age from the prepped ages_<label>.csv."""
     import csv as _csv
@@ -146,6 +174,7 @@ async def analyze(
 
     out: dict = {
         "epigenetic_age": result.public(),
+        "rejuvenation": _project_rejuvenation(result.dnam_age, result.coverage),
         "methylation": {"sample": meth.sample, "n_sites": meth.n_sites},
         "targets": [t.public() for t in targets],
         "objectives": design_objectives(targets),

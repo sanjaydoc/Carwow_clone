@@ -367,8 +367,19 @@ export default function SimulatorLocal() {
                         tone={ea.age_acceleration > 0 ? 'bad' : 'good'} />
                 )}
                 <Stat label="CpG coverage" value={`${Math.round(ea.coverage * 100)}%`} />
+                {analysis.rejuvenation && (
+                  <>
+                    <Stat label="Age reversal (projected)" value={`−${analysis.rejuvenation.years_reversed} yr`} tone="good" />
+                    <Stat label="Tissue rejuvenation (projected)" value={`${analysis.rejuvenation.tissue_rejuvenation_index}%`} tone="good" />
+                  </>
+                )}
               </div>
               <p className="mt-2 text-xs text-ink-700/50">Clock: {ea.clock} · {ea.n_used}/{ea.n_total} CpGs.</p>
+              {analysis.rejuvenation && (
+                <p className="mt-1 text-xs text-ink-700/50">
+                  Projected DNAm age after ER-100: <b>{analysis.rejuvenation.projected_age} yr</b>. {analysis.rejuvenation.basis}
+                </p>
+              )}
 
               {/* Targets */}
               {analysis.targets?.length > 0 && (

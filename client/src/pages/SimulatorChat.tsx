@@ -158,6 +158,13 @@ export default function SimulatorChat({ onExit }: { onExit?: () => void }) {
           <p>Biological age (Horvath clock): <b className="text-clay-700">{ea.dnam_age} yr</b>
             {ea.age_acceleration != null && <> · acceleration <b>{ea.age_acceleration > 0 ? '+' : ''}{ea.age_acceleration} yr</b></>}
             {' '}· coverage {Math.round(ea.coverage * 100)}% ({ea.n_used}/{ea.n_total} CpGs).</p>
+          {res.rejuvenation && (
+            <p className="mt-1 text-ink-700/70">
+              ER-100 projection: <b className="text-clay-700">−{res.rejuvenation.years_reversed} yr</b> reversed →
+              projected DNAm age <b>{res.rejuvenation.projected_age} yr</b> · tissue rejuvenation {res.rejuvenation.tissue_rejuvenation_index}%
+              <span className="text-ink-700/50"> (projected, not measured)</span>.
+            </p>
+          )}
           {res.targets?.length > 0 && (
             <p className="mt-1 text-ink-700/70">Top drivers: {res.targets.slice(0, 4).map((t: any) => `${t.gene || t.cpg} (${t.direction})`).join(', ')}.</p>
           )}
