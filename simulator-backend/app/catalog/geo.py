@@ -18,6 +18,7 @@ from __future__ import annotations
 import csv
 import gzip
 import io
+import re
 import urllib.request
 from pathlib import Path
 from typing import Callable
@@ -42,6 +43,40 @@ def series_matrix_url(acc: str) -> str:
 
 def suppl_url(acc: str, filename: str) -> str:
     return f"{GEO_BASE}/{_series_dir(acc)}/{acc}/suppl/{filename}"
+
+
+# Methylation platform ids — prefer these when a series has several matrix files.
+_METH_PLATFORMS = ("GPL13534", "GPL21145", "GPL8490", "GPL23976", "GPL18809")
+
+
+def _discover_matrix_files(acc: str) -> list[str]:
+    """List a series' matrix/ directory and return the actual *_series_matrix.txt.gz
+    URLs. Handles multi-platform / super-series where the file is named
+    '<acc>-GPL…_series_matrix.txt.gz' (so the plain name 404s)."""
+    base = f"{GEO_BASE}/{_series_dir(acc)}/{acc}/matrix/"
+    try:
+        req = urllib.request.Request(base, headers={"User-Agent": "stemcells-sim/1.0"})
+        with urllib.request.urlopen(req, timeout=60) as resp:  # noqa: S310 (public GEO over HTTPS)
+            html = resp.read().decode("utf-8", "replace")
+    except Exception:
+        return []
+    names = sorted(set(re.findall(r'([A-Za-z0-9_.\-]+_series_matrix\.txt\.gz)', html)))
+    return [base + n for n in names]
+
+
+def _fetch_series_matrix(acc: str, download_dir: Path, emit: Emit) -> Path:
+    """Download the series matrix, discovering the real filename first (robust to
+    multi-platform series). Re-uses any cached matrix file for this accession."""
+    cached = sorted(download_dir.glob(f"{acc}*series_matrix.txt.gz"))
+    if cached:
+        emit("using cached download", progress=0.6)
+        return cached[0]
+    urls = _discover_matrix_files(acc) or [series_matrix_url(acc)]
+    meth = [u for u in urls if any(p in u for p in _METH_PLATFORMS)]
+    chosen = (meth or urls)[0]
+    dest = download_dir / chosen.rsplit("/", 1)[-1]
+    _download(chosen, dest, emit)
+    return dest
 
 
 def _download(url: str, dest: Path, emit: Emit) -> Path:
@@ -286,11 +321,7 @@ def download_and_prep(dataset: dict, out_dir: Path, download_dir: Path,
     method = dataset["method"]
 
     if method == "series_matrix":
-        raw = download_dir / f"{acc}_series_matrix.txt.gz"
-        if not raw.exists():
-            _download(series_matrix_url(acc), raw, emit)
-        else:
-            emit("using cached download", progress=0.6)
+        raw = _fetch_series_matrix(acc, download_dir, emit)
         result = _prep_series_matrix(raw, out_dir, label, n, emit,
                                      pick=dataset.get("pick", "oldest"))
 
@@ -331,8 +362,8 @@ def _raw_for(dataset: dict, download_dir: Path) -> tuple[Path | None, Path | Non
     acc = dataset["accession"]
     method = dataset["method"]
     if method == "series_matrix":
-        p = download_dir / f"{acc}_series_matrix.txt.gz"
-        return (p if p.exists() else None, None)
+        files = sorted(download_dir.glob(f"{acc}*series_matrix.txt.gz"))
+        return (files[0] if files else None, None)
     if method == "suppl_avgbeta":
         p = download_dir / dataset["beta_file"]
         return (p if p.exists() else None, None)
