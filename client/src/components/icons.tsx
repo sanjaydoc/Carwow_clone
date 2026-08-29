@@ -13,6 +13,7 @@ export const DEPARTMENTS = [
   'Gastroenterology',
   'Neurology',
   'Pulmonology',
+  'Nephrology',
   'Cosmetic',
 ] as const;
 
@@ -90,6 +91,15 @@ function deptPaths(name: string): ReactNode {
         <>
           <path d="M12 3l7 3v5c0 4.6-3 7.7-7 9-4-1.3-7-4.4-7-9V6z" />
           <path d="M9.3 12l1.9 1.9L15 10" />
+        </>
+      );
+    case 'Nephrology':
+      // Kidney bean with a hilum notch + short ureter.
+      return (
+        <>
+          <path d="M14.5 4.2c3 0 5 2.8 5 6.5 0 4.6-3.3 8.6-6.6 8.6-2 0-3.1-1.3-3.1-3 0-1.6 1-2.6 1-4.2 0-1.7-1.3-2.6-1.3-4.6 0-2.2 1.8-3.3 3.9-3.3z" />
+          <path d="M14.9 9.3c-1 .4-1.6 1.2-1.6 2.4" />
+          <path d="M11.8 15.3 8 19" />
         </>
       );
     case 'HIV':

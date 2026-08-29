@@ -32,6 +32,7 @@ const AGE = '#059669';
 const DIABETES = '#0e7490';
 const AUTOIMMUNE = '#9333ea';
 const HIV = '#e11d48';
+const NEPHRO = '#0d9488';
 
 export const therapies = [
   // ── Age Rejuvenation ────────────────────────────────────────────────────
@@ -518,6 +519,40 @@ export const therapies = [
     engine: 'Adipose-derived MSC', power_bhp: 80, zero_to_sixty: 2, top_speed: 14,
     economy_mpg: 12, rating: 4.4, review_count: 540, accent: COSMETIC,
     description: 'Targeted stem-cell injections that soften scars and accelerate healing of difficult wounds by remodelling collagen and improving blood supply.'
+  },
+
+  // ── Nephrology ──────────────────────────────────────────────────────────
+  {
+    make: 'Nephrology', model: 'Chronic Kidney Disease (CKD) MSC Therapy', trim: 'Allogeneic UC-MSC', year: 2023,
+    price: 14000, monthly_price: 583, body_type: 'MSC', fuel_type: 'Allogeneic', transmission: 'IV infusion',
+    mileage: 90, color: 'Day-case', condition: 'used', seats: 150, doors: 2,
+    engine: 'Umbilical cord-derived MSC', power_bhp: 58, zero_to_sixty: 3, top_speed: 3,
+    economy_mpg: 12, rating: 4.1, review_count: 140, accent: NEPHRO,
+    description: 'Intravenous mesenchymal stem-cell infusions studied to slow the decline of kidney function in chronic kidney disease. MSCs release anti-inflammatory and anti-fibrotic signals that aim to protect surviving nephrons, calm interstitial inflammation and reduce scarring (fibrosis) — the process that drives CKD toward dialysis. Delivered as a monitored day-case infusion, usually repeated over several cycles with eGFR and proteinuria tracked as read-outs. Investigational — trials are ongoing and benefit is not established.'
+  },
+  {
+    make: 'Nephrology', model: 'Acute Kidney Injury (AKI) MSC Therapy', trim: 'Autologous/allogeneic BM-MSC', year: 2024,
+    price: 16000, monthly_price: 667, body_type: 'MSC', fuel_type: 'Allogeneic', transmission: 'IV infusion',
+    mileage: 60, color: 'Inpatient', condition: 'used', seats: 200, doors: 2,
+    engine: 'Bone-marrow-derived MSC', power_bhp: 62, zero_to_sixty: 2, top_speed: 2,
+    economy_mpg: 6, rating: 4.0, review_count: 70, accent: NEPHRO,
+    description: 'A regenerative programme for acute kidney injury — the sudden loss of kidney function after sepsis, major surgery, or nephrotoxic drugs. Infused MSCs home to the injured tubules, dampening the inflammatory storm and secreting growth factors that support tubular epithelial repair, with the goal of speeding recovery and preventing progression to chronic kidney disease. Given in the inpatient setting alongside standard supportive care. Investigational.'
+  },
+  {
+    make: 'Nephrology', model: 'Diabetic Kidney Disease Exosome Therapy', trim: 'MSC-derived exosomes', year: 2024,
+    price: 9000, monthly_price: 375, body_type: 'Exosome', fuel_type: 'Allogeneic', transmission: 'IV infusion',
+    mileage: 60, color: 'Day-case', condition: 'used', seats: null, doors: 1,
+    engine: 'MSC-derived exosomes', power_bhp: 55, zero_to_sixty: 4, top_speed: 2,
+    economy_mpg: 12, rating: 3.9, review_count: 45, accent: NEPHRO,
+    description: 'Cell-free therapy using MSC-derived exosomes — nanoscale vesicles carrying reparative RNA and proteins — for diabetic kidney disease, the leading cause of kidney failure. The exosomes are studied to deliver anti-fibrotic and podocyte-protective cargo to the glomerulus without the risks of whole-cell infusion, aiming to preserve filtration and reduce protein leak. Early-stage research.'
+  },
+  {
+    make: 'Nephrology', model: 'ER-100 Renal Epigenetic Reprogramming', trim: 'OSK partial reprogramming (OCT4 · SOX2 · KLF4)', year: 2026,
+    price: 52000, monthly_price: 2167, body_type: 'iPSC', fuel_type: 'Autologous', transmission: 'IV infusion',
+    mileage: 90, color: 'Day-case', condition: 'used', seats: null, doors: 1,
+    engine: 'Exosome/AAV-delivered inducible OSK (OCT4, SOX2, KLF4)', power_bhp: 54, zero_to_sixty: 1, top_speed: 7,
+    economy_mpg: 12, rating: 4.2, review_count: 12, accent: NEPHRO,
+    description: 'A first-in-class research application of the ER-100 partial epigenetic reprogramming platform to the kidney. Controlled, transient expression of OCT4, SOX2 and KLF4 (“OSK”) is used to reset the epigenetic age of injured tubular and glomerular cells toward a younger, more regenerative state — reversing fibrosis-associated methylation changes without altering the DNA sequence. Aimed at the aged/fibrotic kidney in chronic kidney disease, and delivered systemically by a kidney-homing carrier (IV exosome or AAV). First-in-human concept (investigational).'
   },
 
 ];

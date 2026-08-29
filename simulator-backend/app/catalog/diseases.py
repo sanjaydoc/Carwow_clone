@@ -32,6 +32,7 @@ TISSUE_PRESETS: dict[str, dict] = {
     "pancreas":    {"tissue": "Pancreatic islet",             "capsid": "aav8",  "route": "IV / intra-ductal"},
     "gut":         {"tissue": "Gut mucosa",                   "capsid": "aav9",  "route": "Local / IV"},
     "bone":        {"tissue": "Bone / dental",                "capsid": "aav5",  "route": "Local implant"},
+    "kidney":      {"tissue": "Kidney (tubule / glomerulus)", "capsid": "aav9",  "route": "IV infusion"},
 }
 
 # --- curated methylation datasets (S5) ----------------------------------------
@@ -73,6 +74,12 @@ DATASETS: dict[str, dict] = {
         "platform": "Illumina 450K", "tissue": "Whole blood", "n": 572,
         "has_age": True, "condition": "Parkinson's disease vs control (PEG study)",
     },
+    "GSE89093": {
+        "accession": "GSE89093", "method": "series_matrix",
+        "platform": "Illumina 450K", "tissue": "Kidney / blood", "n": 92,
+        "has_age": False, "condition": "Chronic kidney disease methylation",
+        "note": "Best-effort pin — verify it downloads on your machine; the entry is one-line swappable.",
+    },
 }
 
 # --- disease → (tissue preset, dataset) ---------------------------------------
@@ -97,6 +104,11 @@ _DISEASE_MAP: dict[str, dict] = {
     "Stroke Recovery MSC": {"tissue": "cns"},
     "Spinal Cord Injury NSC": {"tissue": "cns"},
     "ALS / MND MSC Therapy": {"tissue": "cns"},
+    # Nephrology (kidney)
+    "Chronic Kidney Disease (CKD) MSC Therapy": {"tissue": "kidney", "dataset": "GSE89093"},
+    "Acute Kidney Injury (AKI) MSC Therapy": {"tissue": "kidney", "dataset": "GSE89093"},
+    "Diabetic Kidney Disease Exosome Therapy": {"tissue": "kidney", "dataset": "GSE89093"},
+    "ER-100 Renal Epigenetic Reprogramming": {"tissue": "kidney", "dataset": "GSE89093", "approach": "both"},
 }
 
 # Department → default tissue when a disease isn't explicitly mapped.
@@ -111,12 +123,13 @@ _DEPT_TISSUE: dict[str, str] = {
     "Gastroenterology": "gut",
     "Neurology": "cns",
     "Pulmonology": "lung",
+    "Nephrology": "kidney",
     "Cosmetic": "skin",
 }
 
 # Department display order.
 DEPARTMENTS = [
-    "Age Rejuvenation", "Autoimmune", "Neurology", "Diabetes", "HIV",
+    "Age Rejuvenation", "Autoimmune", "Neurology", "Nephrology", "Diabetes", "HIV",
     "Cardiology", "Pulmonology", "Orthopedics", "Gastroenterology", "Dental", "Cosmetic",
 ]
 
@@ -177,6 +190,10 @@ _THERAPIES: list[tuple[str, str, str, str, str]] = [
     ("Pulmonology", "Pulmonary Fibrosis (IPF) MSC", "MSC", "IV infusion", "research"),
     ("Pulmonology", "ARDS MSC Therapy", "MSC", "IV infusion", "research"),
     ("Pulmonology", "Airway Epithelial Regeneration", "iPSC", "Surgical implant", "research"),
+    ("Nephrology", "Chronic Kidney Disease (CKD) MSC Therapy", "MSC", "IV infusion", "research"),
+    ("Nephrology", "Acute Kidney Injury (AKI) MSC Therapy", "MSC", "IV infusion", "research"),
+    ("Nephrology", "Diabetic Kidney Disease Exosome Therapy", "Exosome", "IV infusion", "research"),
+    ("Nephrology", "ER-100 Renal Epigenetic Reprogramming", "iPSC", "IV infusion", "research"),
     ("Cosmetic", "Facial Fat Grafting + SVF", "MSC", "Local injection", "available"),
     ("Cosmetic", "Hair Restoration Exosome", "Exosome", "Local injection", "available"),
     ("Cosmetic", "Skin Rejuvenation Exosomes", "Exosome", "Topical", "available"),
