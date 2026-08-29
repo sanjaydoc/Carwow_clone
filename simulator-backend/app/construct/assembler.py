@@ -12,7 +12,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from .parts import AAV_CAPACITY_BP, CAPSIDS, PARTS, Part
+from .parts import AAV_CAPACITY_BP, PARTS, Part, capsid_description
 
 
 @dataclass
@@ -112,6 +112,7 @@ def assemble_osk_teton(
     polya: str = "min_polya",
     include_wpre: bool = True,
     capsid: str = "aav9",
+    tissue_key: str | None = None,
     factor_order: tuple[str, str, str] = ("oct4", "sox2", "klf4"),
     objectives: list[dict] | None = None,
 ) -> ConstructResult:
@@ -156,7 +157,7 @@ def assemble_osk_teton(
         strategy=strategy,
         vectors=vectors,
         capsid=capsid,
-        capsid_desc=CAPSIDS.get(capsid, "custom capsid"),
+        capsid_desc=capsid_description(capsid, tissue_key),
         dox_protocol=_dox_protocol(),
         parts_used=sorted(parts_used, key=lambda p: p["length_bp"], reverse=True),
         objectives=objectives or [],

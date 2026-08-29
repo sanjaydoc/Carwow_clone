@@ -86,3 +86,29 @@ CAPSIDS = {
     "aav8": "AAV8 — liver, pancreas",
     "aavdj": "AAV-DJ — engineered broad tropism",
 }
+
+# How a given capsid is used for a given target tissue — so the construct
+# describes the real delivery rationale instead of a generic serotype blurb.
+_CAPSID_TISSUE_NOTE = {
+    "kidney": "broad systemic serotype; reaches the kidney via IV infusion",
+    "cns": "crosses the blood–brain barrier for CNS delivery (IV/intrathecal)",
+    "retina": "gold-standard ocular serotype (intravitreal, ER-100-style)",
+    "heart": "strong cardiac and systemic tropism (intracoronary/IV)",
+    "liver": "high hepatic tropism (liver-preferential, IV)",
+    "lung": "airway/lung tropism (inhaled or IV)",
+    "immune": "used for ex-vivo transduction of HSC/immune cells, then reinfused",
+    "systemic": "broad systemic biodistribution (IV)",
+    "joint": "local intra-articular delivery to the joint",
+    "skin": "local/dermal delivery",
+    "pancreas": "pancreatic/hepatic tropism (IV)",
+    "gut": "systemic or local delivery to gut mucosa",
+    "bone": "local delivery to bone/dental sites",
+}
+
+
+def capsid_description(capsid: str, tissue_key: str | None = None) -> str:
+    """Tissue-aware capsid description (e.g. AAV9 for kidney vs AAV9 for CNS)."""
+    base = CAPSIDS.get(capsid, f"{capsid.upper()} capsid")
+    serotype = base.split("—")[0].strip() if "—" in base else capsid.upper()
+    note = _CAPSID_TISSUE_NOTE.get((tissue_key or "").lower())
+    return f"{serotype} — {note}" if note else base

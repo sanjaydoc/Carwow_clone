@@ -276,6 +276,7 @@ async def construct(spec: dict = Body(default={})) -> dict:
         polya=spec.get("polya", "min_polya"),
         include_wpre=spec.get("include_wpre", True),
         capsid=spec.get("capsid", "aav9"),
+        tissue_key=spec.get("tissue_key"),
         objectives=spec.get("objectives", []),
     )
     out = result.public()

@@ -164,6 +164,8 @@ export default function SimulatorLocal() {
       setConstruct(
         await assembleConstruct({
           capsid: disease?.capsid || 'aav9',
+          tissue_key: disease?.tissue_key,
+          tissue_label: disease?.tissue,
           objectives: analysis?.objectives || [],
         }),
       );
