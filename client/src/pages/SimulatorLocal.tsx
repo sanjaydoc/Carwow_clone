@@ -148,6 +148,7 @@ export default function SimulatorLocal() {
         genotype: genoFile,
         sample: sample || undefined,
         chronologicalAge: age ? Number(age) : null,
+        tissueKey: disease?.tissue_key,
       });
       setAnalysis(res);
     } catch (e: any) {
@@ -377,7 +378,7 @@ export default function SimulatorLocal() {
               <p className="mt-2 text-xs text-ink-700/50">Clock: {ea.clock} · {ea.n_used}/{ea.n_total} CpGs.</p>
               {analysis.rejuvenation && (
                 <p className="mt-1 text-xs text-ink-700/50">
-                  Projected DNAm age after ER-100: <b>{analysis.rejuvenation.projected_age} yr</b>. {analysis.rejuvenation.basis}
+                  Projected DNAm age after reprogramming: <b>{analysis.rejuvenation.projected_age} yr</b>. {analysis.rejuvenation.basis}
                 </p>
               )}
 

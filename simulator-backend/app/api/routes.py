@@ -61,31 +61,43 @@ def _dataset_path(label: str) -> Path:
     return SAMPLES_DIR / f"methylation_{_safe_label(label)}.csv"
 
 
-# ER-100 partial-reprogramming projection (illustrative model, not a measurement).
+# Partial-reprogramming projection (illustrative model, not a measurement).
 YOUTH_SETPOINT = 20.0        # young-adult epigenetic reference (Horvath adult-age anchor)
-REPROG_EFFICIENCY = 0.35     # fraction of epigenetic age (above setpoint) OSK aims to reverse
+REPROG_EFFICIENCY = 0.35     # default fraction of epigenetic age (above setpoint) reversible
+
+# Per-tissue reprogramming responsiveness (illustrative). Tissues that reprogram
+# strongly in the literature (retina/CNS/skin/liver) score higher; post-mitotic
+# or stiff tissues (heart, cartilage) lower. Every therapy therefore gets a
+# tailored projection based on its target tissue.
+TISSUE_EFFICIENCY = {
+    "retina": 0.45, "cns": 0.42, "skin": 0.44, "liver": 0.40, "gut": 0.38,
+    "kidney": 0.36, "systemic": 0.35, "pancreas": 0.35, "lung": 0.34,
+    "immune": 0.33, "bone": 0.33, "heart": 0.32, "joint": 0.30,
+}
 
 
-def _project_rejuvenation(dnam_age: float, coverage: float) -> dict:
-    """Projected ER-100 outcome from an illustrative partial-reprogramming model.
+def _project_rejuvenation(dnam_age: float, coverage: float, tissue_key: str | None = None) -> dict:
+    """Projected reprogramming outcome from an illustrative partial-reprogramming model.
 
-    Reversal = a fraction of the epigenetic age accumulated above a young-adult
-    setpoint; the tissue-rejuvenation index scales that potential by data
-    confidence (CpG coverage). This is a PROJECTION for planning, not a measured
-    result — a real reversal requires an after-treatment methylation sample.
+    Reversal = a tissue-tuned fraction of the epigenetic age accumulated above a
+    young-adult setpoint; the tissue-rejuvenation index scales that potential by
+    data confidence (CpG coverage). This is a PROJECTION for planning, not a
+    measured result — a real reversal requires an after-treatment methylation sample.
     """
+    eff = TISSUE_EFFICIENCY.get((tissue_key or "").lower(), REPROG_EFFICIENCY)
     gap = max(0.0, dnam_age - YOUTH_SETPOINT)
-    years_reversed = round(REPROG_EFFICIENCY * gap, 1)
+    years_reversed = round(eff * gap, 1)
     return {
         "years_reversed": years_reversed,
         "projected_age": round(dnam_age - years_reversed, 1),
-        "tissue_rejuvenation_index": round(REPROG_EFFICIENCY * 100 * coverage),
+        "tissue_rejuvenation_index": round(eff * 100 * coverage),
         "youth_setpoint": YOUTH_SETPOINT,
-        "efficiency": REPROG_EFFICIENCY,
+        "efficiency": round(eff, 2),
+        "tissue_key": tissue_key or "generic",
         "basis": "Projected from an illustrative partial-reprogramming model "
-        f"({int(REPROG_EFFICIENCY * 100)}% of epigenetic age above a {int(YOUTH_SETPOINT)}-yr "
-        "setpoint), scaled by CpG coverage — not a measured outcome. Confirm with a "
-        "post-treatment sample.",
+        f"({int(eff * 100)}% of epigenetic age above a {int(YOUTH_SETPOINT)}-yr setpoint, "
+        "tuned to the target tissue), scaled by CpG coverage — not a measured outcome. "
+        "Confirm with a post-treatment sample.",
     }
 
 
@@ -150,6 +162,7 @@ async def analyze(
     dataset: str | None = Form(None),
     sample: str | None = Form(None),
     chronological_age: float | None = Form(None),
+    tissue_key: str | None = Form(None),
     top_targets: int = Form(20),
 ) -> dict:
     """Compute the REAL epigenetic age + target CpGs (no data leaves the machine).
@@ -174,7 +187,7 @@ async def analyze(
 
     out: dict = {
         "epigenetic_age": result.public(),
-        "rejuvenation": _project_rejuvenation(result.dnam_age, result.coverage),
+        "rejuvenation": _project_rejuvenation(result.dnam_age, result.coverage, tissue_key),
         "methylation": {"sample": meth.sample, "n_sites": meth.n_sites},
         "targets": [t.public() for t in targets],
         "objectives": design_objectives(targets),

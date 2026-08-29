@@ -150,6 +150,7 @@ export default function SimulatorChat({ onExit }: { onExit?: () => void }) {
       const res = await analyze({
         methylation: methFile, dataset: datasetLabel || undefined,
         sample: sample || undefined, chronologicalAge: age ? Number(age) : null,
+        tissueKey: disease?.tissue_key,
       });
       setAnalysis(res);
       const ea = res.epigenetic_age;
@@ -160,7 +161,7 @@ export default function SimulatorChat({ onExit }: { onExit?: () => void }) {
             {' '}· coverage {Math.round(ea.coverage * 100)}% ({ea.n_used}/{ea.n_total} CpGs).</p>
           {res.rejuvenation && (
             <p className="mt-1 text-ink-700/70">
-              ER-100 projection: <b className="text-clay-700">−{res.rejuvenation.years_reversed} yr</b> reversed →
+              Reprogramming projection: <b className="text-clay-700">−{res.rejuvenation.years_reversed} yr</b> reversed →
               projected DNAm age <b>{res.rejuvenation.projected_age} yr</b> · tissue rejuvenation {res.rejuvenation.tissue_rejuvenation_index}%
               <span className="text-ink-700/50"> (projected, not measured)</span>.
             </p>

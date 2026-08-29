@@ -99,6 +99,7 @@ export async function analyze(opts: {
   genotype?: File | null;
   sample?: string;
   chronologicalAge?: number | null;
+  tissueKey?: string | null;
   topTargets?: number;
 }): Promise<any> {
   const fd = new FormData();
@@ -107,6 +108,7 @@ export async function analyze(opts: {
   if (opts.genotype) fd.append('genotype', opts.genotype);
   if (opts.sample) fd.append('sample', opts.sample);
   if (opts.chronologicalAge != null) fd.append('chronological_age', String(opts.chronologicalAge));
+  if (opts.tissueKey) fd.append('tissue_key', opts.tissueKey);
   fd.append('top_targets', String(opts.topTargets ?? 20));
   const res = await fetch(api('/api/analyze'), { method: 'POST', body: fd });
   if (!res.ok) throw new Error((await res.json()).detail || 'Analyze failed');
