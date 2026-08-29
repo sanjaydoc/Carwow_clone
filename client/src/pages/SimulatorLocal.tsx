@@ -87,6 +87,7 @@ export default function SimulatorLocal() {
     setError('');
     const d = catalog?.diseases.find((x) => x.key === key);
     if (d?.default_approach) setApproach(d.default_approach as Approach);
+    setOptimizeFor(defaultOptimizeFor(d?.tissue_key));
     // If its curated dataset is already on disk, load its samples straight away.
     if (d?.dataset?.downloaded) {
       const label = d.dataset.label;
@@ -556,6 +557,11 @@ export default function SimulatorLocal() {
                   <option value="lipophilic">More lipophilic (high logP)</option>
                   <option value="custom">Custom logP target…</option>
                 </select>
+                {disease && (
+                  <p className="mt-1 text-xs text-clay-700">
+                    Auto-selected <b>{optLabel(optimizeFor)}</b> for {disease.tissue} — change it if you like.
+                  </p>
+                )}
                 {optimizeFor === 'custom' && (
                   <input value={customLogp} onChange={(e) => setCustomLogp(e.target.value)} inputMode="decimal"
                          placeholder="target logP, e.g. 2.5" className="input mt-2" />
@@ -631,6 +637,24 @@ function Stat({ label, value, big, tone }: { label: string; value: string; big?:
       <p className={`font-display font-extrabold ${big ? 'text-3xl' : 'text-xl'} ${color}`}>{value}</p>
     </div>
   );
+}
+
+function optLabel(v: string): string {
+  return ({ qed: 'drug-likeness (QED)', cns: 'CNS-penetrant', soluble: 'higher solubility',
+    lipophilic: 'higher lipophilicity', custom: 'a custom logP' } as Record<string, string>)[v] || v;
+}
+
+// Auto-pick the molecule optimisation target from the disease's tissue.
+function defaultOptimizeFor(tissueKey?: string): string {
+  switch (tissueKey) {
+    case 'cns':
+    case 'retina':
+      return 'cns';        // must cross the blood–brain / blood–retina barrier
+    case 'kidney':
+      return 'soluble';    // renally-cleared drugs favour solubility (low logP)
+    default:
+      return 'qed';        // general drug-likeness
+  }
 }
 
 // Map the "Optimize for" choice to De-Novo-LLM property-conditioning params.

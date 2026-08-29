@@ -99,6 +99,7 @@ export default function SimulatorChat({ onExit }: { onExit?: () => void }) {
     setConstruct(null);
     setRanked(null);
     setError('');
+    setOptimizeFor(chatDefaultOptimizeFor(d.tissue_key));
     if (d.dataset?.downloaded) {
       setDatasetLabel(d.dataset.label);
       datasetSamples(d.dataset.label).then(setSamples).catch(() => {});
@@ -432,6 +433,17 @@ function exosomeBubble(ex: any) {
 // --- helpers --------------------------------------------------------------
 function optLabel(v: string) {
   return { qed: 'drug-likeness', cns: 'CNS penetration', soluble: 'solubility', lipophilic: 'lipophilicity' }[v] || v;
+}
+function chatDefaultOptimizeFor(tissueKey?: string): string {
+  switch (tissueKey) {
+    case 'cns':
+    case 'retina':
+      return 'cns';
+    case 'kidney':
+      return 'soluble';
+    default:
+      return 'qed';
+  }
 }
 function designProps(optimizeFor: string) {
   switch (optimizeFor) {
