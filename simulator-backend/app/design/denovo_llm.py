@@ -74,9 +74,13 @@ class DenovoLLMEngine(DesignEngine):
         n = min(req.n, settings.max_generate)
         config = req.config or _DEFAULT_CONFIG.get(req.modality, _DEFAULT_CONFIG["smiles"])
         model = req.model or _DEFAULT_MODEL.get(req.modality)
-        out_dir = settings.work_dir / "generated"
+        out_dir = (settings.work_dir / "generated").resolve()
         out_dir.mkdir(parents=True, exist_ok=True)
+        # ABSOLUTE path: the subprocess runs with cwd=repo, so a relative -o
+        # would land inside the De-Novo-LLM folder, not ours.
         out_file = out_dir / f"cand_{req.modality}_{n}.txt"
+        if out_file.exists():
+            out_file.unlink()  # avoid reading a stale file if this run produces none
 
         cmd = self._cli()
         if req.property:
@@ -96,6 +100,10 @@ class DenovoLLMEngine(DesignEngine):
         proc = subprocess.run(cmd, cwd=str(self.repo), capture_output=True, text=True, timeout=3600)
         if proc.returncode != 0:
             raise RuntimeError((proc.stderr or proc.stdout or "generation failed").strip()[:800])
+        if not out_file.exists():
+            # Ran clean but produced no file — surface the CLI output to help debug.
+            tail = (proc.stdout or proc.stderr or "").strip()[-800:]
+            raise RuntimeError(f"De-Novo-LLM wrote no output file.\n{tail}")
 
         if progress:
             progress("reading generated candidates…", progress=0.8)
