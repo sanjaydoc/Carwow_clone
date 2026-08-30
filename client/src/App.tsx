@@ -22,7 +22,18 @@ import NotFound from './pages/NotFound';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
-  useEffect(() => window.scrollTo(0, 0), [pathname]);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    // Belt-and-suspenders for a Chrome compositing bug: after a client-side
+    // route change, content under a sticky/fixed layer can stay unpainted until
+    // a manual refresh. Nudge a repaint (negligible visual effect).
+    requestAnimationFrame(() => {
+      document.body.style.opacity = '0.99999';
+      requestAnimationFrame(() => {
+        document.body.style.opacity = '';
+      });
+    });
+  }, [pathname]);
   return null;
 }
 

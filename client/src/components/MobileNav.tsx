@@ -175,7 +175,7 @@ export default function MobileNav() {
       </Link>
 
       {/* Floating bottom navigation */}
-      <nav className="fixed inset-x-3 bottom-3 z-40 flex h-[64px] items-stretch overflow-hidden rounded-2xl border border-cream-300 bg-white/95 shadow-[0_8px_30px_rgba(20,20,19,0.18)] backdrop-blur md:hidden">
+      <nav className="fixed inset-x-3 bottom-3 z-40 flex h-[64px] items-stretch overflow-hidden rounded-2xl border border-cream-300 bg-white shadow-[0_8px_30px_rgba(20,20,19,0.18)] md:hidden">
         <NavLink to="/therapies" className={itemClass} onClick={close}>
           <CellIcon />
           Therapies
