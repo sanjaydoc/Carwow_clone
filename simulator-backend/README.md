@@ -112,6 +112,20 @@ download anything (Horvath's example — predicted vs real age 39→39.8, 28→2
 **openSNP** (`https://opensnp.org/genotypes`) — it's small (~20 MB) and uploads
 directly; the parser handles 23andMe/Ancestry/VCF formats.
 
+**WGBS / RRBS sequencing output → clock-ready CSV.** If your methylation comes
+from *sequencing* (whole-genome/reduced bisulfite, e.g. from an Indian lab like
+Nucleome) rather than an EPIC array, convert it first — it reports methylation by
+genomic coordinate, not by `cg` probe id:
+```bash
+# hg38-aligned Bismark coverage, using a public Illumina EPIC/450K manifest
+python scripts/wgbs_to_beta.py --input patient.cov --build hg38 \
+    --manifest EPIC_manifest.csv --label patient1
+```
+Writes `data/samples/methylation_patient1.csv`, which you upload like any other
+methylation file. Accepts Bismark `.cov`, bedGraph, or a TSV/CSV with chr/pos/beta
+columns (`.gz` ok). An **EPIC/450K array** result needs none of this — its `cg`
+beta values upload directly.
+
 ## Layout
 
 ```
