@@ -175,6 +175,67 @@ def assemble_microdystrophin(
     }
 
 
+def assemble_dux4_silencing(
+    *,
+    capsid: str = "aavrh74",
+    tissue_key: str | None = "muscle",
+    promoter: str = "ck8",
+    objectives: list[dict] | None = None,
+) -> dict:
+    """Assemble an anti-DUX4 SILENCING construct (for FSHD) — an epigenetic-disease
+    modality, distinct from both OSK reprogramming and micro-dystrophin replacement.
+
+    FSHD is caused by D4Z4 macrosatellite HYPOMETHYLATION, which de-represses the
+    toxic DUX4 gene in muscle. The fix is to switch DUX4 back OFF: the leading
+    gene therapy delivers an AAV artificial microRNA that knocks DUX4 mRNA down;
+    the epigenetic alternative re-methylates/re-silences the D4Z4 array (CRISPRi).
+    Returns the same shape as the micro-dystrophin construct (no dox switch)."""
+    if promoter not in ("ck8", "mhck7"):
+        promoter = "ck8"
+    keys = ["itr5", promoter, "midux4", "min_polya", "itr3"]
+    vector = _layout("AAV anti-DUX4 microRNA (single vector)", keys)
+    prom = PARTS[promoter]
+    return {
+        "construct_type": "epigenetic_silencing",
+        "modality": "AAV anti-DUX4 microRNA — DUX4 knockdown (RNAi)",
+        "strategy": "single-aav" if vector.fits_aav else "oversized — needs a more compact design",
+        "capsid": capsid,
+        "capsid_desc": capsid_description(capsid, tissue_key),
+        "vectors": [vector.public()],
+        "driver": {
+            "name": prom.name,
+            "length_bp": prom.length_bp,
+            "role": "Muscle-restricted DRIVER — expresses the anti-DUX4 microRNA only in "
+                    "skeletal muscle, where DUX4 is toxic.",
+        },
+        "payload": {
+            "name": PARTS["midux4"].name,
+            "length_bp": PARTS["midux4"].length_bp,
+            "role": "Anti-DUX4 microRNA — knocks down the toxic DUX4 transcript that D4Z4 "
+                    "hypomethylation de-represses (silences the effector, not the whole locus).",
+            "reference": PARTS["midux4"].reference,
+        },
+        "mechanism": "DUX4 SILENCING: FSHD's root cause is loss of methylation at the D4Z4 array, "
+                     "which switches the toxic DUX4 gene ON in muscle. This construct switches DUX4 "
+                     "back OFF by RNAi — addressing the actual epigenetic lesion, unlike generic "
+                     "reprogramming or gene replacement.",
+        "alternatives": [
+            {"name": "CRISPRi re-silencing (dCas9–KRAB–DNMT3A at D4Z4)",
+             "note": "Re-establishes repressive methylation/heterochromatin at the D4Z4 array — "
+                     "fixes the epigenetic lesion directly (dCas9 fusion is large; delivery is the challenge)."},
+            {"name": "Antisense oligonucleotide (ASO) vs DUX4",
+             "note": "Degrades DUX4 mRNA without a virus; needs repeat dosing and muscle delivery."},
+            {"name": "Small molecule (e.g. p38 inhibitor)",
+             "note": "Lowers DUX4 expression pharmacologically — systemic, reversible, non-genetic."},
+        ],
+        "objectives": objectives or [],
+        "notes": [],
+        "disclaimer": "Deterministic assembly of published FSHD parts (anti-DUX4 miRNA / muscle "
+                      "promoter / AAV). Research construct for in-silico illustration — not "
+                      "clinical-grade, not validated, not medical advice.",
+    }
+
+
 def assemble_osk_teton(
     *,
     constitutive_promoter: str = "efs",

@@ -223,10 +223,15 @@ export default function SimulatorLocal() {
     }
   };
 
-  const isGeneReplacement = disease?.construct_type === 'gene_replacement';
+  const ctype = disease?.construct_type;
+  const isStructuredConstruct = ctype === 'gene_replacement' || ctype === 'epigenetic_silencing';
+  const constructTitle =
+    ctype === 'gene_replacement' ? 'Micro-dystrophin gene-replacement construct'
+    : ctype === 'epigenetic_silencing' ? 'Anti-DUX4 silencing construct'
+    : 'ER-100 OSK Tet-On construct';
 
   const runConstruct = async () => {
-    setBusy(isGeneReplacement ? 'Assembling micro-dystrophin gene-replacement construct…' : 'Assembling OSK Tet-On construct…');
+    setBusy(isStructuredConstruct ? `Assembling ${constructTitle.toLowerCase()}…` : 'Assembling OSK Tet-On construct…');
     try {
       setConstruct(
         await assembleConstruct({
@@ -681,21 +686,27 @@ export default function SimulatorLocal() {
           {showA && (
           <div className="card p-6">
             <h2 className="font-display text-lg font-bold text-ink-900">
-              4 · {isGeneReplacement ? 'Micro-dystrophin gene-replacement construct' : 'ER-100 OSK Tet-On construct'}
+              4 · {constructTitle}
               <span className="text-xs font-normal text-ink-700/50"> · Track A</span>
             </h2>
             {disease && (
               <p className="mt-1 text-xs text-ink-700/60">Presets for <b>{disease.disease}</b>: {disease.tissue} · capsid {disease.capsid.toUpperCase()}.</p>
             )}
-            {isGeneReplacement && (
+            {ctype === 'gene_replacement' && (
               <p className="mt-2 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">
                 Muscular dystrophy is a <b>genetic</b> disease — this delivers a working gene, it does not reprogram the epigenome.
                 The right modality is <b>mutation-dependent</b> and needs the patient's dystrophin genotype.
               </p>
             )}
+            {ctype === 'epigenetic_silencing' && (
+              <p className="mt-2 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">
+                FSHD is <b>epigenetic</b>: D4Z4 hypomethylation de-represses the toxic <b>DUX4</b> gene. This construct switches
+                DUX4 back <b>off</b> (RNAi) — the mechanism-correct fix, distinct from gene replacement or generic reprogramming.
+              </p>
+            )}
             {!construct ? (
               <button onClick={runConstruct} disabled={!!busy} className="btn-outline mt-4 px-5 py-2.5 disabled:opacity-50">Assemble construct</button>
-            ) : construct.construct_type === 'gene_replacement' ? (
+            ) : (construct.construct_type !== 'reprogramming' && construct.payload) ? (
               <div className="mt-3 text-sm">
                 <p><b>Modality:</b> {construct.modality} · <b>Strategy:</b> {construct.strategy}</p>
                 <p className="mt-1"><b>Capsid:</b> {construct.capsid_desc}</p>

@@ -30,7 +30,12 @@ from ..catalog import (
 )
 from ..catalog.geo import extract_all_samples
 from ..config import get_settings
-from ..construct import assemble_microdystrophin, assemble_osk_teton, design_exosome_delivery
+from ..construct import (
+    assemble_dux4_silencing,
+    assemble_microdystrophin,
+    assemble_osk_teton,
+    design_exosome_delivery,
+)
 from ..construct.parts import CAPSIDS
 from ..design import DesignRequest, get_engine
 from ..epiage import discover_targets, load_horvath
@@ -486,8 +491,11 @@ async def construct(spec: dict = Body(default={})) -> dict:
     construct_type='reprogramming' (default) → the ER-100 OSK Tet-On construct.
     carrier='aav' → AAV vector(s); carrier='exosome' → IV exosome mRNA spec.
     """
-    if spec.get("construct_type") == "gene_replacement":
-        out = assemble_microdystrophin(
+    ctype = spec.get("construct_type")
+    if ctype in ("gene_replacement", "epigenetic_silencing"):
+        assemble = (assemble_microdystrophin if ctype == "gene_replacement"
+                    else assemble_dux4_silencing)
+        out = assemble(
             capsid=spec.get("capsid", "aavrh74"),
             tissue_key=spec.get("tissue_key", "muscle"),
             objectives=spec.get("objectives", []),

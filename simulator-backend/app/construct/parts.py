@@ -70,6 +70,14 @@ PARTS: dict[str, Part] = {
                      "Shortened but functional dystrophin — keeps the actin- and dystroglycan-binding "
                      "domains and fits inside AAV", "micro-dystrophin (delandistrogene-style design)"),
 
+    # --- FSHD (DUX4-silencing) parts ---
+    "midux4": Part("midux4", "Anti-DUX4 microRNA cassette (miDUX4)", "element", 250,
+                   "Artificial microRNA that knocks down the toxic DUX4 transcript by RNAi — "
+                   "targets the effector that D4Z4 hypomethylation de-represses", "AAV.miDUX4 (Harper lab)"),
+    "dcas9_krab": Part("dcas9_krab", "dCas9–KRAB–DNMT3A (epigenetic silencer)", "cds", 4200,
+                       "Catalytically-dead Cas9 fused to KRAB + DNMT3A — re-establishes repressive "
+                       "methylation/heterochromatin at the D4Z4 array (CRISPRi re-silencing)", "CRISPRi"),
+
     # --- Linkers / elements ---
     "kozak": Part("kozak", "Kozak + start", "linker", len(_KOZAK), "Translation initiation", seq=_KOZAK),
     "p2a": Part("p2a", "P2A self-cleaving peptide", "linker", len(_P2A), "Links CDS into one polycistron", "porcine teschovirus", _P2A),

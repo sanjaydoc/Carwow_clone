@@ -6,9 +6,14 @@ biology; it wires standard parts (OSK genes, Tet-On switch, AAV backbone) and
 checks the AAV packaging limit.
 """
 
-from .assembler import ConstructResult, assemble_microdystrophin, assemble_osk_teton
+from .assembler import (
+    ConstructResult,
+    assemble_dux4_silencing,
+    assemble_microdystrophin,
+    assemble_osk_teton,
+)
 from .exosome import design_exosome_delivery
 from .parts import PARTS, Part
 
 __all__ = ["ConstructResult", "assemble_osk_teton", "assemble_microdystrophin",
-           "design_exosome_delivery", "PARTS", "Part"]
+           "assemble_dux4_silencing", "design_exosome_delivery", "PARTS", "Part"]
