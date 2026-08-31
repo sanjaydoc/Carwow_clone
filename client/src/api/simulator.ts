@@ -109,6 +109,19 @@ export async function convertWgbs(opts: {
   return res.json();
 }
 
+export interface ConvertedFile { label: string; file: string; samples: string[]; modified: number; }
+
+/** List the user's own converted/uploaded methylation files on the backend (reload-safe). */
+export async function listConverted(): Promise<ConvertedFile[]> {
+  try {
+    const res = await fetch(api('/api/converted/list'));
+    if (!res.ok) return [];
+    return (await res.json()).converted || [];
+  } catch {
+    return [];
+  }
+}
+
 export async function datasetSamples(label: string): Promise<string[]> {
   const res = await fetch(api(`/api/dataset/samples?label=${encodeURIComponent(label)}`));
   if (!res.ok) return [];

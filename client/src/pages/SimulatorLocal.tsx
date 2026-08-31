@@ -9,6 +9,7 @@ import {
   engines,
   getCatalog,
   interpret,
+  listConverted,
   listSamples,
   reportCsv,
   reportPdf,
@@ -17,6 +18,7 @@ import {
   startDesign,
   streamJob,
   type Catalog,
+  type ConvertedFile,
   type DiseaseEntry,
 } from '../api/simulator';
 
@@ -68,12 +70,15 @@ export default function SimulatorLocal() {
   const [converting, setConverting] = useState(false);
   const [convertMsg, setConvertMsg] = useState('');
   const [wgbsName, setWgbsName] = useState('');       // patient name/label to save the converted file under
-  const [wgbsSavedLabel, setWgbsSavedLabel] = useState(''); // the label the last conversion actually saved to
+  const [converted, setConverted] = useState<ConvertedFile[]>([]); // user's saved converted files (reload-safe)
   const methRef = useRef<HTMLInputElement>(null);
+
+  const refreshConverted = () => { listConverted().then(setConverted).catch(() => {}); };
 
   useEffect(() => {
     engines().then((e) => setEngineReady(e['denovo-llm'])).catch(() => {});
     getCatalog().then(setCatalog).catch(() => {});
+    refreshConverted();   // reload-safe: show any files converted in earlier visits
   }, []);
 
   const disease: DiseaseEntry | null = useMemo(
@@ -163,7 +168,7 @@ export default function SimulatorLocal() {
       setDatasetLabel(res.label);
       setSamples(res.samples);
       setSample('');
-      setWgbsSavedLabel(res.label);
+      refreshConverted();  // add it to the reload-safe "your converted files" list
       const pct = Math.round(res.coverage * 100);
       setConvertMsg(`✓ Converted — ${res.matched}/${res.total} clock CpGs (${pct}% coverage). Saved as methylation_${res.label}.csv. ${pct < 60 ? 'Low coverage: check the build/manifest match your WGBS.' : 'Ready — Compute epigenetic age below.'}`);
     } catch (e: any) {
@@ -174,18 +179,19 @@ export default function SimulatorLocal() {
     }
   };
 
-  const useConvertedWgbs = async () => {
-    if (!wgbsSavedLabel) return;
+  const useConverted = async (label: string) => {
+    if (!label) return;
     setMethFile(null);
+    if (methRef.current) methRef.current.value = '';
     setSample('');
-    setDatasetLabel(wgbsSavedLabel);
+    setDatasetLabel(label);
     setError('');
     try {
-      setSamples(await datasetSamples(wgbsSavedLabel));
-      setConvertMsg(`✓ Using your converted file (methylation_${wgbsSavedLabel}.csv). Compute below.`);
+      setSamples(await datasetSamples(label));
+      setConvertMsg(`✓ Using your converted file (methylation_${label}.csv). Compute below.`);
     } catch {
       setConvertMsg('');
-      setError('No converted WGBS file found — convert one first.');
+      setError('That converted file is no longer on the server — convert it again.');
     }
   };
 
@@ -411,10 +417,33 @@ export default function SimulatorLocal() {
           <label className="mt-4 block text-sm font-semibold text-ink-800">Methylation file (beta values)</label>
           <input ref={methRef} type="file" accept=".csv,.txt,.tsv,.gz" className="mt-1 w-full text-sm"
                  onChange={(e) => pickMeth(e.target.files?.[0] ?? null)} />
-          {wgbsSavedLabel && datasetLabel !== wgbsSavedLabel && (
-            <button onClick={useConvertedWgbs} className="btn-outline mt-2 w-full py-1.5 text-xs">
-              ↻ Use my converted file (methylation_{wgbsSavedLabel}.csv)
-            </button>
+          {converted.length > 0 && (
+            <div className="mt-2 rounded-xl border border-cream-300 bg-cream-50 p-2">
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-700/50">
+                Your converted files — click to use
+              </p>
+              <div className="mt-1 flex flex-wrap gap-1.5">
+                {converted.map((c) => (
+                  <button
+                    key={c.label}
+                    onClick={() => useConverted(c.label)}
+                    title={`methylation_${c.label}.csv`}
+                    className={`rounded-full border px-2.5 py-1 text-xs ${
+                      datasetLabel === c.label
+                        ? 'border-clay-500 bg-clay-500 text-white'
+                        : 'border-cream-300 bg-white text-ink-800 hover:border-clay-400'
+                    }`}
+                  >
+                    {datasetLabel === c.label ? '✓ ' : '↻ '}{c.label}
+                  </button>
+                ))}
+              </div>
+              {converted.some((c) => c.label === datasetLabel) && (
+                <p className="mt-1.5 text-[11px] text-green-700">
+                  Active: methylation_{datasetLabel}.csv — Compute below.
+                </p>
+              )}
+            </div>
           )}
 
           {samples.length > 0 && (

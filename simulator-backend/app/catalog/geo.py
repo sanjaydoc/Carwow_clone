@@ -49,6 +49,57 @@ def suppl_url(acc: str, filename: str) -> str:
 _METH_PLATFORMS = ("GPL13534", "GPL21145", "GPL8490", "GPL23976", "GPL18809")
 
 
+def _clock_cgs() -> set[str]:
+    """The 353 Horvath clock CpG ids (lazy import; avoids a hard dependency)."""
+    try:
+        from app.ingest.wgbs import clock_cgs
+        return clock_cgs()
+    except Exception:
+        return set()
+
+
+# Supplementary beta-matrix discovery (used when a series_matrix carries only
+# sample metadata and the betas live in the suppl/ directory instead).
+_SUPPL_FILE_RE = re.compile(r'([A-Za-z0-9][A-Za-z0-9_.\-]+\.(?:csv|txt|tsv)(?:\.gz)?)', re.I)
+_SUPPL_BETA_HINT = ("beta", "matrix", "processed", "methylation", "norm", "mvalue", "meth")
+_SUPPL_BETA_SKIP = ("raw", "signal", "_pval", "pvals", "detection", "readme",
+                    "annot", "manifest", "sample_sheet", "samplesheet", "idat")
+
+
+def _discover_suppl_files(acc: str) -> list[str]:
+    """List a series' suppl/ directory and return candidate downloadable URLs."""
+    base = f"{GEO_BASE}/{_series_dir(acc)}/{acc}/suppl/"
+    try:
+        req = urllib.request.Request(base, headers={"User-Agent": "stemcells-sim/1.0"})
+        with urllib.request.urlopen(req, timeout=60) as resp:  # noqa: S310
+            html = resp.read().decode("utf-8", "replace")
+    except Exception:
+        return []
+    names = sorted(set(_SUPPL_FILE_RE.findall(html)))
+    return [base + n for n in names]
+
+
+def _fetch_suppl_beta(acc: str, download_dir: Path, emit: Emit) -> Path | None:
+    """Find + download the most beta-matrix-like supplementary file (cached)."""
+    def score(url: str) -> int:
+        n = url.lower()
+        if any(s in n for s in _SUPPL_BETA_SKIP):
+            return -1
+        return 1 + sum(h in n for h in _SUPPL_BETA_HINT)
+
+    urls = [u for u in _discover_suppl_files(acc) if score(u) >= 0]
+    if not urls:
+        return None
+    chosen = sorted(urls, key=score, reverse=True)[0]
+    dest = download_dir / chosen.rsplit("/", 1)[-1]
+    if not dest.exists():
+        emit(f"fetching supplementary betas: {dest.name}", progress=0.35)
+        _download(chosen, dest, emit)
+    else:
+        emit("using cached supplementary betas", progress=0.55)
+    return dest
+
+
 def _discover_matrix_files(acc: str) -> list[str]:
     """List a series' matrix/ directory and return the actual *_series_matrix.txt.gz
     URLs. Handles multi-platform / super-series where the file is named
@@ -114,7 +165,8 @@ def _delim(line: str) -> str:
 
 # ---- prep: series_matrix (betas inline + ages) -------------------------------
 def _prep_series_matrix(src: Path, out_dir: Path, label: str, n: int, emit: Emit,
-                        pick: str = "oldest") -> dict:
+                        pick: str = "oldest", clock: set[str] | None = None) -> dict:
+    clock = clock if clock is not None else _clock_cgs()
     gsms: list[str] = []
     ages: list[str] = []
     diseases: list[str] = []
@@ -125,6 +177,7 @@ def _prep_series_matrix(src: Path, out_dir: Path, label: str, n: int, emit: Emit
     _chosen_age: dict[str, str] = {}
     _chosen_dis: dict[str, str] = {}
     rows = 0
+    clock_hits = 0
     meth_path = out_dir / f"methylation_{label}.csv"
     mf = open(meth_path, "w", newline="", encoding="utf-8")
     w = csv.writer(mf)
@@ -178,11 +231,18 @@ def _prep_series_matrix(src: Path, out_dir: Path, label: str, n: int, emit: Emit
             if len(row) > max(keep_idx):
                 w.writerow([row[i] for i in keep_idx])
                 rows += 1
+                if clock and row[0].strip().strip('"') in clock:
+                    clock_hits += 1
                 if rows % 50000 == 0:
                     emit(f"parsed {rows} probes…", progress=0.8)
     mf.close()
-    if not names:
-        raise RuntimeError("series_matrix had no inline beta table; use the supplementary file instead.")
+    if not names or (clock and clock_hits == 0):
+        # Metadata-only series_matrix (betas live in suppl/), or a platform whose
+        # probe ids are not Horvath cg ids. Signal so the caller can fall back.
+        raise RuntimeError(
+            "series_matrix carries no usable inline beta table (0 of 353 clock CpGs "
+            "found); the betas are in the supplementary file."
+        )
     age_map = _chosen_age if ages else {}
     dis_map = _chosen_dis if diseases else {}
     _write_ages(out_dir, label, names, age_map, dis_map)
@@ -216,6 +276,114 @@ def _prep_suppl_avgbeta(src: Path, out_dir: Path, label: str, n: int, emit: Emit
     _write_ages(out_dir, label, names, {}, {})
     return {"samples": names, "ages": {}, "diseases": {}, "n_probes": rows,
             "methylation_file": meth_path.name}
+
+
+# ---- prep: generic supplementary beta matrix (betas in suppl/, ages in matrix) --
+def _series_metadata(series_src: Path | None) -> tuple[list[str], list[str], list[str]]:
+    """Pull (gsms, ages, conditions) positionally from a series_matrix file."""
+    gsms: list[str] = []
+    ages: list[str] = []
+    conds: list[str] = []
+    if not series_src or not series_src.exists():
+        return gsms, ages, conds
+    with _open(series_src) as fh:
+        for line in fh:
+            if line.startswith("!series_matrix_table_begin"):
+                break
+            if line.startswith("!Sample_geo_accession"):
+                gsms = [c.strip().strip('"') for c in line.rstrip("\n").split("\t")[1:]]
+            elif line.startswith("!Sample_characteristics_ch1"):
+                low = line.lower()
+                vals = [c.strip().strip('"') for c in line.rstrip("\n").split("\t")[1:]]
+                vals = [v.split(":")[-1].strip() if ":" in v else v for v in vals]
+                if "age" in low and not ages:
+                    ages = vals
+                if any(k in low for k in ("disease", "status", "diagnosis", "group")) and not conds:
+                    conds = vals
+    return gsms, ages, conds
+
+
+def _prep_suppl_beta_generic(supp: Path, series_src: Path | None, out_dir: Path,
+                             label: str, n: int, emit: Emit, pick: str = "oldest",
+                             clock: set[str] | None = None) -> dict:
+    """Parse a supplementary beta matrix: col 0 = probe id, other columns = samples.
+    Handles <sample>.AVG_Beta headers (dropping .Detection.Pval), or a plain matrix
+    of sample columns. Ages/conditions come from the series_matrix metadata."""
+    clock = clock if clock is not None else _clock_cgs()
+    emit("parsing supplementary beta matrix…", progress=0.62)
+    with _open(supp) as fh:
+        first = fh.readline()
+        delim = _delim(first)
+        head = first.rstrip("\n").split(delim)
+        head = [h.strip().strip('"') for h in head]
+
+        # Which columns are sample betas?
+        avg = [i for i, h in enumerate(head) if h.endswith(BETA_SUFFIX)]
+        if avg:
+            sample_cols = avg
+            col_names = [head[i][:-len(BETA_SUFFIX)] for i in avg]
+        else:
+            sample_cols = [i for i, h in enumerate(head[1:], 1)
+                           if not re.search(r'(pval|p-val|detection)', h, re.I)]
+            col_names = [head[i] for i in sample_cols]
+        if not sample_cols:
+            raise RuntimeError("supplementary file has no recognisable sample columns")
+
+        gsms, ages, conds = _series_metadata(series_src)
+        # age/condition by column position (matches most processed matrices); GSM
+        # label match as a backup when the header names are accessions.
+        gsm_age = {g: a for g, a in zip(gsms, ages)}
+        gsm_cond = {g: c for g, c in zip(gsms, conds)}
+
+        def _age_for(pos: int, name: str) -> str:
+            if name in gsm_age and gsm_age[name]:
+                return gsm_age[name]
+            return ages[pos] if pos < len(ages) else ""
+
+        def _cond_for(pos: int, name: str) -> str:
+            if name in gsm_cond and gsm_cond[name]:
+                return gsm_cond[name]
+            return conds[pos] if pos < len(conds) else ""
+
+        def _num(a: str) -> float | None:
+            try:
+                return float(a)
+            except (TypeError, ValueError):
+                return None
+
+        order = list(range(len(sample_cols)))
+        aged = [(p, _num(_age_for(p, col_names[p]))) for p in order]
+        if pick == "oldest" and any(a is not None for _, a in aged):
+            order = [p for p, _ in sorted(aged, key=lambda t: (t[1] is not None, t[1] or 0),
+                                          reverse=True)]
+        pick_pos = order[:n]
+        keep = [0] + [sample_cols[p] for p in pick_pos]
+        names = [col_names[p] for p in pick_pos]
+        age_map = {col_names[p]: _age_for(p, col_names[p]) for p in pick_pos}
+        cond_map = {col_names[p]: _cond_for(p, col_names[p]) for p in pick_pos}
+
+        meth_path = out_dir / f"methylation_{label}.csv"
+        rows = 0
+        clock_hits = 0
+        rd = csv.reader(fh, delimiter=delim)
+        with open(meth_path, "w", newline="", encoding="utf-8") as mf:
+            w = csv.writer(mf)
+            w.writerow(["Name", *names])
+            for row in rd:
+                if len(row) > max(keep):
+                    pid = row[0].strip().strip('"')
+                    w.writerow([pid, *[row[i] for i in keep[1:]]])
+                    rows += 1
+                    if clock and pid in clock:
+                        clock_hits += 1
+    if clock and clock_hits == 0:
+        raise RuntimeError(
+            "supplementary matrix parsed but held 0 of 353 clock CpGs "
+            "(probe ids are not Horvath cg ids)."
+        )
+    _write_ages(out_dir, label, names, age_map, cond_map)
+    return {"samples": names, "ages": age_map, "diseases": cond_map,
+            "n_probes": rows, "methylation_file": meth_path.name}
 
 
 # ---- prep: GSE40279 (two files) ----------------------------------------------
@@ -308,6 +476,39 @@ def _write_ages(out_dir: Path, label: str, names: list[str],
             w.writerow([nm, ages.get(nm, ""), diseases.get(nm, "")])
 
 
+# Proven baseline cohort (real healthy-ageing blood, has ages). Used as a
+# guaranteed fallback so every wired disease produces a valid epigenetic age even
+# when its own series has no accessible betas.
+_BASELINE = {
+    "accession": "GSE40279", "method": "suppl_gse40279",
+    "beta_file": "GSE40279_average_beta.txt.gz", "pick": "oldest",
+}
+
+
+def _baseline_fallback(out_dir: Path, download_dir: Path, label: str, n: int,
+                       emit: Emit, orig_acc: str) -> dict:
+    """Last resort: prep the baseline ageing cohort into `label` (proxy result)."""
+    emit(f"{orig_acc}: no accessible betas — using the healthy-ageing baseline "
+         f"(GSE40279) as a proxy", progress=0.5)
+    beta = download_dir / _BASELINE["beta_file"]
+    series = download_dir / "GSE40279_series_matrix.txt.gz"
+    if not beta.exists():
+        _download(suppl_url("GSE40279", _BASELINE["beta_file"]), beta, emit)
+    if not series.exists():
+        try:
+            _download(series_matrix_url("GSE40279"), series, emit)
+        except Exception:
+            series = None
+    result = _prep_gse40279(beta, series, out_dir, label, n, emit, pick="oldest")
+    result["proxy"] = True
+    result["proxy_note"] = (
+        f"{orig_acc} had no downloadable beta matrix, so this run uses the "
+        "healthy-ageing baseline (GSE40279, whole blood) as a proxy. The "
+        "epigenetic age is real; it is simply not specific to this disease."
+    )
+    return result
+
+
 def download_and_prep(dataset: dict, out_dir: Path, download_dir: Path,
                       label: str, n: int, emit: Emit) -> dict:
     """Download the curated dataset and prep a small methylation CSV.
@@ -320,10 +521,30 @@ def download_and_prep(dataset: dict, out_dir: Path, download_dir: Path,
     acc = dataset["accession"]
     method = dataset["method"]
 
+    clock = _clock_cgs()
+
     if method == "series_matrix":
         raw = _fetch_series_matrix(acc, download_dir, emit)
-        result = _prep_series_matrix(raw, out_dir, label, n, emit,
-                                     pick=dataset.get("pick", "oldest"))
+        try:
+            result = _prep_series_matrix(raw, out_dir, label, n, emit,
+                                         pick=dataset.get("pick", "oldest"), clock=clock)
+        except RuntimeError as exc:
+            # The series_matrix held no usable betas (metadata-only, or a probe id
+            # scheme the clock doesn't use). Try the supplementary beta matrix, then
+            # fall back to the baseline cohort so the disease still runs.
+            emit(f"{exc} — trying supplementary betas…", progress=0.4)
+            result = None
+            try:
+                supp = _fetch_suppl_beta(acc, download_dir, emit)
+                if supp is not None:
+                    result = _prep_suppl_beta_generic(
+                        supp, raw, out_dir, label, n, emit,
+                        pick=dataset.get("pick", "oldest"), clock=clock)
+            except Exception as exc2:  # noqa: BLE001 — best-effort, baseline follows
+                emit(f"supplementary betas unusable ({exc2})", progress=0.45)
+                result = None
+            if not result or not result.get("samples"):
+                result = _baseline_fallback(out_dir, download_dir, label, n, emit, acc)
 
     elif method == "suppl_avgbeta":
         fname = dataset["beta_file"]

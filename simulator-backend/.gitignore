@@ -7,6 +7,10 @@ outputs/
 generated/
 # Large downloaded/prepped datasets stay local (only the tiny built-in fixtures are tracked).
 data/downloads/
-data/samples/methylation_gse*.csv
+# Converted/downloaded methylation stays LOCAL (never commit patient data).
+data/samples/methylation_*.csv
+!data/samples/methylation_example.csv
+data/samples/ages_*.csv
+!data/samples/ages.csv
 data/samples/ages_gse*.csv
 data/Ankylosing-spondylitis/

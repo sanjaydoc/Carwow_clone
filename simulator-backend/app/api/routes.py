@@ -417,6 +417,33 @@ async def dataset_samples(label: str) -> dict:
     return {"label": label.lower(), "samples": list_samples(path)}
 
 
+@router.get("/converted/list")
+async def converted_list() -> dict:
+    """List the user's own converted/uploaded methylation files on this machine, so
+    the UI can offer them as one-click datasets (survives page reloads).
+
+    Excludes the curated GEO downloads (label starts with 'gse') and the built-in
+    fixture ('example'); everything else in data/samples is a user file."""
+    items: list[dict] = []
+    if SAMPLES_DIR.is_dir():
+        for p in sorted(SAMPLES_DIR.glob("methylation_*.csv")):
+            label = p.stem[len("methylation_"):]
+            if not label or label.startswith("gse") or label == "example":
+                continue
+            try:
+                samples = list_samples(p)
+            except Exception:
+                samples = []
+            items.append({
+                "label": label,
+                "file": p.name,
+                "samples": samples,
+                "modified": int(p.stat().st_mtime),
+            })
+    items.sort(key=lambda it: it["modified"], reverse=True)  # newest first
+    return {"converted": items}
+
+
 @router.post("/convert/wgbs")
 async def convert_wgbs(
     wgbs: UploadFile = File(...),
