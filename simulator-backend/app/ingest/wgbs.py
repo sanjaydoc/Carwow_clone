@@ -170,7 +170,8 @@ def _prepend(line: str, fh):
 
 
 def _emit_positional(lines, delim):
-    """No header: infer by column count (6=Bismark .cov, 4=bedGraph)."""
+    """No header: infer format — ENCODE bedMethyl (11 col, strand at col 6),
+    Bismark .cov (6 col: chr start end meth% countM countU), or bedGraph (4 col)."""
     for ln in lines:
         row = ln.rstrip("\n").split(delim)
         if len(row) < 4:
@@ -180,13 +181,20 @@ def _emit_positional(lines, delim):
             pos = int(float(row[1]))
         except (ValueError, IndexError):
             continue
-        if len(row) >= 6:  # .cov: chr start end meth% countM countU
+        beta = None
+        if len(row) >= 11 and row[5] in ("+", "-", "."):  # ENCODE bedMethyl
+            try:
+                cov, pm = float(row[9]), float(row[10])
+                beta = (pm / 100.0 if pm > 1.5 else pm) if cov > 0 else None
+            except ValueError:
+                beta = None
+        elif len(row) >= 6:  # Bismark .cov
             try:
                 m, u = float(row[4]), float(row[5])
                 beta = m / (m + u) if (m + u) > 0 else None
             except ValueError:
                 beta = _scale(row[3])
-        else:              # bedGraph: chr start end meth%
+        else:  # bedGraph
             beta = _scale(row[3])
         if beta is not None:
             yield (chrom, pos, beta)
