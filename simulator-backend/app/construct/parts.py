@@ -61,6 +61,15 @@ PARTS: dict[str, Part] = {
     "sox2": Part("sox2", "SOX2 CDS", "cds", 954, "Reprogramming factor", "RefSeq NM_003106"),
     "klf4": Part("klf4", "KLF4 CDS", "cds", 1440, "Reprogramming factor", "RefSeq NM_004235"),
 
+    # --- Muscular-dystrophy gene-replacement parts ---
+    "ck8": Part("ck8", "CK8 muscle promoter", "promoter", 440,
+                "Muscle-restricted promoter — expresses only in skeletal/cardiac muscle (compact, fits AAV)", "tMCK/CK8e"),
+    "mhck7": Part("mhck7", "MHCK7 muscle promoter", "promoter", 795,
+                  "Muscle-restricted promoter + enhancer (skeletal + cardiac)", "MHCK7"),
+    "microdys": Part("microdys", "Micro-dystrophin CDS (ΔR4–R23/ΔCT)", "cds", 3579,
+                     "Shortened but functional dystrophin — keeps the actin- and dystroglycan-binding "
+                     "domains and fits inside AAV", "micro-dystrophin (delandistrogene-style design)"),
+
     # --- Linkers / elements ---
     "kozak": Part("kozak", "Kozak + start", "linker", len(_KOZAK), "Translation initiation", seq=_KOZAK),
     "p2a": Part("p2a", "P2A self-cleaving peptide", "linker", len(_P2A), "Links CDS into one polycistron", "porcine teschovirus", _P2A),
@@ -80,6 +89,7 @@ AAV_CAPACITY_BP = 4700
 # Capsid serotype options (protein shell — sets tissue tropism; not in the bp budget).
 CAPSIDS = {
     "aav9": "AAV9 — broad, crosses BBB (CNS/systemic)",
+    "aavrh74": "AAVrh74 — muscle-tropic (skeletal + cardiac), IV",
     "aav2": "AAV2 — classic; retina (intravitreal, ER-100-style)",
     "aav5": "AAV5 — airway/CNS",
     "aav6": "AAV6 — airway/lung, muscle",

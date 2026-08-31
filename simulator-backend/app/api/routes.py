@@ -30,7 +30,7 @@ from ..catalog import (
 )
 from ..catalog.geo import extract_all_samples
 from ..config import get_settings
-from ..construct import assemble_osk_teton, design_exosome_delivery
+from ..construct import assemble_microdystrophin, assemble_osk_teton, design_exosome_delivery
 from ..construct.parts import CAPSIDS
 from ..design import DesignRequest, get_engine
 from ..epiage import discover_targets, load_horvath
@@ -479,13 +479,22 @@ async def convert_wgbs(
 
 @router.post("/construct")
 async def construct(spec: dict = Body(default={})) -> dict:
-    """Track A: assemble the ER-100 OSK Tet-On payload and design its carrier.
+    """Track A: assemble the disease-appropriate delivery construct.
 
-    carrier='aav'     → AAV vector(s), split across two AAVs if over the packaging
-                        limit (capsid from the disease preset).
-    carrier='exosome' → IV exosome delivery spec — OSK rides as tri-cistronic mRNA
-                        (no AAV size ceiling), tissue-targeted by a homing ligand.
+    construct_type='gene_replacement' (e.g. muscular dystrophy) → a micro-dystrophin
+        AAV gene-replacement vector (payload + muscle-restricted driver), NOT OSK.
+    construct_type='reprogramming' (default) → the ER-100 OSK Tet-On construct.
+    carrier='aav' → AAV vector(s); carrier='exosome' → IV exosome mRNA spec.
     """
+    if spec.get("construct_type") == "gene_replacement":
+        out = assemble_microdystrophin(
+            capsid=spec.get("capsid", "aavrh74"),
+            tissue_key=spec.get("tissue_key", "muscle"),
+            objectives=spec.get("objectives", []),
+        )
+        out["carrier"] = "aav"
+        return out
+
     carrier = spec.get("carrier", "aav")
     result = assemble_osk_teton(
         constitutive_promoter=spec.get("constitutive_promoter", "efs"),
@@ -496,6 +505,7 @@ async def construct(spec: dict = Body(default={})) -> dict:
         objectives=spec.get("objectives", []),
     )
     out = result.public()
+    out["construct_type"] = "reprogramming"
     out["carrier"] = carrier
     if carrier == "exosome":
         out["exosome"] = design_exosome_delivery(

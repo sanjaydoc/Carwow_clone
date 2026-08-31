@@ -223,11 +223,14 @@ export default function SimulatorLocal() {
     }
   };
 
+  const isGeneReplacement = disease?.construct_type === 'gene_replacement';
+
   const runConstruct = async () => {
-    setBusy('Assembling OSK Tet-On construct…');
+    setBusy(isGeneReplacement ? 'Assembling micro-dystrophin gene-replacement construct…' : 'Assembling OSK Tet-On construct…');
     try {
       setConstruct(
         await assembleConstruct({
+          construct_type: disease?.construct_type,
           capsid: disease?.capsid || 'aav9',
           tissue_key: disease?.tissue_key,
           tissue_label: disease?.tissue,
@@ -677,12 +680,55 @@ export default function SimulatorLocal() {
           {/* Track A */}
           {showA && (
           <div className="card p-6">
-            <h2 className="font-display text-lg font-bold text-ink-900">4 · ER-100 OSK Tet-On construct <span className="text-xs font-normal text-ink-700/50">· Track A</span></h2>
+            <h2 className="font-display text-lg font-bold text-ink-900">
+              4 · {isGeneReplacement ? 'Micro-dystrophin gene-replacement construct' : 'ER-100 OSK Tet-On construct'}
+              <span className="text-xs font-normal text-ink-700/50"> · Track A</span>
+            </h2>
             {disease && (
               <p className="mt-1 text-xs text-ink-700/60">Presets for <b>{disease.disease}</b>: {disease.tissue} · capsid {disease.capsid.toUpperCase()}.</p>
             )}
+            {isGeneReplacement && (
+              <p className="mt-2 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">
+                Muscular dystrophy is a <b>genetic</b> disease — this delivers a working gene, it does not reprogram the epigenome.
+                The right modality is <b>mutation-dependent</b> and needs the patient's dystrophin genotype.
+              </p>
+            )}
             {!construct ? (
               <button onClick={runConstruct} disabled={!!busy} className="btn-outline mt-4 px-5 py-2.5 disabled:opacity-50">Assemble construct</button>
+            ) : construct.construct_type === 'gene_replacement' ? (
+              <div className="mt-3 text-sm">
+                <p><b>Modality:</b> {construct.modality} · <b>Strategy:</b> {construct.strategy}</p>
+                <p className="mt-1"><b>Capsid:</b> {construct.capsid_desc}</p>
+                <div className="mt-2 grid gap-2 sm:grid-cols-2">
+                  <div className="rounded-xl bg-cream-100 p-3">
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-700/50">Payload</p>
+                    <p className="font-semibold text-ink-900">{construct.payload.name} · {construct.payload.length_bp} bp</p>
+                    <p className="mt-1 text-xs text-ink-700/70">{construct.payload.role}</p>
+                  </div>
+                  <div className="rounded-xl bg-cream-100 p-3">
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-700/50">Driver</p>
+                    <p className="font-semibold text-ink-900">{construct.driver.name} · {construct.driver.length_bp} bp</p>
+                    <p className="mt-1 text-xs text-ink-700/70">{construct.driver.role}</p>
+                  </div>
+                </div>
+                {construct.vectors.map((v: any) => (
+                  <div key={v.name} className="mt-2 rounded-xl bg-cream-100 p-3">
+                    <p className="font-semibold text-ink-900">{v.name} — {v.length_bp} bp {v.fits_aav ? '✓ fits AAV' : '✗ over limit'}</p>
+                    <p className="mt-1 break-words text-xs text-ink-700/70">{v.features.map((f: any) => `${f.name}(${f.length})`).join(' → ')}</p>
+                  </div>
+                ))}
+                <p className="mt-2 text-xs italic text-ink-700/60">{construct.mechanism}</p>
+                {construct.alternatives?.length > 0 && (
+                  <div className="mt-2">
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-700/50">Alternative modalities (mutation-dependent)</p>
+                    <ul className="mt-1 space-y-1">
+                      {construct.alternatives.map((a: any) => (
+                        <li key={a.name} className="text-xs text-ink-700/70"><b>{a.name}</b> — {a.note}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
             ) : (
               <div className="mt-3 text-sm">
                 <p><b>Strategy:</b> {construct.strategy} · <b>Capsid:</b> {construct.capsid_desc}</p>

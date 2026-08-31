@@ -106,6 +106,75 @@ def _dox_protocol() -> dict:
     }
 
 
+def assemble_microdystrophin(
+    *,
+    capsid: str = "aavrh74",
+    tissue_key: str | None = "muscle",
+    promoter: str = "ck8",
+    objectives: list[dict] | None = None,
+) -> dict:
+    """Assemble a micro-dystrophin AAV GENE-REPLACEMENT construct (for muscular
+    dystrophy / DMD) — a fundamentally different modality from OSK reprogramming.
+
+    Muscular dystrophy is caused by a broken dystrophin gene, so the fix is to
+    DELIVER a working (shortened) copy, not to reprogram the epigenome. Full
+    dystrophin (~11 kb) is far too big for AAV, so a micro-dystrophin that keeps
+    the essential domains is used, driven by a muscle-restricted promoter, in a
+    single AAV. Returns its own shape (no dox switch)."""
+    if promoter not in ("ck8", "mhck7"):
+        promoter = "ck8"
+    keys = ["itr5", promoter, "kozak", "microdys", "min_polya", "itr3"]
+    vector = _layout("AAV micro-dystrophin (single vector)", keys)
+    prom = PARTS[promoter]
+    notes: list[str] = []
+    if not vector.fits_aav:
+        notes.append(
+            f"Genome is {vector.length_bp} bp (> {AAV_CAPACITY_BP} bp) — switch to the "
+            "compact CK8 promoter or a smaller micro-dystrophin variant to fit one AAV."
+        )
+    return {
+        "construct_type": "gene_replacement",
+        "modality": "Micro-dystrophin AAV gene replacement",
+        "strategy": "single-aav" if vector.fits_aav else "oversized — needs a more compact design",
+        "capsid": capsid,
+        "capsid_desc": capsid_description(capsid, tissue_key),
+        "vectors": [vector.public()],
+        "driver": {
+            "name": prom.name,
+            "length_bp": prom.length_bp,
+            "role": "Muscle-restricted DRIVER — turns the transgene on only in "
+                    "skeletal/cardiac muscle, sparing other tissues.",
+        },
+        "payload": {
+            "name": PARTS["microdys"].name,
+            "length_bp": PARTS["microdys"].length_bp,
+            "role": "Functional micro-dystrophin — a shortened dystrophin that keeps the "
+                    "essential actin- and dystroglycan-binding domains and fits inside AAV.",
+            "reference": PARTS["microdys"].reference,
+        },
+        "mechanism": "Gene REPLACEMENT: the AAV delivers a working micro-dystrophin gene so "
+                     "muscle fibres make their own functional protein. No doxycycline switch, "
+                     "no reprogramming — expression is constitutive and muscle-restricted.",
+        "alternatives": [
+            {"name": "Exon-skipping (antisense oligo, PMO)",
+             "note": "Restores the reading frame of the patient's OWN dystrophin mRNA — mutation-specific "
+                     "(e.g. exon 51/53 deletions); needs repeat dosing."},
+            {"name": "CRISPR exon excision (dual gRNA + SaCas9)",
+             "note": "Edits the genome to restore the reading frame; potentially permanent, delivered as "
+                     "dual-AAV (Cas9 + guides)."},
+            {"name": "Full-length dystrophin",
+             "note": "~11 kb — far too large for AAV; requires non-viral, lentiviral, or utrophin-upregulation approaches."},
+        ],
+        "objectives": objectives or [],
+        "notes": notes,
+        "disclaimer": "Deterministic assembly of published DMD gene-therapy parts (micro-dystrophin + "
+                      "muscle promoter + AAV). Research construct for in-silico illustration — not "
+                      "clinical-grade, not validated, not medical advice. The right modality "
+                      "(micro-dystrophin vs exon-skipping vs CRISPR) is MUTATION-DEPENDENT and needs "
+                      "the patient's dystrophin genotype.",
+    }
+
+
 def assemble_osk_teton(
     *,
     constitutive_promoter: str = "efs",

@@ -43,6 +43,7 @@ export interface DiseaseEntry {
   tissue: string;
   capsid: string;
   construct_route: string;
+  construct_type?: string;   // 'reprogramming' (OSK) | 'gene_replacement' (micro-dystrophin)
   dataset_ready: boolean;
   dataset: null | {
     accession: string;

@@ -134,7 +134,7 @@ _DISEASE_MAP: dict[str, dict] = {
     "Stroke Recovery MSC": {"tissue": "cns"},
     "Spinal Cord Injury NSC": {"tissue": "cns"},
     "ALS / MND MSC Therapy": {"tissue": "cns"},
-    "Muscular Dystrophy": {"tissue": "muscle"},
+    "Muscular Dystrophy": {"tissue": "muscle", "construct": "gene_replacement", "approach": "er100"},
     "FSHD (Facioscapulohumeral Dystrophy)": {"tissue": "muscle", "approach": "er100"},
     # Gastroenterology / Cardiology (specific cohorts)
     "Liver Cirrhosis MSC Therapy": {"tissue": "liver", "dataset": "GSE241366"},
@@ -268,8 +268,9 @@ def disease_catalog() -> dict:
             "default_approach": mapping.get("approach", "both"),
             "tissue_key": tissue_key,
             "tissue": preset["tissue"],
-            "capsid": preset["capsid"],
+            "capsid": ("aavrh74" if mapping.get("construct") == "gene_replacement" else preset["capsid"]),
             "construct_route": preset["route"],
+            "construct_type": mapping.get("construct", "reprogramming"),
             "dataset_ready": ds is not None,
             "dataset": ({
                 "accession": ds["accession"],
