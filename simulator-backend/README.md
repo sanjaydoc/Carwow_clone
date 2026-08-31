@@ -117,14 +117,19 @@ from *sequencing* (whole-genome/reduced bisulfite, e.g. from an Indian lab like
 Nucleome) rather than an EPIC array, convert it first — it reports methylation by
 genomic coordinate, not by `cg` probe id:
 ```bash
-# hg38-aligned Bismark coverage, using a public Illumina EPIC/450K manifest
-python scripts/wgbs_to_beta.py --input patient.cov --build hg38 \
-    --manifest EPIC_manifest.csv --label patient1
+# hg38-aligned Bismark coverage — hg19/hg38 coordinates are built in, no manifest
+python scripts/wgbs_to_beta.py --input patient.cov --build hg38 --label patient1
 ```
 Writes `data/samples/methylation_patient1.csv`, which you upload like any other
-methylation file. Accepts Bismark `.cov`, bedGraph, or a TSV/CSV with chr/pos/beta
-columns (`.gz` ok). An **EPIC/450K array** result needs none of this — its `cg`
-beta values upload directly.
+methylation file. Accepts Bismark `.cov`, bedGraph, ENCODE bedMethyl, or a
+TSV/CSV with chr/pos/beta columns (`.gz` ok). The 353 clock CpGs' **hg19 and hg38
+coordinates are bundled** (from the Zhou-lab HM450 manifest), so no manifest is
+needed for modern builds — pass `--manifest` only to override. An **EPIC/450K
+array** result needs none of this — its `cg` beta values upload directly.
+
+Or do it all in the Simulator UI: data card → "Have sequencing output? Convert
+it →" → pick file + build → Convert. Try the shipped `data/samples/
+wgbs_example.bedGraph` (build hg18) for an instant end-to-end check.
 
 ## Layout
 

@@ -424,12 +424,12 @@ export default function SimulatorLocal() {
               </select>
             </div>
             {wgbsBuild !== 'hg18' && (
-              <>
-                <label className="mt-2 block text-xs font-semibold text-ink-800">Illumina manifest (cg→position, for {wgbsBuild})</label>
+              <details className="mt-2">
+                <summary className="cursor-pointer text-[11px] text-ink-700/50">Coordinates for {wgbsBuild} are built in — no manifest needed. (Optional: use your own manifest →)</summary>
                 <input type="file" accept=".csv,.tsv,.txt,.gz" className="mt-1 w-full text-xs"
                        onChange={(e) => setManifestFile(e.target.files?.[0] ?? null)} />
-                <p className="mt-1 text-[11px] text-ink-700/50">One-time public download from Illumina (EPIC/450K manifest) matching your alignment build.</p>
-              </>
+                <p className="mt-1 text-[11px] text-ink-700/50">Overrides the built-in {wgbsBuild} coordinates with an Illumina EPIC/450K manifest (must match your alignment build).</p>
+              </details>
             )}
             <button onClick={runConvert} disabled={!wgbsFile || converting}
                     className="btn-outline mt-2 w-full py-2 text-xs disabled:opacity-50">

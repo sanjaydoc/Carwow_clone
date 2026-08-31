@@ -57,6 +57,23 @@ def clock_coords_build36() -> dict[str, tuple[str, int]]:
     return out
 
 
+def bundled_coords(build: str) -> dict[str, tuple[str, int]]:
+    """cg -> (chr, pos) for the 353 clock CpGs at hg19/hg38, from bundled tables
+    (extracted from the Zhou-lab HM450 manifest). No user manifest needed."""
+    b = "hg38" if build in ("hg38", "grch38", "38") else "hg19"
+    path = _COEF.parent / f"clock_coords_{b}.csv"
+    out: dict[str, tuple[str, int]] = {}
+    if not path.is_file():
+        return out
+    with open(path, encoding="utf-8") as fh:
+        for r in csv.DictReader(fh):
+            try:
+                out[r["Name"]] = (_norm_chr(r["chr"]), int(r["pos"]))
+            except (KeyError, ValueError):
+                continue
+    return out
+
+
 def clock_cgs() -> set[str]:
     with open(_COEF, encoding="utf-8") as fh:
         return {(r.get("CpGmarker") or "").strip()
@@ -230,14 +247,20 @@ def wgbs_to_beta(input_path: str | Path, out_path: str | Path, *, sample: str = 
     Returns {matched, total, coverage, out_file}. Matches by coordinate with ±1
     tolerance (CpG strand / 0-vs-1-based off-by-one)."""
     cgs = clock_cgs()
-    if build in ("hg18", "36", "ncbi36", "build36"):
-        coords = clock_coords_build36()
-    else:
-        if not manifest:
-            raise ValueError(f"build {build} needs an Illumina manifest (--manifest) mapping cg → chr:pos.")
+    b = (build or "").lower()
+    if manifest:                                   # user-supplied manifest wins
         coords = coords_from_manifest(manifest, cgs)
+    elif b in ("hg18", "36", "ncbi36", "build36"):
+        coords = clock_coords_build36()
+    elif b in ("hg19", "grch37", "37"):
+        coords = bundled_coords("hg19")            # bundled — no manifest needed
+    elif b in ("hg38", "grch38", "38"):
+        coords = bundled_coords("hg38")            # bundled — no manifest needed
+    else:
+        raise ValueError(f"Unknown build '{build}'. Use hg18/hg19/hg38, or pass a manifest.")
     if not coords:
-        raise ValueError("No clock-CpG coordinates resolved for this build.")
+        raise ValueError(f"No clock-CpG coordinates for build '{build}'. "
+                         "Pass an Illumina manifest, or use hg18/hg19/hg38.")
 
     # position index with ±1 tolerance
     pos_index: dict[tuple[str, int], str] = {}
