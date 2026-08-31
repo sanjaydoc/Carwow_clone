@@ -4,6 +4,7 @@ import SimulatorChat from './SimulatorChat';
 import {
   analyze,
   assembleConstruct,
+  convertWgbs,
   datasetSamples,
   engines,
   getCatalog,
@@ -60,6 +61,12 @@ export default function SimulatorLocal() {
   const [batch, setBatch] = useState<any>(null);
   const [batchBusy, setBatchBusy] = useState(false);
   const [batchLog, setBatchLog] = useState('');
+  // WGBS/RRBS sequencing → beta conversion (optional, additive)
+  const [wgbsFile, setWgbsFile] = useState<File | null>(null);
+  const [manifestFile, setManifestFile] = useState<File | null>(null);
+  const [wgbsBuild, setWgbsBuild] = useState('hg38');
+  const [converting, setConverting] = useState(false);
+  const [convertMsg, setConvertMsg] = useState('');
   const methRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -134,6 +141,33 @@ export default function SimulatorLocal() {
       } catch {
         /* single-sample file — no columns to pick */
       }
+    }
+  };
+
+  const runConvert = async () => {
+    if (!wgbsFile) return;
+    setConverting(true);
+    setConvertMsg('Converting sequencing file → clock CpGs…');
+    setError('');
+    try {
+      const res = await convertWgbs({
+        wgbs: wgbsFile,
+        manifest: manifestFile,
+        build: wgbsBuild,
+        label: `wgbs-${(disease?.tissue_key || 'sample')}`,
+      });
+      // Route the converted file through the existing server-side dataset path.
+      setMethFile(null);
+      setDatasetLabel(res.label);
+      setSamples(res.samples);
+      setSample('');
+      const pct = Math.round(res.coverage * 100);
+      setConvertMsg(`✓ Converted — ${res.matched}/${res.total} clock CpGs (${pct}% coverage). ${pct < 60 ? 'Low coverage: check the build/manifest match your WGBS.' : 'Ready — Compute epigenetic age below.'}`);
+    } catch (e: any) {
+      setError(e.message || 'Conversion failed');
+      setConvertMsg('');
+    } finally {
+      setConverting(false);
     }
   };
 
@@ -369,6 +403,41 @@ export default function SimulatorLocal() {
               </select>
             </>
           )}
+          {/* Sequencing (WGBS/RRBS) → beta conversion (optional; array data skips this) */}
+          <details className="mt-3 rounded-xl border border-cream-300 p-3">
+            <summary className="cursor-pointer text-sm font-semibold text-ink-800">
+              Have sequencing output (WGBS/RRBS) instead of an array? Convert it →
+            </summary>
+            <p className="mt-2 text-xs text-ink-700/60">
+              Bisulfite sequencing reports methylation by genomic position, not <code>cg</code> id.
+              This maps it onto the clock’s CpGs. (An EPIC/450K array file needs no conversion — upload it above.)
+            </p>
+            <label className="mt-2 block text-xs font-semibold text-ink-800">Sequencing file (.cov / bedGraph / tsv, .gz ok)</label>
+            <input type="file" accept=".cov,.bedgraph,.bed,.txt,.tsv,.csv,.gz" className="mt-1 w-full text-xs"
+                   onChange={(e) => setWgbsFile(e.target.files?.[0] ?? null)} />
+            <div className="mt-2 flex items-center gap-2">
+              <label className="text-xs font-semibold text-ink-800">Genome build</label>
+              <select value={wgbsBuild} onChange={(e) => setWgbsBuild(e.target.value)} className="input w-28 py-1 text-xs">
+                <option value="hg38">hg38</option>
+                <option value="hg19">hg19</option>
+                <option value="hg18">hg18</option>
+              </select>
+            </div>
+            {wgbsBuild !== 'hg18' && (
+              <>
+                <label className="mt-2 block text-xs font-semibold text-ink-800">Illumina manifest (cg→position, for {wgbsBuild})</label>
+                <input type="file" accept=".csv,.tsv,.txt,.gz" className="mt-1 w-full text-xs"
+                       onChange={(e) => setManifestFile(e.target.files?.[0] ?? null)} />
+                <p className="mt-1 text-[11px] text-ink-700/50">One-time public download from Illumina (EPIC/450K manifest) matching your alignment build.</p>
+              </>
+            )}
+            <button onClick={runConvert} disabled={!wgbsFile || converting}
+                    className="btn-outline mt-2 w-full py-2 text-xs disabled:opacity-50">
+              {converting ? 'Converting…' : 'Convert → beta'}
+            </button>
+            {convertMsg && <p className="mt-2 text-xs text-green-700">{convertMsg}</p>}
+          </details>
+
           <label className="mt-3 block text-sm font-semibold text-ink-800">Genotype (optional)</label>
           <input type="file" accept=".txt,.csv,.vcf,.gz" className="mt-1 w-full text-sm"
                  onChange={(e) => setGenoFile(e.target.files?.[0] ?? null)} />

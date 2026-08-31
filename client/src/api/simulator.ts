@@ -92,6 +92,23 @@ export async function startBatch(diseaseKey: string, cap = 400): Promise<{ job_i
   return res.json();
 }
 
+/** Convert a WGBS/RRBS sequencing file to a clock-ready dataset (server-side). */
+export async function convertWgbs(opts: {
+  wgbs: File;
+  manifest?: File | null;
+  build: string;
+  label?: string;
+}): Promise<{ label: string; matched: number; total: number; coverage: number; samples: string[]; note: string }> {
+  const fd = new FormData();
+  fd.append('wgbs', opts.wgbs);
+  if (opts.manifest) fd.append('manifest', opts.manifest);
+  fd.append('build', opts.build);
+  fd.append('label', opts.label || 'wgbs');
+  const res = await fetch(api('/api/convert/wgbs'), { method: 'POST', body: fd });
+  if (!res.ok) throw new Error((await res.json()).detail || 'Convert failed');
+  return res.json();
+}
+
 export async function datasetSamples(label: string): Promise<string[]> {
   const res = await fetch(api(`/api/dataset/samples?label=${encodeURIComponent(label)}`));
   if (!res.ok) return [];

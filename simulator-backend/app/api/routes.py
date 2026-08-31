@@ -417,6 +417,39 @@ async def dataset_samples(label: str) -> dict:
     return {"label": label.lower(), "samples": list_samples(path)}
 
 
+@router.post("/convert/wgbs")
+async def convert_wgbs(
+    wgbs: UploadFile = File(...),
+    manifest: UploadFile | None = File(None),
+    build: str = Form("hg38"),
+    label: str = Form("wgbs"),
+) -> dict:
+    """Convert a WGBS/RRBS bisulfite file to a clock-ready beta CSV (UI-driven).
+
+    Writes data/samples/methylation_<label>.csv — the same server-side dataset the
+    existing /analyze reads via its `dataset` param. Additive; touches nothing else.
+    """
+    from ..ingest.wgbs import wgbs_to_beta
+
+    src = _save_upload(wgbs, "uploads")
+    man = _save_upload(manifest, "uploads") if manifest is not None else None
+    safe = _safe_label(label) or "wgbs"
+    out = SAMPLES_DIR / f"methylation_{safe}.csv"
+    try:
+        res = await asyncio.to_thread(
+            wgbs_to_beta, src, out, sample=safe, build=build, manifest=man
+        )
+    except Exception as exc:  # bad build/manifest/format → clear message
+        raise HTTPException(400, str(exc))
+    res["label"] = safe
+    res["samples"] = list_samples(out)
+    res["note"] = (
+        "Converted by genomic coordinate onto the 353 Horvath CpGs. Low coverage "
+        "usually means the --build/manifest doesn't match the WGBS alignment."
+    )
+    return res
+
+
 @router.post("/construct")
 async def construct(spec: dict = Body(default={})) -> dict:
     """Track A: assemble the ER-100 OSK Tet-On payload and design its carrier.
