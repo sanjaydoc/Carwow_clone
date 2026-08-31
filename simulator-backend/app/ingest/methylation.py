@@ -74,14 +74,18 @@ def load_methylation(
         elif not header_is_labels:
             # First line was already data (2-column file with no header).
             betas: dict[str, float] = {}
-            _consume(betas, cols, 1)
+            reps: dict[str, list[float]] = {}
+            _consume(betas, reps, cols, 1)
             for line in fh:
-                _consume(betas, _split(line), 1)
+                _consume(betas, reps, _split(line), 1)
+            _finalize_epic_v2(betas, reps)
             return Methylation(sample=str(sample_name), betas=betas, n_sites=len(betas))
 
         betas = {}
+        reps = {}
         for line in fh:
-            _consume(betas, _split(line), col_idx)
+            _consume(betas, reps, _split(line), col_idx)
+    _finalize_epic_v2(betas, reps)
     return Methylation(sample=str(sample_name), betas=betas, n_sites=len(betas))
 
 
@@ -96,7 +100,8 @@ def _looks_like_header(cols: list[str]) -> bool:
         return True
 
 
-def _consume(betas: dict[str, float], cols: list[str], col_idx: int) -> None:
+def _consume(betas: dict[str, float], reps: dict[str, list[float]],
+             cols: list[str], col_idx: int) -> None:
     if len(cols) <= col_idx:
         return
     cg = cols[0].strip().strip('"')
@@ -106,9 +111,23 @@ def _consume(betas: dict[str, float], cols: list[str], col_idx: int) -> None:
     if raw in ("", "NA", "NaN", "null"):
         return
     try:
-        betas[cg] = float(raw)
+        val = float(raw)
     except ValueError:
-        pass
+        return
+    betas[cg] = val
+    # Illumina EPIC v2 (935K) suffixes every probe id (e.g. cg00000029_TC21).
+    # The clocks key on the base cg id, so collect replicates per base id and
+    # average them below. 450K / EPIC v1 ids have no suffix and are untouched.
+    if cg[:2] == "cg" and "_" in cg:
+        reps.setdefault(cg.split("_", 1)[0], []).append(val)
+
+
+def _finalize_epic_v2(betas: dict[str, float], reps: dict[str, list[float]]) -> None:
+    """Fill base cg ids from EPIC-v2 suffixed replicate probes (mean of replicates),
+    without overwriting a base id that was already present directly."""
+    for base, vals in reps.items():
+        if base not in betas and vals:
+            betas[base] = sum(vals) / len(vals)
 
 
 def list_samples(path: str | Path, limit: int = 50) -> list[str]:
