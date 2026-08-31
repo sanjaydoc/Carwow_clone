@@ -67,6 +67,7 @@ export default function SimulatorLocal() {
   const [wgbsBuild, setWgbsBuild] = useState('hg38');
   const [converting, setConverting] = useState(false);
   const [convertMsg, setConvertMsg] = useState('');
+  const [wgbsReady, setWgbsReady] = useState(false);  // a converted WGBS file exists on the server
   const methRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -154,13 +155,14 @@ export default function SimulatorLocal() {
         wgbs: wgbsFile,
         manifest: manifestFile,
         build: wgbsBuild,
-        label: `wgbs-${(disease?.tissue_key || 'sample')}`,
+        label: 'wgbs',   // one fixed file (methylation_wgbs.csv) — no per-tissue clutter
       });
       // Route the converted file through the existing server-side dataset path.
       setMethFile(null);
       setDatasetLabel(res.label);
       setSamples(res.samples);
       setSample('');
+      setWgbsReady(true);
       const pct = Math.round(res.coverage * 100);
       setConvertMsg(`✓ Converted — ${res.matched}/${res.total} clock CpGs (${pct}% coverage). ${pct < 60 ? 'Low coverage: check the build/manifest match your WGBS.' : 'Ready — Compute epigenetic age below.'}`);
     } catch (e: any) {
@@ -168,6 +170,20 @@ export default function SimulatorLocal() {
       setConvertMsg('');
     } finally {
       setConverting(false);
+    }
+  };
+
+  const useConvertedWgbs = async () => {
+    setMethFile(null);
+    setSample('');
+    setDatasetLabel('wgbs');
+    setError('');
+    try {
+      setSamples(await datasetSamples('wgbs'));
+      setConvertMsg('✓ Using your converted WGBS file (methylation_wgbs.csv). Compute below.');
+    } catch {
+      setConvertMsg('');
+      setError('No converted WGBS file found — convert one first.');
     }
   };
 
@@ -393,6 +409,11 @@ export default function SimulatorLocal() {
           <label className="mt-4 block text-sm font-semibold text-ink-800">Methylation file (beta values)</label>
           <input ref={methRef} type="file" accept=".csv,.txt,.tsv,.gz" className="mt-1 w-full text-sm"
                  onChange={(e) => pickMeth(e.target.files?.[0] ?? null)} />
+          {wgbsReady && datasetLabel !== 'wgbs' && (
+            <button onClick={useConvertedWgbs} className="btn-outline mt-2 w-full py-1.5 text-xs">
+              ↻ Use my converted WGBS file (methylation_wgbs.csv)
+            </button>
+          )}
 
           {samples.length > 0 && (
             <>
