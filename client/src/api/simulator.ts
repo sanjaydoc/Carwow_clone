@@ -171,6 +171,17 @@ export async function assembleConstruct(spec: any = {}): Promise<any> {
   return res.json();
 }
 
+/** Step 6 — Safety Implant Blob: model an autologous xenograft "avatar" pre-screen. */
+export async function safetyPrescreen(spec: any = {}): Promise<any> {
+  const res = await fetch(api('/api/safety'), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(spec),
+  });
+  if (!res.ok) throw new Error((await res.json()).detail || 'Safety pre-screen failed');
+  return res.json();
+}
+
 /** Design an IV exosome carrier for a novel small molecule (Track B). */
 export async function deliverExosome(spec: any = {}): Promise<any> {
   const res = await fetch(api('/api/deliver/exosome'), {

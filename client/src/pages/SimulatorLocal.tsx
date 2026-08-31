@@ -13,6 +13,7 @@ import {
   listSamples,
   reportCsv,
   reportPdf,
+  safetyPrescreen,
   startBatch,
   startDatasetDownload,
   startDesign,
@@ -50,6 +51,10 @@ export default function SimulatorLocal() {
   const [age, setAge] = useState<string>('');
 
   const [cycles, setCycles] = useState(1);   // number of reprogramming cycles (projection)
+  const [safety, setSafety] = useState<any>(null);          // Step 6 pre-screen result
+  const [safetyHost, setSafetyHost] = useState('mouse');
+  const [safetySens, setSafetySens] = useState(90);         // avatar screen sensitivity %
+  const [safetyBusy, setSafetyBusy] = useState(false);
   const [analysis, setAnalysis] = useState<any>(null);
   const [construct, setConstruct] = useState<any>(null);
   const [ranked, setRanked] = useState<any>(null);
@@ -207,6 +212,7 @@ export default function SimulatorLocal() {
     setRanked(null);
     setInterpretation(null);
     setCycles(1);
+    setSafety(null);
     try {
       const res = await analyze({
         methylation: methFile,
@@ -247,6 +253,24 @@ export default function SimulatorLocal() {
       );
     } finally {
       setBusy('');
+    }
+  };
+
+  const runSafety = async () => {
+    setSafetyBusy(true);
+    setError('');
+    try {
+      setSafety(await safetyPrescreen({
+        construct_type: disease?.construct_type || 'reprogramming',
+        cycles,
+        tissue_key: disease?.tissue_key,
+        host: safetyHost,
+        sensitivity: safetySens / 100,
+      }));
+    } catch (e: any) {
+      setError(e.message || 'Safety pre-screen failed');
+    } finally {
+      setSafetyBusy(false);
     }
   };
 
@@ -873,6 +897,72 @@ export default function SimulatorLocal() {
             )}
           </div>
           )}
+        </section>
+      )}
+
+      {/* 6 · Safety Implant Blob — autologous xenograft "avatar" pre-screen */}
+      {analysis && (
+        <section className="mt-6">
+          <div className="card p-6">
+            <h2 className="font-display text-lg font-bold text-ink-900">6 · Safety Implant Blob <span className="text-xs font-normal text-ink-700/50">· patient-avatar pre-screen</span></h2>
+            <p className="mt-1 text-sm text-ink-700/70">
+              Before treating the patient, engraft their own tissue biopsy into a transgenic host (a
+              patient-derived xenograft “avatar”), run the same therapy up to 2 cycles, read out safety
+              + local efficacy, and adjust — so failures are caught on the avatar, not the patient.
+            </p>
+
+            <div className="mt-3 flex flex-wrap items-end gap-4">
+              <div>
+                <label className="block text-xs font-semibold text-ink-800">Host</label>
+                <select value={safetyHost} onChange={(e) => setSafetyHost(e.target.value)} className="input mt-1 w-44 py-1.5 text-sm">
+                  <option value="mouse">Transgenic mouse (NSG)</option>
+                  <option value="guinea_pig">Transgenic guinea pig</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-ink-800">Avatar screen sensitivity: {safetySens}%</label>
+                <input type="range" min={50} max={95} step={5} value={safetySens}
+                       onChange={(e) => setSafetySens(Number(e.target.value))} className="mt-2 w-56" />
+                <p className="text-[11px] text-ink-700/50">Fraction of detectable failures the avatar catches (capped &lt;100% — see below).</p>
+              </div>
+              <button onClick={runSafety} disabled={safetyBusy} className="btn-outline px-5 py-2.5 disabled:opacity-50">
+                {safetyBusy ? 'Modelling…' : 'Run pre-screen'}
+              </button>
+            </div>
+
+            {safety && (
+              <div className="mt-4 text-sm">
+                <div className="flex flex-wrap gap-6">
+                  <Stat label="Projected success — no pre-screen" value={`${safety.projected_success_without}%`} tone="bad" />
+                  <Stat label={`Projected success — with avatar (${safety.avatar_cycles}-cycle)`} value={`${safety.projected_success_with}%`} tone="good" big />
+                  <Stat label="Risk caught by avatar" value={`−${Math.round(safety.risk_reduction * 100)}%`} tone="good" />
+                </div>
+
+                <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-xl bg-cream-100 p-3">
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-green-700/70">The avatar CAN see</p>
+                    <ul className="mt-1 space-y-1 text-xs text-ink-700/70">
+                      {safety.detects.map((d: string) => <li key={d}>✓ {d}</li>)}
+                    </ul>
+                  </div>
+                  <div className="rounded-xl bg-cream-100 p-3">
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-amber-700/80">The avatar CANNOT see</p>
+                    <ul className="mt-1 space-y-1 text-xs text-ink-700/70">
+                      {safety.misses.map((d: string) => <li key={d}>✗ {d}</li>)}
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="mt-3 rounded-xl border border-cream-300 p-3">
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-700/50">Workflow</p>
+                  <ol className="mt-1 list-decimal space-y-1 pl-5 text-xs text-ink-700/70">
+                    {safety.workflow.map((w: string) => <li key={w}>{w}</li>)}
+                  </ol>
+                </div>
+                <p className="mt-2 text-[11px] italic text-ink-700/50">{safety.disclaimer}</p>
+              </div>
+            )}
+          </div>
         </section>
       )}
 

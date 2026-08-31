@@ -555,6 +555,91 @@ async def deliver_exosome(spec: dict = Body(default={})) -> dict:
     )
 
 
+# --- Step 6: Safety Implant Blob (patient-derived xenograft "avatar" pre-screen) ---
+# Illustrative per-cycle adverse-event probability by modality. Reprogramming
+# carries the real over-induction/tumorigenicity concern (worse with more cycles);
+# gene delivery is dominated by AAV immune / off-target risk.
+_SAFETY_PER_CYCLE_RISK = {
+    "reprogramming": 0.07,       # OSK over-induction → loss of identity / teratoma
+    "gene_replacement": 0.03,    # AAV immune response / off-target expression
+    "epigenetic_silencing": 0.03,
+}
+_HOST_LABEL = {
+    "mouse": "immunodeficient / transgenic mouse (NSG-style)",
+    "guinea_pig": "transgenic guinea pig",
+}
+# What a tissue-graft avatar CAN vs CANNOT see — the honest boundary of the model.
+_AVATAR_DETECTS = [
+    "Tumorigenicity / teratoma at the graft (the key reprogramming danger)",
+    "Loss of cell identity / de-differentiation in the patient's own cells",
+    "Off-target or run-away transgene expression in the graft",
+    "Local efficacy — re-methylate the graft and re-run the clock to confirm reversal",
+]
+_AVATAR_MISSES = [
+    "The patient's whole-body immune response to the vector/cells",
+    "Systemic pharmacokinetics & biodistribution beyond the graft",
+    "Delayed effects beyond the observation window",
+    "Tissues that engraft poorly or don't represent the patient well",
+]
+
+
+@router.post("/safety")
+async def safety_prescreen(spec: dict = Body(default={})) -> dict:
+    """Safety Implant Blob — model an autologous xenograft 'avatar' pre-screen.
+
+    Engraft the patient's own biopsy into a transgenic host, run the SAME therapy
+    for up to 2 cycles, read out safety + local efficacy, and only then treat the
+    patient. Returns an ILLUSTRATIVE risk model: the pre-screen catches a tunable
+    fraction of the failure modes it can see, lowering (not eliminating) patient
+    risk. Not a validated preclinical protocol.
+    """
+    ctype = spec.get("construct_type") or "reprogramming"
+    cycles = max(1, min(int(spec.get("cycles") or 1), 10))
+    tissue_key = spec.get("tissue_key") or "systemic"
+    host = spec.get("host", "mouse")
+    # Sensitivity is user-set but CAPPED below 1.0 — an avatar can't catch everything.
+    try:
+        sensitivity = float(spec.get("sensitivity", 0.9))
+    except (TypeError, ValueError):
+        sensitivity = 0.9
+    sensitivity = min(max(sensitivity, 0.0), 0.95)
+
+    r = _SAFETY_PER_CYCLE_RISK.get(ctype, 0.05)
+    pre_risk = 1 - (1 - r) ** cycles          # patient risk WITHOUT the pre-screen
+    residual = pre_risk * (1 - sensitivity)   # risk that slips past the avatar
+    avatar_cycles = min(cycles, 2)            # the avatar tests up to 2 cycles
+
+    workflow = [
+        "Take an autologous biopsy of the patient's target tissue.",
+        f"Engraft it into a {_HOST_LABEL.get(host, host)} — a patient-derived xenograft 'avatar'.",
+        f"Run the identical construct on the graft for up to {avatar_cycles} cycle(s).",
+        "Read out safety (tumorigenicity, loss of identity, off-target) and local efficacy "
+        "(re-methylate the graft, re-run the clock).",
+        "Adjust dose / cycles / capsid / promoter from the avatar readout — or halt if it flags danger.",
+        "Only then proceed to the patient, with avatar-tuned parameters.",
+    ]
+    return {
+        "host": host,
+        "avatar_cycles": avatar_cycles,
+        "patient_cycles": cycles,
+        "sensitivity": round(sensitivity, 2),
+        "per_cycle_risk": round(r, 3),
+        "risk_without_prescreen": round(pre_risk, 3),
+        "residual_risk_with_prescreen": round(residual, 3),
+        "risk_reduction": round(pre_risk - residual, 3),
+        "projected_success_without": round(100 * (1 - pre_risk), 1),
+        "projected_success_with": round(100 * (1 - residual), 1),
+        "detects": _AVATAR_DETECTS,
+        "misses": _AVATAR_MISSES,
+        "workflow": workflow,
+        "disclaimer": "Illustrative decision-support, not a validated preclinical protocol or "
+        "regulatory pathway. A xenograft avatar lowers but never removes risk — it cannot see "
+        "whole-body immune, systemic PK, or delayed effects, and engraftment fidelity varies. "
+        "Requires animal-ethics (IACUC) approval. The sensitivity is an assumption you set, not a "
+        "measured figure; treat the success numbers as planning estimates, not guarantees.",
+    }
+
+
 @router.get("/engines")
 async def engines() -> dict:
     """Track B engine availability (does the De-Novo-LLM repo run here?)."""
