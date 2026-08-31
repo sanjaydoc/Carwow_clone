@@ -10,8 +10,11 @@ data/downloads/
 # Converted/downloaded methylation stays LOCAL (never commit patient data).
 data/samples/methylation_*.csv
 !data/samples/methylation_example.csv
-# Patient-derived sequencing (real or synthetic-from-a-patient-report) stays LOCAL.
-data/samples/wgbs_jinnah*.cov
+# Patient-derived sequencing (real, or synthetic-from-a-patient-case) stays LOCAL.
+# Generic synthetic test fixtures (ckd78/ckd80) are already tracked and kept.
+data/samples/wgbs_*.cov
+!data/samples/wgbs_ckd78_ramesh_hg38.cov
+!data/samples/wgbs_ckd80_hg38.cov
 data/samples/ages_*.csv
 !data/samples/ages.csv
 data/samples/ages_gse*.csv
