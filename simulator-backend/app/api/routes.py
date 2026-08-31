@@ -83,28 +83,47 @@ TISSUE_EFFICIENCY = {
 }
 
 
-def _project_rejuvenation(dnam_age: float, coverage: float, tissue_key: str | None = None) -> dict:
+def _project_rejuvenation(dnam_age: float, coverage: float, tissue_key: str | None = None,
+                          cycles: int = 1) -> dict:
     """Projected reprogramming outcome from an illustrative partial-reprogramming model.
 
-    Reversal = a tissue-tuned fraction of the epigenetic age accumulated above a
-    young-adult setpoint; the tissue-rejuvenation index scales that potential by
-    data confidence (CpG coverage). This is a PROJECTION for planning, not a
-    measured result — a real reversal requires an after-treatment methylation sample.
+    Each cycle reverses a tissue-tuned FRACTION of the epigenetic age still ABOVE a
+    young-adult setpoint (~20). Because the gap shrinks every cycle, reversal
+    compounds with DIMINISHING RETURNS and asymptotes toward the setpoint — it can
+    never go below it. Cumulative reversal after n cycles is
+        gap · (1 − (1 − eff)^n),
+    NOT n × single-cycle (linear stacking would drive the age below zero, which is
+    biologically impossible). A PROJECTION for planning, not a measured result.
     """
     eff = TISSUE_EFFICIENCY.get((tissue_key or "").lower(), REPROG_EFFICIENCY)
+    cycles = max(1, min(int(cycles or 1), 10))
     gap = max(0.0, dnam_age - YOUTH_SETPOINT)
-    years_reversed = round(eff * gap, 1)
+
+    per_cycle: list[dict] = []
+    age = dnam_age
+    for i in range(1, cycles + 1):
+        step = eff * max(0.0, age - YOUTH_SETPOINT)
+        age -= step
+        per_cycle.append({"cycle": i, "reversed": round(dnam_age - age, 1),
+                          "projected_age": round(age, 1)})
+    total_reversed = round(dnam_age - age, 1)
+    single = round(eff * gap, 1)
     return {
-        "years_reversed": years_reversed,
-        "projected_age": round(dnam_age - years_reversed, 1),
+        "cycles": cycles,
+        "years_reversed": total_reversed,           # cumulative over all cycles
+        "years_reversed_per_first_cycle": single,   # a single cycle, for reference
+        "projected_age": round(age, 1),
+        "per_cycle": per_cycle,
+        "floor_age": YOUTH_SETPOINT,                 # can never go below this
         "tissue_rejuvenation_index": round(eff * 100 * coverage),
         "youth_setpoint": YOUTH_SETPOINT,
         "efficiency": round(eff, 2),
         "tissue_key": tissue_key or "generic",
         "basis": "Projected from an illustrative partial-reprogramming model "
-        f"({int(eff * 100)}% of epigenetic age above a {int(YOUTH_SETPOINT)}-yr setpoint, "
-        "tuned to the target tissue), scaled by CpG coverage — not a measured outcome. "
-        "Confirm with a post-treatment sample.",
+        f"({int(eff * 100)}% of the epigenetic age above a {int(YOUTH_SETPOINT)}-yr setpoint "
+        "reversed per cycle, tuned to the target tissue), scaled by CpG coverage — not a "
+        "measured outcome. Cycles compound with diminishing returns toward the setpoint "
+        "(never below it). Confirm with a post-treatment sample.",
     }
 
 
@@ -171,6 +190,7 @@ async def analyze(
     chronological_age: float | None = Form(None),
     tissue_key: str | None = Form(None),
     department: str | None = Form(None),
+    cycles: int = Form(1),
     top_targets: int = Form(20),
 ) -> dict:
     """Compute the REAL epigenetic age + target CpGs (no data leaves the machine).
@@ -195,7 +215,7 @@ async def analyze(
 
     out: dict = {
         "epigenetic_age": result.public(),
-        "rejuvenation": _project_rejuvenation(result.dnam_age, result.coverage, tissue_key),
+        "rejuvenation": _project_rejuvenation(result.dnam_age, result.coverage, tissue_key, cycles),
         "methylation": {"sample": meth.sample, "n_sites": meth.n_sites},
         "targets": [t.public() for t in targets],
         "objectives": design_objectives(targets),

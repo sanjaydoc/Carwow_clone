@@ -144,6 +144,7 @@ export async function analyze(opts: {
   chronologicalAge?: number | null;
   tissueKey?: string | null;
   department?: string | null;
+  cycles?: number;
   topTargets?: number;
 }): Promise<any> {
   const fd = new FormData();
@@ -154,6 +155,7 @@ export async function analyze(opts: {
   if (opts.chronologicalAge != null) fd.append('chronological_age', String(opts.chronologicalAge));
   if (opts.tissueKey) fd.append('tissue_key', opts.tissueKey);
   if (opts.department) fd.append('department', opts.department);
+  if (opts.cycles != null) fd.append('cycles', String(opts.cycles));
   fd.append('top_targets', String(opts.topTargets ?? 20));
   const res = await fetch(api('/api/analyze'), { method: 'POST', body: fd });
   if (!res.ok) throw new Error((await res.json()).detail || 'Analyze failed');

@@ -49,6 +49,7 @@ export default function SimulatorLocal() {
   const [sample, setSample] = useState('');
   const [age, setAge] = useState<string>('');
 
+  const [cycles, setCycles] = useState(1);   // number of reprogramming cycles (projection)
   const [analysis, setAnalysis] = useState<any>(null);
   const [construct, setConstruct] = useState<any>(null);
   const [ranked, setRanked] = useState<any>(null);
@@ -205,6 +206,7 @@ export default function SimulatorLocal() {
     setConstruct(null);
     setRanked(null);
     setInterpretation(null);
+    setCycles(1);
     try {
       const res = await analyze({
         methylation: methFile,
@@ -214,6 +216,7 @@ export default function SimulatorLocal() {
         chronologicalAge: age ? Number(age) : null,
         tissueKey: disease?.tissue_key,
         department: disease?.department,
+        cycles: 1,
       });
       setAnalysis(res);
     } catch (e: any) {
@@ -304,6 +307,28 @@ export default function SimulatorLocal() {
   const ea = analysis?.epigenetic_age;
   const showA = approach !== 'molecules';
   const showB = approach !== 'er100';
+
+  // Multi-cycle projection — recomputed client-side from the returned efficiency
+  // and floor. Each cycle reverses `eff` of the gap that REMAINS above the floor,
+  // so it compounds with diminishing returns toward the floor (never below it).
+  const rejView = useMemo(() => {
+    const rej = analysis?.rejuvenation;
+    const base = analysis?.epigenetic_age?.dnam_age;
+    if (!rej || base == null) return null;
+    const eff = rej.efficiency ?? 0.35;
+    const floor = rej.youth_setpoint ?? 20;
+    let ageNow = base;
+    const per: { cycle: number; reversed: number; projected: number }[] = [];
+    for (let i = 1; i <= cycles; i++) {
+      ageNow -= eff * Math.max(0, ageNow - floor);
+      per.push({ cycle: i, reversed: +(base - ageNow).toFixed(1), projected: +ageNow.toFixed(1) });
+    }
+    return {
+      years_reversed: +(base - ageNow).toFixed(1),
+      projected_age: +ageNow.toFixed(1),
+      per, floor, eff,
+    };
+  }, [analysis, cycles]);
 
   if (mode === 'chat') return <SimulatorChat onExit={() => setMode('advanced')} />;
 
@@ -529,17 +554,44 @@ export default function SimulatorLocal() {
                         tone={ea.age_acceleration > 0 ? 'bad' : 'good'} />
                 )}
                 <Stat label="CpG coverage" value={`${Math.round(ea.coverage * 100)}%`} />
-                {analysis.rejuvenation && (
+                {analysis.rejuvenation && rejView && (
                   <>
-                    <Stat label="Age reversal (projected)" value={`−${analysis.rejuvenation.years_reversed} yr`} tone="good" />
+                    <Stat label={`Age reversal (projected)${cycles > 1 ? ` · ${cycles} cycles` : ''}`} value={`−${rejView.years_reversed} yr`} tone="good" />
                     <Stat label="Tissue rejuvenation (projected)" value={`${analysis.rejuvenation.tissue_rejuvenation_index}%`} tone="good" />
                   </>
                 )}
               </div>
+
+              {/* Reprogramming cycles — compounding projection with diminishing returns */}
+              {analysis.rejuvenation && rejView && (
+                <div className="mt-3 rounded-xl border border-cream-300 bg-cream-50 p-3">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <span className="text-sm font-semibold text-ink-800">Reprogramming cycles</span>
+                    <div className="flex items-center gap-2">
+                      <button onClick={() => setCycles((c) => Math.max(1, c - 1))} disabled={cycles <= 1}
+                              className="h-7 w-7 rounded-full border border-cream-300 bg-white text-ink-800 disabled:opacity-40">−</button>
+                      <span className="w-6 text-center text-sm font-bold text-ink-900">{cycles}</span>
+                      <button onClick={() => setCycles((c) => Math.min(10, c + 1))} disabled={cycles >= 10}
+                              className="h-7 w-7 rounded-full border border-cream-300 bg-white text-ink-800 disabled:opacity-40">+</button>
+                    </div>
+                    <span className="text-xs text-ink-700/60">
+                      {ea.dnam_age} → <b className="text-ink-900">{rejView.projected_age} yr</b> after {cycles} cycle{cycles > 1 ? 's' : ''} (−{rejView.years_reversed} yr)
+                    </span>
+                  </div>
+                  {cycles > 1 && (
+                    <p className="mt-2 break-words text-[11px] text-ink-700/60">
+                      Per cycle: {rejView.per.map((p) => `${p.projected}`).join(' → ')} yr.
+                      Reversal <b>compounds with diminishing returns</b> toward the ~{rejView.floor}-yr young-adult floor —
+                      it never goes below it, so cycles are <b>not</b> additive (2 cycles ≠ 2×).
+                    </p>
+                  )}
+                </div>
+              )}
+
               <p className="mt-2 text-xs text-ink-700/50">Clock: {ea.clock} · {ea.n_used}/{ea.n_total} CpGs.</p>
-              {analysis.rejuvenation && (
+              {analysis.rejuvenation && rejView && (
                 <p className="mt-1 text-xs text-ink-700/50">
-                  Projected DNAm age after reprogramming: <b>{analysis.rejuvenation.projected_age} yr</b>. {analysis.rejuvenation.basis}
+                  Projected DNAm age after {cycles} reprogramming cycle{cycles > 1 ? 's' : ''}: <b>{rejView.projected_age} yr</b>. {analysis.rejuvenation.basis}
                 </p>
               )}
 
