@@ -67,7 +67,8 @@ export default function SimulatorLocal() {
   const [wgbsBuild, setWgbsBuild] = useState('hg38');
   const [converting, setConverting] = useState(false);
   const [convertMsg, setConvertMsg] = useState('');
-  const [wgbsReady, setWgbsReady] = useState(false);  // a converted WGBS file exists on the server
+  const [wgbsName, setWgbsName] = useState('');       // patient name/label to save the converted file under
+  const [wgbsSavedLabel, setWgbsSavedLabel] = useState(''); // the label the last conversion actually saved to
   const methRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -155,16 +156,16 @@ export default function SimulatorLocal() {
         wgbs: wgbsFile,
         manifest: manifestFile,
         build: wgbsBuild,
-        label: 'wgbs',   // one fixed file (methylation_wgbs.csv) — no per-tissue clutter
+        label: wgbsName.trim() || 'wgbs',   // saved as methylation_<name>.csv — easy to spot
       });
       // Route the converted file through the existing server-side dataset path.
       setMethFile(null);
       setDatasetLabel(res.label);
       setSamples(res.samples);
       setSample('');
-      setWgbsReady(true);
+      setWgbsSavedLabel(res.label);
       const pct = Math.round(res.coverage * 100);
-      setConvertMsg(`✓ Converted — ${res.matched}/${res.total} clock CpGs (${pct}% coverage). ${pct < 60 ? 'Low coverage: check the build/manifest match your WGBS.' : 'Ready — Compute epigenetic age below.'}`);
+      setConvertMsg(`✓ Converted — ${res.matched}/${res.total} clock CpGs (${pct}% coverage). Saved as methylation_${res.label}.csv. ${pct < 60 ? 'Low coverage: check the build/manifest match your WGBS.' : 'Ready — Compute epigenetic age below.'}`);
     } catch (e: any) {
       setError(e.message || 'Conversion failed');
       setConvertMsg('');
@@ -174,13 +175,14 @@ export default function SimulatorLocal() {
   };
 
   const useConvertedWgbs = async () => {
+    if (!wgbsSavedLabel) return;
     setMethFile(null);
     setSample('');
-    setDatasetLabel('wgbs');
+    setDatasetLabel(wgbsSavedLabel);
     setError('');
     try {
-      setSamples(await datasetSamples('wgbs'));
-      setConvertMsg('✓ Using your converted WGBS file (methylation_wgbs.csv). Compute below.');
+      setSamples(await datasetSamples(wgbsSavedLabel));
+      setConvertMsg(`✓ Using your converted file (methylation_${wgbsSavedLabel}.csv). Compute below.`);
     } catch {
       setConvertMsg('');
       setError('No converted WGBS file found — convert one first.');
@@ -409,9 +411,9 @@ export default function SimulatorLocal() {
           <label className="mt-4 block text-sm font-semibold text-ink-800">Methylation file (beta values)</label>
           <input ref={methRef} type="file" accept=".csv,.txt,.tsv,.gz" className="mt-1 w-full text-sm"
                  onChange={(e) => pickMeth(e.target.files?.[0] ?? null)} />
-          {wgbsReady && datasetLabel !== 'wgbs' && (
+          {wgbsSavedLabel && datasetLabel !== wgbsSavedLabel && (
             <button onClick={useConvertedWgbs} className="btn-outline mt-2 w-full py-1.5 text-xs">
-              ↻ Use my converted WGBS file (methylation_wgbs.csv)
+              ↻ Use my converted file (methylation_{wgbsSavedLabel}.csv)
             </button>
           )}
 
@@ -433,6 +435,10 @@ export default function SimulatorLocal() {
               Bisulfite sequencing reports methylation by genomic position, not <code>cg</code> id.
               This maps it onto the clock’s CpGs. (An EPIC/450K array file needs no conversion — upload it above.)
             </p>
+            <label className="mt-2 block text-xs font-semibold text-ink-800">Patient name / label</label>
+            <input type="text" value={wgbsName} onChange={(e) => setWgbsName(e.target.value)}
+                   placeholder="e.g. ramesh — saved as methylation_ramesh.csv"
+                   className="input mt-1 w-full py-1 text-xs" />
             <label className="mt-2 block text-xs font-semibold text-ink-800">Sequencing file (.cov / bedGraph / tsv, .gz ok)</label>
             <input type="file" accept=".cov,.bedgraph,.bed,.txt,.tsv,.csv,.gz" className="mt-1 w-full text-xs"
                    onChange={(e) => setWgbsFile(e.target.files?.[0] ?? null)} />
