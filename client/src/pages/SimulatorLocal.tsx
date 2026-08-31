@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Icon from '../components/Icon';
+import SimHeaderBand from '../components/SimHeaderBand';
 import SimulatorChat from './SimulatorChat';
 import {
   analyze,
@@ -332,6 +333,16 @@ export default function SimulatorLocal() {
   const showA = approach !== 'molecules';
   const showB = approach !== 'er100';
 
+  // Which lab scene the header band shows — the furthest step reached.
+  const activeStep = useMemo(() => {
+    if (safety) return 5;
+    if (ranked) return 4;
+    if (construct) return 3;
+    if (analysis) return 2;
+    if (datasetLabel || methFile || samples.length) return 1;
+    return 0;
+  }, [safety, ranked, construct, analysis, datasetLabel, methFile, samples]);
+
   // Multi-cycle projection — recomputed client-side from the returned efficiency
   // and floor. Each cycle reverses `eff` of the gap that REMAINS above the floor,
   // so it compounds with diminishing returns toward the floor (never below it).
@@ -365,6 +376,8 @@ export default function SimulatorLocal() {
           Local research pipeline connected — your data stays on this machine.
         </p>
       </div>
+
+      <div className="mb-5"><SimHeaderBand step={activeStep} /></div>
 
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">

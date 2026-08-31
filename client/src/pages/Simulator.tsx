@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Icon from '../components/Icon';
+import SimHeaderBand from '../components/SimHeaderBand';
 import SimulatorLocal from './SimulatorLocal';
 import { checkBackend } from '../api/simulator';
 
@@ -177,6 +178,7 @@ export default function Simulator() {
             Upload your digital DNA and our De novo LLM invents novel biomolecules to reverse cellular ageing —
             reawakening dormant, aged stem cells into younger ones — then formulates them into an exosome IV.
           </p>
+          <div className="mt-8 max-w-3xl"><SimHeaderBand autoplay dark /></div>
         </div>
       </section>
 
