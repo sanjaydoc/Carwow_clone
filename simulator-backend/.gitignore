@@ -15,6 +15,9 @@ data/samples/methylation_*.csv
 data/samples/wgbs_*.cov
 !data/samples/wgbs_ckd78_ramesh_hg38.cov
 !data/samples/wgbs_ckd80_hg38.cov
+# Patient-case genotypes stay local too (the built-in example fixture is kept).
+data/samples/genome_*.txt
+!data/samples/genome_example.txt
 data/samples/ages_*.csv
 !data/samples/ages.csv
 data/samples/ages_gse*.csv

@@ -14,6 +14,7 @@ Not medical advice.
 """
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from typing import Callable
 
@@ -109,11 +110,71 @@ def _apoe(genotype: Genotype) -> dict | None:
     }
 
 
+# --- DMD (dystrophin) exon-deletion detection --------------------------------
+# Muscular dystrophy is a CODING-SEQUENCE disease, so its diagnosis lives in the
+# DNA (not methylation). Consumer SNP files rarely resolve exon copy number, so
+# we read explicit DMD_EX<n> markers (DEL / PRESENT) — the shape an MLPA or CNV
+# report provides — and apply an illustrative subset of the reading-frame rule to
+# name the exon-skipping target. Micro-dystrophin replacement is mutation-agnostic.
+_DMD_SKIP_RULE: dict[tuple[int, ...], int] = {
+    (49, 50): 51, (48, 49, 50): 51, (50,): 51, (52,): 51,
+    (45, 46, 47, 48, 49, 50): 51, (45, 46, 47, 48, 49, 50, 51): 52,
+    (45,): 44, (51,): 50, (53,): 52, (46, 47): 45,
+}
+
+
+def _dmd_deletion(genotype: Genotype, dept: str) -> dict | None:
+    deleted: list[int] = []
+    present = 0
+    for rsid, call in genotype.calls.items():
+        m = re.fullmatch(r"DMD[_-]?EX(\d+)", rsid, re.IGNORECASE)
+        if not m:
+            continue
+        if str(call).upper() in ("DEL", "DELETED", "ABSENT", "0"):
+            deleted.append(int(m.group(1)))
+        else:
+            present += 1
+    if not deleted and present == 0:
+        return None  # no DMD markers in this file
+    relevant = dept == "Neurology"
+    if not deleted:
+        return {
+            "gene": "DMD (dystrophin, Xp21.2)", "rsid": "DMD exons",
+            "condition": "Dystrophin (muscular dystrophy)", "category": "disease",
+            "genotype": "no exon deletion detected", "risk_level": "typical", "relevant": relevant,
+            "interpretation": "No DMD exon deletion in the markers provided. Point mutations and "
+            "duplications still need sequence/MLPA analysis this panel doesn't cover.",
+        }
+    deleted.sort()
+    lo, hi = deleted[0], deleted[-1]
+    span = f"exon {lo}" if lo == hi else f"exons {lo}–{hi}"
+    skip = _DMD_SKIP_RULE.get(tuple(deleted))
+    if skip:
+        skip_txt = (f"Exon-skipping applies: skipping exon {skip} restores the reading frame for "
+                    f"this deletion (antisense-oligo / CRISPR class).")
+    else:
+        skip_txt = ("Exon-skipping amenability needs a reading-frame analysis of this exact "
+                    "deletion; micro-dystrophin replacement still applies.")
+    return {
+        "gene": "DMD (dystrophin, Xp21.2)", "rsid": "DMD exons",
+        "condition": "Duchenne/Becker muscular dystrophy", "category": "disease",
+        "genotype": f"{span} deletion", "risk_level": "higher", "relevant": relevant,
+        "interpretation": (f"DMD {span} deletion detected. Micro-dystrophin AAV gene replacement is "
+                           f"mutation-agnostic and applies. {skip_txt}"),
+        "modality": {"deletion": span, "micro_dystrophin": True, "exon_skip": skip},
+    }
+
+
 def personalize(genotype: Genotype, department: str | None = None) -> dict:
     """Check the panel against the person's calls; flag department-relevant hits."""
     dept = department or ""
     findings: list[dict] = []
     n_found = 0
+
+    dmd = _dmd_deletion(genotype, dept)
+    if dmd:
+        n_found += 1
+        findings.append(dmd)
 
     apoe = _apoe(genotype)
     if apoe:
