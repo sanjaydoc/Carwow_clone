@@ -99,7 +99,11 @@ class DenovoLLMEngine(DesignEngine):
 
         proc = subprocess.run(cmd, cwd=str(self.repo), capture_output=True, text=True, timeout=3600)
         if proc.returncode != 0:
-            raise RuntimeError((proc.stderr or proc.stdout or "generation failed").strip()[:800])
+            # Keep the TAIL of the output: a Python traceback puts the real
+            # exception type + message on its last line, so slicing from the
+            # front would hide exactly what failed.
+            err = (proc.stderr or proc.stdout or "generation failed").strip()
+            raise RuntimeError(err[-1500:] if len(err) > 1500 else err)
         if not out_file.exists():
             # Ran clean but produced no file — surface the CLI output to help debug.
             tail = (proc.stdout or proc.stderr or "").strip()[-800:]
