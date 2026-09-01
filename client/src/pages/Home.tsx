@@ -8,6 +8,7 @@ import CarTypeIcon from '../components/CarTypeIcon';
 import BrandLogo from '../components/BrandLogo';
 import Spinner from '../components/Spinner';
 import ChatWidget from '../components/ChatWidget';
+import HeroCell from '../components/HeroCell';
 import Icon, { type IconName } from '../components/Icon';
 import { gbp, statusLabel, isResearch } from '../utils/format';
 
@@ -192,6 +193,7 @@ export default function Home() {
       {/* ---------- HERO ---------- */}
       <section className="relative overflow-hidden bg-ink-900">
         <div className="absolute -right-24 top-0 h-96 w-96 rounded-full bg-clay-500/20 blur-3xl" />
+        <HeroCell />
         <div className="container-x relative py-10 sm:py-14">
           <h1 className="font-display text-4xl font-extrabold uppercase leading-[0.95] tracking-tight text-white sm:text-6xl">
             Regenerate. Restore.
