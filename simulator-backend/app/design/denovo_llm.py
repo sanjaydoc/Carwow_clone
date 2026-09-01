@@ -26,11 +26,18 @@ _DEFAULT_CONFIG = {
 }
 _DEFAULT_MODEL = {"smiles": "entropy/gpt2_zinc_87m"}
 
-# Properties the De-Novo-LLM `condition` command can actually optimise for.
-# Anything else (e.g. logP-based deliverability targets) is handled by our own
-# RDKit ranker over a larger generated pool — passing an unsupported --property
-# makes the CLI crash.
-_CLI_PROPERTIES = {"qed"}
+def _cli_can_condition(prop: str | None, mode: str) -> bool:
+    """Whether De-Novo-LLM's `condition` command can optimise (prop, mode) itself.
+
+    The CLI conditions on QED, and on logP with mode min/max — but its
+    ``--mode target`` (``--target <v>``) path crashes. Anything it can't do is
+    handled by our own RDKit ranker over a larger generated pool instead.
+    """
+    if prop == "qed":
+        return True
+    if prop == "logp":
+        return mode in ("min", "max")
+    return False
 
 
 class DenovoLLMEngine(DesignEngine):
@@ -90,16 +97,14 @@ class DenovoLLMEngine(DesignEngine):
 
         cmd = self._cli()
         n_out = n
-        if req.property and req.property in _CLI_PROPERTIES:
-            # Model conditions on this property directly.
+        if req.property and _cli_can_condition(req.property, req.mode):
+            # Model conditions on this property directly (QED, or logP min/max).
             cmd += ["condition", "-c", config, "--property", req.property, "--mode", req.mode]
-            if req.mode == "target" and req.target_value is not None:
-                cmd += ["--target", str(req.target_value)]
             cmd += ["--oversample", "10"]
         else:
             # Plain generation. If a property objective is set that the CLI can't
-            # condition on, oversample so our RDKit ranker has a pool to select
-            # the best-fitting molecules from.
+            # condition on (e.g. a logP *target* such as CNS-penetrant), oversample
+            # so our RDKit ranker has a pool to select the best-fitting molecules.
             if req.property:
                 n_out = min(max(n * 8, 40), settings.max_generate)
             cmd += ["generate", "-c", config]

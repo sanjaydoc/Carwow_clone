@@ -871,9 +871,9 @@ export default function SimulatorLocal() {
                          placeholder="target logP, e.g. 2.5" className="input mt-2" />
                 )}
                 <p className="mt-1 text-xs text-ink-700/50">
-                  QED is optimised by the model directly; logP objectives (CNS / solubility /
-                  lipophilicity) are met by generating a larger pool and ranking on logP. Either
-                  way this tunes drug-likeness/deliverability — not binding to a specific target.
+                  QED and low/high-logP are optimised by the model directly; a logP <i>target</i>
+                  (CNS-penetrant / custom) is met by generating a larger pool and ranking on logP.
+                  Either way this tunes drug-likeness/deliverability — not binding to a specific target.
                 </p>
                 <button onClick={runDesign} disabled={!!busy} className="btn-primary mt-3 px-5 py-2.5 disabled:opacity-50">
                   {busy === 'Generating candidate molecules…' ? 'Generating…' : 'Generate candidates'}
