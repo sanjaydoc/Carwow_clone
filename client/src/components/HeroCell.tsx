@@ -35,7 +35,7 @@ export default function HeroCell() {
       const rim = new THREE.PointLight(0x35d0c0, 0.8, 20); rim.position.set(-3, -1, -2); scene.add(rim);
 
       const group = new THREE.Group(); scene.add(group);
-      group.scale.setScalar(0.36);   // smaller — sits compactly in the right zone
+      group.scale.setScalar(0.144);   // small — sits compactly in the right zone
 
       // helpers
       const rnd = (a: number, b: number) => a + Math.random() * (b - a);
