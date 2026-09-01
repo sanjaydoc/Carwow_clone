@@ -36,7 +36,7 @@ export default function HeroCell() {
 
       const group = new THREE.Group(); scene.add(group);
       group.scale.setScalar(0.42);      // fits inside the target circle
-      group.position.y = 0.2;           // sit at the circle's vertical centre
+      group.position.y = 0.38;          // sit slightly above centre in the right zone
 
       // helpers
       const rnd = (a: number, b: number) => a + Math.random() * (b - a);
