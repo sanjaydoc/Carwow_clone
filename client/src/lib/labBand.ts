@@ -118,7 +118,7 @@ export function createLabBand(
       update(dt) { ph += dt; wt += dt;
         if (wt > 0.45) { wt = 0; filled.add(well); well = (well + 1) % (cols * rows); if (well === 0) filled.clear(); } },
       render() {
-        const px = 18, py = 26, pw = W * 0.30, ph2 = H - py - 26, cw = pw / cols, ch = ph2 / rows, rad = Math.min(cw, ch) * 0.30;
+        const px = 18, py = 26, pw = W * 0.30, ph2 = H - py - 34, cw = pw / cols, ch = ph2 / rows, rad = Math.min(cw, ch) * 0.30;
         rr(px - 7, py - 9, pw + 14, ph2 + 18, 7); ctx.strokeStyle = hexA(P.ink, 0.25); ctx.lineWidth = 1.2; ctx.stroke();
         for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
           const i = r * cols + c, x = px + c * cw + cw / 2, y = py + r * ch + ch / 2;
@@ -130,7 +130,7 @@ export function createLabBand(
         ctx.beginPath(); ctx.moveTo(wx - 3, wy - 12); ctx.lineTo(wx + 3, wy - 12); ctx.lineTo(wx, wy - 4); ctx.closePath(); ctx.fill();
         if (wt < 0.16) { ctx.beginPath(); ctx.arc(wx, wy - 1, 2, 0, 7); ctx.fillStyle = P.data; ctx.fill(); }
         cap(px - 2, py - 14, '96-WELL', 'left');
-        const gx = W * 0.40, gw = W - gx - 14, baseY = H - 24, amp = H * 0.34, bases = [P.rate, P.data, P.ink, P.spike];
+        const gx = W * 0.40, gw = W - gx - 14, baseY = H - 30, amp = H * 0.30, bases = [P.rate, P.data, P.ink, P.spike];
         ctx.lineWidth = 1.8;
         for (let i = 0; i < gw / 6; i++) { const x = gx + i * 6, bi = Math.floor(i + ph * 10) % 4;
           const h = (0.25 + 0.75 * Math.abs(Math.sin(i * 1.27 + bi))) * amp;
@@ -150,7 +150,7 @@ export function createLabBand(
         for (let i = 0; i < 5; i++) { a -= eff * (a - floor); ages.push(a); } },
       update(dt) { n += dt * 22; if (n > cols * rows + 30) n = 0; },
       render() {
-        const mx = 18, my = 22, mw = W - 36, mh = H - my - 16;
+        const mx = 18, my = 22, mw = W - 36, mh = H - my - 26;
         rr(mx, my, mw, mh, 8); ctx.strokeStyle = hexA(P.ink, 0.28); ctx.lineWidth = 1.4; ctx.stroke();
         const hx = mx + 12, hy = my + 14, hw = mw * 0.5, hh = mh - 26, cw = hw / cols, ch = hh / rows;
         const shownN = Math.min(cols * rows, Math.floor(n));
@@ -172,32 +172,51 @@ export function createLabBand(
     };
   })();
 
-  // 4 · vector production
+  // 4 · vector production — culture flask releasing a clean stream of AAV capsids
   const sVector = ((): Scene => {
-    let cells: any[] = [], caps: any[] = [], acc = 0;
+    let t = 0; const N = 4; const cells = Array.from({ length: 7 }, (_, i) => ({ ang: (i / 7) * 7, rad: 0.35 + (i % 3) * 0.22 }));
+    // a professional icosahedral-ish AAV capsid: hexagon shell + inner facets
+    function capsid(x: number, y: number, R: number, alpha: number) {
+      ctx.save(); ctx.translate(x, y); ctx.globalAlpha = alpha;
+      const V = (k: number) => [Math.cos(k / 6 * 7 - Math.PI / 2) * R, Math.sin(k / 6 * 7 - Math.PI / 2) * R] as const;
+      ctx.beginPath(); for (let s = 0; s < 6; s++) { const [vx, vy] = V(s); (s ? ctx.lineTo : ctx.moveTo).call(ctx, vx, vy); } ctx.closePath();
+      ctx.fillStyle = hexA(P.spike, 0.14); ctx.fill(); ctx.strokeStyle = P.spike; ctx.lineWidth = 1.3; ctx.stroke();
+      ctx.strokeStyle = hexA(P.spike, 0.45); ctx.lineWidth = 0.8;
+      ctx.beginPath(); for (const set of [[0, 2, 4], [1, 3, 5]]) { set.forEach((k, j) => { const [vx, vy] = V(k); (j ? ctx.lineTo : ctx.moveTo).call(ctx, vx, vy); }); ctx.closePath(); } ctx.stroke();
+      ctx.globalAlpha = 1; ctx.restore();
+    }
     return {
-      reset() { cells = Array.from({ length: 16 }, () => ({ a: rnd(0, 7), r: rnd(0.2, 0.95), s: rnd(0.3, 0.9) })); caps = []; acc = 0; },
-      update(dt) { for (const c of cells) c.a += c.s * dt;
-        acc += dt; while (acc > 0.6) { acc -= 0.6; if (caps.length < 7) caps.push({ x: rnd(-7, 7), y: 0, vy: rnd(9, 15), rot: rnd(0, 7) }); }
-        for (const k of caps) { k.y += k.vy * dt; k.rot += dt; } caps = caps.filter((k) => k.y < H); },
+      reset() { t = 0; },
+      update(dt) { t += dt; },
       render() {
-        const cx = W * 0.5, neckTop = H * 0.16, bodyTop = H * 0.44, bot = H - 16, bodyW = W * 0.26, neckW = 20;
-        const sideX = (y: number, sign: number) => y <= bodyTop ? cx + sign * neckW / 2 : cx + sign * (neckW / 2 + (bodyW / 2 - neckW / 2) * ((y - bodyTop) / (bot - bodyTop)));
-        const liqTop = bodyTop + (bot - bodyTop) * 0.30;
+        const fx = W * 0.22, bot = H - 26, bodyTop = H * 0.42, neckTop = 22, bodyW = Math.min(W * 0.22, 120), neckW = 16;
+        const sideX = (y: number, s: number) => y <= bodyTop ? fx + s * neckW / 2 : fx + s * (neckW / 2 + (bodyW / 2 - neckW / 2) * ((y - bodyTop) / (bot - bodyTop)));
+        // liquid + meniscus
+        const liqTop = bodyTop + (bot - bodyTop) * 0.34;
         ctx.beginPath(); ctx.moveTo(sideX(liqTop, -1), liqTop); ctx.lineTo(sideX(bot, -1), bot); ctx.lineTo(sideX(bot, 1), bot); ctx.lineTo(sideX(liqTop, 1), liqTop); ctx.closePath();
-        ctx.fillStyle = hexA(P.rate, 0.14); ctx.fill();
+        ctx.fillStyle = hexA(P.rate, 0.13); ctx.fill();
+        ctx.beginPath(); ctx.moveTo(sideX(liqTop, -1), liqTop); ctx.lineTo(sideX(liqTop, 1), liqTop); ctx.strokeStyle = hexA(P.rate, 0.6); ctx.lineWidth = 1.2; ctx.stroke();
+        // producer cells, slow orderly orbit inside the liquid
         const midY = (liqTop + bot) / 2;
-        for (const c of cells) { const x = cx + Math.cos(c.a) * (bodyW * 0.36) * c.r, y = midY + Math.sin(c.a) * (bot - liqTop) * 0.34 * c.r;
-          ctx.beginPath(); ctx.arc(x, y, 2.4, 0, 7); ctx.fillStyle = hexA(P.rate, 0.8); ctx.fill(); }
-        ctx.beginPath(); ctx.moveTo(cx - neckW / 2, neckTop); ctx.lineTo(cx - neckW / 2, bodyTop); ctx.lineTo(cx - bodyW / 2, bot);
-        ctx.lineTo(cx + bodyW / 2, bot); ctx.lineTo(cx + neckW / 2, bodyTop); ctx.lineTo(cx + neckW / 2, neckTop);
-        ctx.strokeStyle = hexA(P.ink, 0.45); ctx.lineWidth = 1.8; ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(cx - neckW / 2 - 4, neckTop); ctx.lineTo(cx + neckW / 2 + 4, neckTop); ctx.stroke();
-        for (const k of caps) { const yy = bodyTop - k.y, R = 6.5;
-          ctx.save(); ctx.translate(cx + k.x, yy); ctx.rotate(k.rot);
-          ctx.beginPath(); for (let s = 0; s < 6; s++) { const a = s / 6 * 7 - Math.PI / 2; (s ? ctx.lineTo : ctx.moveTo).call(ctx, Math.cos(a) * R, Math.sin(a) * R); } ctx.closePath();
-          ctx.strokeStyle = P.spike; ctx.lineWidth = 1.4; ctx.fillStyle = hexA(P.spike, 0.16); ctx.fill(); ctx.stroke(); ctx.restore(); }
-        cap(cx, bot + 14, 'HEK293 · rAAV', 'center');
+        for (const c of cells) { const x = fx + Math.cos(c.ang + t * 0.5) * (bodyW * 0.32) * c.rad, y = midY + Math.sin(c.ang + t * 0.5) * (bot - liqTop) * 0.30 * c.rad;
+          ctx.beginPath(); ctx.arc(x, y, 2.6, 0, 7); ctx.fillStyle = hexA(P.rate, 0.85); ctx.fill(); }
+        // flask glass
+        ctx.beginPath(); ctx.moveTo(fx - neckW / 2, neckTop); ctx.lineTo(fx - neckW / 2, bodyTop); ctx.lineTo(fx - bodyW / 2, bot);
+        ctx.lineTo(fx + bodyW / 2, bot); ctx.lineTo(fx + neckW / 2, bodyTop); ctx.lineTo(fx + neckW / 2, neckTop);
+        ctx.strokeStyle = hexA(P.ink, 0.5); ctx.lineWidth = 1.8; ctx.lineJoin = 'round'; ctx.stroke(); ctx.lineJoin = 'miter';
+        ctx.beginPath(); ctx.moveTo(fx - neckW / 2 - 4, neckTop); ctx.lineTo(fx + neckW / 2 + 4, neckTop); ctx.strokeStyle = hexA(P.ink, 0.5); ctx.lineWidth = 2.4; ctx.lineCap = 'round'; ctx.stroke(); ctx.lineCap = 'butt';
+        // release path: gentle arc from neck to upper-right
+        const p0x = fx + neckW / 2 + 6, p0y = neckTop + 4, p1x = W - 40, p1y = 30;
+        const path = (u: number) => { const x = p0x + (p1x - p0x) * u, y = p0y + (p1y - p0y) * u - Math.sin(u * Math.PI) * 14; return [x, y] as const; };
+        // faint dotted guide
+        ctx.strokeStyle = hexA(P.ink, 0.14); ctx.lineWidth = 1; ctx.setLineDash([2, 5]);
+        ctx.beginPath(); for (let u = 0; u <= 1.001; u += 0.04) { const [x, y] = path(u); (u ? ctx.lineTo : ctx.moveTo).call(ctx, x, y); } ctx.stroke(); ctx.setLineDash([]);
+        // evenly-spaced capsids travelling the path (orderly, consistent size)
+        const speed = 0.16;
+        for (let i = 0; i < N; i++) { const u = ((i / N) + t * speed) % 1; const [x, y] = path(u);
+          const alpha = Math.min(1, Math.sin(u * Math.PI) * 1.6); capsid(x, y, 9, alpha); }
+        // tidy label, top-left (clear of the live indicator)
+        cap(14, 14, 'HEK293 → rAAV', 'left');
       },
     };
   })();
