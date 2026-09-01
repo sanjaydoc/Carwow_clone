@@ -26,6 +26,12 @@ _DEFAULT_CONFIG = {
 }
 _DEFAULT_MODEL = {"smiles": "entropy/gpt2_zinc_87m"}
 
+# Properties the De-Novo-LLM `condition` command can actually optimise for.
+# Anything else (e.g. logP-based deliverability targets) is handled by our own
+# RDKit ranker over a larger generated pool — passing an unsupported --property
+# makes the CLI crash.
+_CLI_PROPERTIES = {"qed"}
+
 
 class DenovoLLMEngine(DesignEngine):
     name = "De-Novo-LLM"
@@ -83,19 +89,26 @@ class DenovoLLMEngine(DesignEngine):
             out_file.unlink()  # avoid reading a stale file if this run produces none
 
         cmd = self._cli()
-        if req.property:
+        n_out = n
+        if req.property and req.property in _CLI_PROPERTIES:
+            # Model conditions on this property directly.
             cmd += ["condition", "-c", config, "--property", req.property, "--mode", req.mode]
             if req.mode == "target" and req.target_value is not None:
                 cmd += ["--target", str(req.target_value)]
             cmd += ["--oversample", "10"]
         else:
+            # Plain generation. If a property objective is set that the CLI can't
+            # condition on, oversample so our RDKit ranker has a pool to select
+            # the best-fitting molecules from.
+            if req.property:
+                n_out = min(max(n * 8, 40), settings.max_generate)
             cmd += ["generate", "-c", config]
         if model:
             cmd += ["-m", model]
-        cmd += ["-n", str(n), "-o", str(out_file)]
+        cmd += ["-n", str(n_out), "-o", str(out_file)]
 
         if progress:
-            progress(f"De-Novo-LLM generating {n} {req.modality} candidates…", progress=0.3)
+            progress(f"De-Novo-LLM generating {n_out} {req.modality} candidates…", progress=0.3)
 
         proc = subprocess.run(cmd, cwd=str(self.repo), capture_output=True, text=True, timeout=3600)
         if proc.returncode != 0:

@@ -871,8 +871,9 @@ export default function SimulatorLocal() {
                          placeholder="target logP, e.g. 2.5" className="input mt-2" />
                 )}
                 <p className="mt-1 text-xs text-ink-700/50">
-                  Biases generation toward this physicochemical property. Note: this tunes
-                  drug-likeness/deliverability — not binding to a specific target.
+                  QED is optimised by the model directly; logP objectives (CNS / solubility /
+                  lipophilicity) are met by generating a larger pool and ranking on logP. Either
+                  way this tunes drug-likeness/deliverability — not binding to a specific target.
                 </p>
                 <button onClick={runDesign} disabled={!!busy} className="btn-primary mt-3 px-5 py-2.5 disabled:opacity-50">
                   {busy === 'Generating candidate molecules…' ? 'Generating…' : 'Generate candidates'}
@@ -892,14 +893,15 @@ export default function SimulatorLocal() {
                 </p>
                 <div className="mt-2 max-h-64 overflow-auto">
                   <table className="w-full text-left text-xs">
-                    <thead className="text-ink-700/60"><tr><th className="pr-2">#</th><th className="pr-2">SMILES</th><th className="pr-2">rank</th><th>QED</th></tr></thead>
+                    <thead className="text-ink-700/60"><tr><th className="pr-2">#</th><th className="pr-2">SMILES</th><th className="pr-2">rank</th><th className="pr-2">QED</th><th>logP</th></tr></thead>
                     <tbody>
                       {ranked.candidates.slice(0, 25).map((c: any, i: number) => (
                         <tr key={i} className="border-t border-cream-200">
                           <td className="pr-2">{i + 1}</td>
                           <td className="pr-2 font-mono">{c.seq}</td>
                           <td className="pr-2">{c.scores?.rank_score ?? '—'}</td>
-                          <td>{c.scores?.qed ?? '—'}</td>
+                          <td className="pr-2">{c.scores?.qed ?? '—'}</td>
+                          <td>{c.scores?.logp ?? '—'}</td>
                         </tr>
                       ))}
                     </tbody>

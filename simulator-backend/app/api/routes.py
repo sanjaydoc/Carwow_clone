@@ -673,8 +673,15 @@ async def design(spec: dict = Body(default={})) -> dict:
             job.emit("acquiring GPU / launching De-Novo-LLM…", progress=0.1)
             candidates = await asyncio.to_thread(engine.generate, req, job.emit)
         job.emit(f"scoring {len(candidates)} candidates…", progress=0.85)
-        ranked = rank_candidates(candidates)
+        objective = (
+            {"property": req.property, "mode": req.mode, "target_value": req.target_value}
+            if req.property
+            else None
+        )
+        ranked = rank_candidates(candidates, objective=objective)
         ranked["modality"] = req.modality
+        if objective:
+            ranked["objective"] = objective
         ranked["disclaimer"] = (
             "Candidates are AI-generated research hypotheses — not validated, "
             "synthesizable, or approved therapeutics."
