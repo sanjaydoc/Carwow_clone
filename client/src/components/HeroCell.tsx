@@ -51,15 +51,17 @@ export default function HeroCell() {
         });
 
       // --- dividing cell / mitosis (design 3) ---
-      // two membranes pinching at a cleavage furrow, a spindle and paired chromosomes
-      const mk = (x: number) => {
+      // two membranes pinching at a cleavage furrow, a spindle and paired chromosomes;
+      // the right daughter cell is 30% smaller than the left (uneven division)
+      const mk = (x: number, s: number) => {
         const c = new THREE.Group();
         c.add(new THREE.Mesh(sphere(0.92, 48), fresnel(0x59b6ff, 2.4, 1.0)));
         c.add(new THREE.Mesh(sphere(0.4, 24), new THREE.MeshStandardMaterial({ color: 0x2b6fd6, emissive: 0x14346e, roughness: 0.4, transparent: true, opacity: 0.85 })));
         c.position.x = x;
+        c.scale.setScalar(s);
         return c;
       };
-      const cellL = mk(-0.62), cellR = mk(0.62); group.add(cellL, cellR);
+      const cellL = mk(-0.62, 1.0), cellR = mk(0.7, 0.7); group.add(cellL, cellR);
 
       // spindle fibres between the poles
       const segs: InstanceType<typeof THREE.Vector3>[] = [];
@@ -103,7 +105,7 @@ export default function HeroCell() {
         group.rotation.x = Math.sin(t * 0.25) * 0.1;
         // cleavage: the two poles drift apart and back — "life happening"
         const s = 0.62 + Math.abs(Math.sin(t * (reduce ? 0.2 : 0.5))) * 0.28;
-        cellL.position.x = -s; cellR.position.x = s;
+        cellL.position.x = -s; cellR.position.x = s * 1.13;
         renderer.render(scene, camera);
       }
       const onVis = () => { if (document.hidden) { running = false; } else if (!running) { running = true; raf = requestAnimationFrame(frame); } };
