@@ -29,7 +29,7 @@ export default function HeroCell() {
       renderer.setClearColor(0x000000, 0);
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
-      camera.position.set(0, 0, 4.1);
+      camera.position.set(0, 0, 3.35);   // closer → the cell fills the canvas (bleeds off edges, no dead margin)
       scene.add(new THREE.AmbientLight(0x3a4a66, 0.75));
       const key = new THREE.DirectionalLight(0xbfd8ff, 1.1); key.position.set(2, 2, 3); scene.add(key);
       const rim = new THREE.PointLight(0x35d0c0, 0.8, 20); rim.position.set(-3, -1, -2); scene.add(rim);
@@ -128,7 +128,7 @@ export default function HeroCell() {
   }, []);
 
   return (
-    <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[46%] lg:block" aria-hidden="true">
+    <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-1/2 lg:block" aria-hidden="true">
       <canvas ref={canvasRef} className="h-full w-full" />
     </div>
   );
