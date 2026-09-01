@@ -35,7 +35,8 @@ export default function HeroCell() {
       const rim = new THREE.PointLight(0x35d0c0, 0.8, 20); rim.position.set(-3, -1, -2); scene.add(rim);
 
       const group = new THREE.Group(); scene.add(group);
-      group.scale.setScalar(0.144);   // small — sits compactly in the right zone
+      group.scale.setScalar(0.42);      // fits inside the target circle
+      group.position.y = 0.2;           // sit at the circle's vertical centre
 
       // helpers
       const rnd = (a: number, b: number) => a + Math.random() * (b - a);
@@ -130,7 +131,7 @@ export default function HeroCell() {
 
   return (
     <div
-      className="pointer-events-none absolute inset-y-0 right-0 hidden w-[58%] lg:block"
+      className="pointer-events-none absolute inset-y-0 right-0 hidden w-[50%] lg:block"
       aria-hidden="true"
       style={{
         // Fade the left edge so the cell dissolves into the hero black
