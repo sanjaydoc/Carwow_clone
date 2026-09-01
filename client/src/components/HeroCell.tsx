@@ -29,12 +29,13 @@ export default function HeroCell() {
       renderer.setClearColor(0x000000, 0);
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
-      camera.position.set(0, 0, 3.35);   // closer → the cell fills the canvas (bleeds off edges, no dead margin)
+      camera.position.set(0, 0, 3.05);
       scene.add(new THREE.AmbientLight(0x3a4a66, 0.75));
       const key = new THREE.DirectionalLight(0xbfd8ff, 1.1); key.position.set(2, 2, 3); scene.add(key);
       const rim = new THREE.PointLight(0x35d0c0, 0.8, 20); rim.position.set(-3, -1, -2); scene.add(rim);
 
       const group = new THREE.Group(); scene.add(group);
+      group.scale.setScalar(0.6);   // 40% smaller overall
 
       // helpers
       const rnd = (a: number, b: number) => a + Math.random() * (b - a);
@@ -128,7 +129,16 @@ export default function HeroCell() {
   }, []);
 
   return (
-    <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-1/2 lg:block" aria-hidden="true">
+    <div
+      className="pointer-events-none absolute inset-y-0 right-0 hidden w-[58%] lg:block"
+      aria-hidden="true"
+      style={{
+        // Fade the left edge so the cell dissolves into the hero black
+        // instead of ending in a hard round-blob crescent.
+        WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.6) 20%, #000 42%)',
+        maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.6) 20%, #000 42%)',
+      }}
+    >
       <canvas ref={canvasRef} className="h-full w-full" />
     </div>
   );
