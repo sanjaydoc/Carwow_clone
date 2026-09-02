@@ -46,13 +46,6 @@ interface Project {
 
 const PROJECTS: Project[] = [
   {
-    name: 'StemCells Protocol — offline therapy-design pipeline',
-    blurb:
-      'A working, offline research pipeline that ingests real DNA-methylation sequencing (WGBS coverage & Illumina EPIC 935K arrays), computes epigenetic (biological) age, analyses the genome (e.g. DMD exon-deletion detection), and generates & ranks de novo therapeutic constructs (De-Novo-LLM) across a six-step flow ending in a safety pre-screen. Runs today on real and synthetic patient data across multiple diseases. Research-grade — outputs are engineered hypotheses, not validated therapies.',
-    live: 'https://stemcellsprotocol.com',
-    repo: 'https://github.com/sanjaydoc/Stemcellsprotocol',
-  },
-  {
     name: 'Brain–Computer Interface v3',
     blurb:
       'A configurable, scalable platform that designs the molecules, drives an ultrasound read/write scanner, holds a living digital-twin of a brain, and runs it in a virtual environment with live 3D visualization.',
