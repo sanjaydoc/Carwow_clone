@@ -5,7 +5,7 @@ const FOUNDER = {
   name: 'Dr. Sanjay Anbu',
   role: 'Founder',
   // Fill these two in to finalise the profile:
-  credential: '',          // e.g. 'MBBS · Regenerative Medicine & AI' — shown under the name
+  credential: 'MBBS · Regenerative Medicine & AI',   // shown under the name
   photo: '',               // e.g. '/founder.jpg' — drop a headshot in client/public/
   email: 'dr.sanjayanbu@gmail.com',
   github: 'https://github.com/sanjaydoc',
