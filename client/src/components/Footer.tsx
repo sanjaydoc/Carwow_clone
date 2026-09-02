@@ -38,6 +38,14 @@ export default function Footer() {
               <p>Saturday 9.00 – 17.30</p>
               <p>Sundays &amp; Bank Holidays closed</p>
             </div>
+            <div className="mt-4 space-y-1 text-sm">
+              <a href="mailto:dr.sanjay@stemcellsprotocol.com" className="block text-white/80 underline-offset-4 transition hover:text-clay-300 hover:underline">
+                dr.sanjay@stemcellsprotocol.com
+              </a>
+              <a href="mailto:dr.sanjayanbu@gmail.com" className="block text-white/70 underline-offset-4 transition hover:text-clay-300 hover:underline">
+                dr.sanjayanbu@gmail.com
+              </a>
+            </div>
             <div className="mt-5 flex gap-3">
               {socials.map((s) => (
                 <a

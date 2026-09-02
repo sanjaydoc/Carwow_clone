@@ -7,7 +7,8 @@ const FOUNDER = {
   // Fill these two in to finalise the profile:
   credential: 'MBBS · Regenerative Medicine & AI',   // shown under the name
   photo: '',               // e.g. '/founder.jpg' — drop a headshot in client/public/
-  email: 'dr.sanjayanbu@gmail.com',
+  email: 'dr.sanjay@stemcellsprotocol.com',
+  personalEmail: 'dr.sanjayanbu@gmail.com',
   github: 'https://github.com/sanjaydoc',
   githubDisplay: 'github.com/sanjaydoc',
   linkedin: 'https://www.linkedin.com/in/sanjay-anbu-56a076252',
@@ -244,6 +245,19 @@ export default function Investors() {
                 <span className="min-w-0">
                   <span className="block text-xs font-semibold uppercase tracking-wide text-ink-700/50">Email</span>
                   <span className="block truncate font-semibold text-ink-900">{FOUNDER.email}</span>
+                </span>
+              </a>
+
+              <a
+                href={`mailto:${FOUNDER.personalEmail}`}
+                className="flex items-center gap-3 rounded-2xl border border-cream-300 px-5 py-4 transition hover:border-clay-300 hover:bg-clay-50"
+              >
+                <span className="grid h-10 w-10 place-items-center rounded-full bg-clay-100 text-clay-600">
+                  <MailIcon />
+                </span>
+                <span className="min-w-0">
+                  <span className="block text-xs font-semibold uppercase tracking-wide text-ink-700/50">Personal email</span>
+                  <span className="block truncate font-semibold text-ink-900">{FOUNDER.personalEmail}</span>
                 </span>
               </a>
 
