@@ -4,6 +4,9 @@ import Icon, { type IconName } from '../components/Icon';
 const FOUNDER = {
   name: 'Dr. Sanjay Anbu',
   role: 'Founder',
+  // Fill these two in to finalise the profile:
+  credential: '',          // e.g. 'MBBS · Regenerative Medicine & AI' — shown under the name
+  photo: '',               // e.g. '/founder.jpg' — drop a headshot in client/public/
   email: 'dr.sanjayanbu@gmail.com',
   github: 'https://github.com/sanjaydoc',
   githubDisplay: 'github.com/sanjaydoc',
@@ -15,6 +18,22 @@ const FOUNDER = {
     { raw: '6385181758', display: '+91 63851 81758' },
   ],
 };
+
+// Bio is grounded in the verifiable, open-source portfolio linked below.
+const FOUNDER_BIO =
+  'Sanjay Anbu is the founder of StemCells Protocol, working at the intersection of ' +
+  'regenerative medicine, de novo molecular design and neurotechnology. He is the creator of ' +
+  'De-Novo-LLM (generative design of novel biomolecules), a multi-generation Brain–Computer ' +
+  'Interface platform, and the StemCells Protocol AI care assistant — building the tools to make ' +
+  'age-reversal therapy personal to each patient’s own genome.';
+
+const FOUNDER_FOCUS = [
+  'Regenerative medicine',
+  'Epigenetic reprogramming',
+  'De novo molecular design',
+  'Neurotechnology',
+  'AI platforms',
+];
 
 // Founder's wider research & engineering portfolio.
 interface Project {
@@ -131,6 +150,58 @@ export default function Investors() {
             <p className="mt-2 text-sm text-ink-700/70">{h.body}</p>
           </div>
         ))}
+      </div>
+
+      {/* Founder profile */}
+      <div className="mx-auto mt-16 max-w-4xl">
+        <div className="text-center">
+          <span className="chip bg-clay-100 text-clay-700"><Icon name="clinician" className="h-3.5 w-3.5" /> Founder</span>
+          <h2 className="mt-4 font-display text-3xl font-extrabold text-ink-900 sm:text-4xl">About the founder</h2>
+        </div>
+
+        <div className="card mt-8 flex flex-col gap-6 p-6 sm:flex-row sm:items-start sm:gap-8 sm:p-8">
+          {FOUNDER.photo ? (
+            <img
+              src={FOUNDER.photo}
+              alt={FOUNDER.name}
+              className="h-28 w-28 shrink-0 rounded-2xl object-cover ring-1 ring-ink-900/10 sm:h-36 sm:w-36"
+            />
+          ) : (
+            <span className="grid h-28 w-28 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-clay-500 to-clay-700 font-display text-4xl font-bold text-white sm:h-36 sm:w-36 sm:text-5xl">
+              {FOUNDER.name.replace(/^Dr\.\s*/, '').split(' ').map((w) => w.charAt(0)).slice(0, 2).join('')}
+            </span>
+          )}
+
+          <div className="min-w-0 flex-1">
+            <h3 className="font-display text-2xl font-extrabold text-ink-900">{FOUNDER.name}</h3>
+            <p className="mt-0.5 text-sm font-semibold text-clay-600">
+              {FOUNDER.role}, StemCells Protocol{FOUNDER.credential ? ` · ${FOUNDER.credential}` : ''}
+            </p>
+
+            <p className="mt-4 leading-relaxed text-ink-700/80">{FOUNDER_BIO}</p>
+
+            <div className="mt-5 flex flex-wrap gap-2">
+              {FOUNDER_FOCUS.map((f) => (
+                <span key={f} className="chip bg-cream-200 text-ink-700">{f}</span>
+              ))}
+            </div>
+
+            <div className="mt-6 flex flex-wrap gap-3">
+              <a href={FOUNDER.github} target="_blank" rel="noopener noreferrer"
+                 className="inline-flex items-center gap-2 rounded-full border border-cream-300 px-4 py-2 text-sm font-semibold text-ink-900 transition hover:border-clay-300 hover:bg-clay-50">
+                <GitHubIcon /> GitHub
+              </a>
+              <a href={FOUNDER.linkedin} target="_blank" rel="noopener noreferrer"
+                 className="inline-flex items-center gap-2 rounded-full border border-cream-300 px-4 py-2 text-sm font-semibold text-ink-900 transition hover:border-[#0a66c2]/40 hover:bg-[#0a66c2]/5">
+                <LinkedInIcon /> LinkedIn
+              </a>
+              <a href={`mailto:${FOUNDER.email}`}
+                 className="inline-flex items-center gap-2 rounded-full border border-cream-300 px-4 py-2 text-sm font-semibold text-ink-900 transition hover:border-clay-300 hover:bg-clay-50">
+                <MailIcon /> Email
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Founder contact */}
