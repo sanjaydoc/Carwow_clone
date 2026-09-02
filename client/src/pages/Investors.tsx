@@ -117,13 +117,13 @@ const VISION =
 const highlights: { icon: IconName; title: string; body: string }[] = [
   {
     icon: 'dna',
-    title: 'ER-100 — flagship therapy',
-    body: 'Partial epigenetic reprogramming to reset biological age at the cellular level, backed by a detailed investor briefing.',
+    title: 'Age-reversal — flagship programme',
+    body: 'Partial epigenetic reprogramming (OSK) to reset biological age — delivered via IV exosomes, following the ER-100 clinical template.',
   },
   {
     icon: 'hospital',
-    title: '11 departments, 58+ therapies',
-    body: 'A broad regenerative-medicine platform spanning Age Rejuvenation, Cardiology, Neurology, Orthopedics and more.',
+    title: 'MSC & IV-exosome therapies',
+    body: 'A broad regenerative-medicine platform — MSC and IV-exosome treatments today, spanning Age Rejuvenation, Cardiology, Neurology, Orthopedics and more.',
   },
   {
     icon: 'ai',
