@@ -18,6 +18,9 @@ import Register from './pages/Register';
 import Saved from './pages/Saved';
 import Admin from './pages/Admin';
 import Investors from './pages/Investors';
+import About from './pages/About';
+import Specialists from './pages/Specialists';
+import Safety from './pages/Safety';
 import NotFound from './pages/NotFound';
 
 function ScrollToTop() {
@@ -65,6 +68,9 @@ export default function App() {
           />
           <Route path="/admin" element={<Admin />} />
           <Route path="/investors" element={<Investors />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/specialists" element={<Specialists />} />
+          <Route path="/safety" element={<Safety />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

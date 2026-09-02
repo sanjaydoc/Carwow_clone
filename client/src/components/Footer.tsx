@@ -2,14 +2,14 @@ import { Link } from 'react-router-dom';
 
 const linkCols = [
   [
-    { label: 'About us', to: '/' },
-    { label: 'Our specialists', to: '/' },
+    { label: 'About us', to: '/about' },
+    { label: 'Our specialists', to: '/specialists' },
     { label: 'Research & trials', to: '/research' },
     { label: 'Patient stories', to: '/' },
-    { label: 'Contact us', to: '/' },
+    { label: 'Contact us', to: '/investors' },
   ],
   [
-    { label: 'Safety & accreditation', to: '/' },
+    { label: 'Safety & accreditation', to: '/safety' },
     { label: 'Care packages', to: '/care' },
     { label: 'Browse therapies', to: '/browse' },
     { label: 'Book a consultation', to: '/consultation' },
