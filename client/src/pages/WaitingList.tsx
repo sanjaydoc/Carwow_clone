@@ -90,7 +90,10 @@ export default function WaitingList() {
     });
     setBusy(false);
     if (res.ok) setDone(true);
-    else setError('Could not join the waiting list right now. Please try again.');
+    else {
+      const msg = (res.error as any)?.message || (res.error as any)?.hint || 'Unknown error';
+      setError('Could not join: ' + msg);
+    }
   };
 
   if (done) {
