@@ -9,6 +9,7 @@ import BrandLogo from '../components/BrandLogo';
 import Spinner from '../components/Spinner';
 import ChatWidget from '../components/ChatWidget';
 import HeroCell from '../components/HeroCell';
+import { supabase } from '../api/supabase';
 import Icon, { type IconName } from '../components/Icon';
 import { gbp, statusLabel, isResearch } from '../utils/format';
 
@@ -136,6 +137,16 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<Tab>('find');
   const [search, setSearch] = useState('');
+  const [waitCount, setWaitCount] = useState<number | null>(null);
+
+  // Live waiting-list count for social proof (reads a count-only RPC so no
+  // patient data is exposed; silently hidden until the RPC exists).
+  useEffect(() => {
+    if (!supabase) return;
+    supabase.rpc('waitlist_count').then(({ data, error }) => {
+      if (!error && typeof data === 'number') setWaitCount(data);
+    });
+  }, []);
   const [reg, setReg] = useState('');
   const navigate = useNavigate();
 
@@ -222,6 +233,22 @@ export default function Home() {
           <p className="mt-4 max-w-xl text-lg text-white/70">
             Because the future is personalised healthcare — tailored to each individual's own DNA.
           </p>
+
+          {/* Waiting-list CTA + live social-proof counter */}
+          <div className="mt-6 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+            <Link
+              to="/waiting-list"
+              className="inline-flex items-center gap-2 rounded-full bg-clay-500 px-6 py-3.5 text-base font-bold text-white shadow-lg transition hover:bg-clay-600"
+            >
+              <Icon name="clipboard" className="h-5 w-5" />
+              Join the waiting list
+            </Link>
+            {waitCount !== null && waitCount > 0 && (
+              <span className="text-sm font-medium text-white/70">
+                <span className="font-bold text-white">{waitCount.toLocaleString()}</span> patient{waitCount === 1 ? '' : 's'} already on the waiting list
+              </span>
+            )}
+          </div>
 
           {/* AI chat assistant — launcher sits just above the search widget */}
           <div className="mt-7">
