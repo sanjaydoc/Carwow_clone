@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import MobileNav from './components/MobileNav';
+import Analytics from './components/Analytics';
 import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
 import Buying from './pages/Buying';
@@ -45,6 +46,7 @@ export default function App() {
   return (
     <div className="flex min-h-screen flex-col">
       <ScrollToTop />
+      <Analytics />
       <Navbar />
       <main className="flex-1 pb-36 md:pb-0">
         <Routes>

@@ -4,11 +4,36 @@ import { supabase } from '../api/supabase';
 type Row = Record<string, any>;
 
 const TABLES = [
+  { key: 'page_views', label: 'Page views', cols: ['created_at', 'page', 'path', 'country', 'duration_sec', 'session_id'] },
   { key: 'waitlist', label: 'Waiting list', cols: ['created_at', 'priority', 'name', 'email', 'disease', 'therapy', 'department', 'has_methylation', 'file_name', 'notes'] },
   { key: 'consultations', label: 'Consultations', cols: ['created_at', 'name', 'email', 'phone', 'department', 'condition', 'notes'] },
   { key: 'signups', label: 'Sign-ups', cols: ['created_at', 'name', 'email'] },
   { key: 'chat_logs', label: 'Chat logs', cols: ['created_at', 'language', 'question', 'answer', 'had_attachment'] },
 ] as const;
+
+// Seconds → "1m 20s" / "45s".
+function fmtDuration(s: any): string {
+  const n = Number(s);
+  if (!isFinite(n) || n <= 0) return '0s';
+  const m = Math.floor(n / 60);
+  const sec = n % 60;
+  return m > 0 ? `${m}m ${sec}s` : `${sec}s`;
+}
+
+const regionNames =
+  typeof Intl !== 'undefined' && (Intl as any).DisplayNames
+    ? new Intl.DisplayNames(['en'], { type: 'region' })
+    : null;
+
+// 2-letter code → flag emoji + country name (e.g. "IN" → "🇮🇳 India").
+function fmtCountry(code: any): string {
+  const c = String(code || '').toUpperCase();
+  if (!/^[A-Z]{2}$/.test(c)) return '—';
+  const flag = String.fromCodePoint(...[...c].map((ch) => 0x1f1e6 + ch.charCodeAt(0) - 65));
+  let name = c;
+  try { name = regionNames?.of(c) || c; } catch { /* ignore */ }
+  return `${flag} ${name}`;
+}
 
 const RANGES = [
   { days: 7, label: '7d' },
@@ -129,6 +154,34 @@ export default function Admin() {
     const max = Math.max(1, ...data.map((d) => d.count));
     return { data, max };
   }, [filtered, rangeDays]);
+
+  // Page-view analytics: aggregates computed from the loaded rows.
+  const analytics = useMemo(() => {
+    if (tab !== 'page_views') return null;
+    const sessions = new Set<string>();
+    const byPage: Record<string, number> = {};
+    const byCountry: Record<string, number> = {};
+    let durSum = 0;
+    let durN = 0;
+    filtered.forEach((r) => {
+      if (r.session_id) sessions.add(String(r.session_id));
+      const pg = String(r.page || r.path || '—');
+      byPage[pg] = (byPage[pg] || 0) + 1;
+      const co = String(r.country || '').toUpperCase() || '—';
+      byCountry[co] = (byCountry[co] || 0) + 1;
+      const d = Number(r.duration_sec);
+      if (isFinite(d) && d > 0) { durSum += d; durN++; }
+    });
+    const sortDesc = (o: Record<string, number>) =>
+      Object.entries(o).sort((a, b) => b[1] - a[1]);
+    return {
+      totalViews: filtered.length,
+      visitors: sessions.size,
+      avgDuration: durN ? Math.round(durSum / durN) : 0,
+      pages: sortDesc(byPage),
+      countries: sortDesc(byCountry),
+    };
+  }, [tab, filtered]);
 
   const exportCsv = () => {
     const cols = active.cols;
@@ -264,6 +317,73 @@ export default function Admin() {
         </div>
       </div>
 
+      {/* Page-view analytics breakdown */}
+      {tab === 'page_views' && analytics && (
+        <>
+          <div className="mt-4 grid grid-cols-3 gap-4">
+            <div className="card p-5">
+              <p className="text-sm text-ink-700/60">Page views</p>
+              <p className="mt-1 font-display text-2xl font-extrabold text-ink-900 sm:text-3xl">{analytics.totalViews.toLocaleString()}</p>
+              <p className="text-xs text-ink-700/50">{rangeDays > 0 ? `last ${rangeDays} days` : 'all time'}</p>
+            </div>
+            <div className="card p-5">
+              <p className="text-sm text-ink-700/60">Unique visitors</p>
+              <p className="mt-1 font-display text-2xl font-extrabold text-ink-900 sm:text-3xl">{analytics.visitors.toLocaleString()}</p>
+              <p className="text-xs text-ink-700/50">distinct sessions</p>
+            </div>
+            <div className="card p-5">
+              <p className="text-sm text-ink-700/60">Avg. time on page</p>
+              <p className="mt-1 font-display text-2xl font-extrabold text-ink-900 sm:text-3xl">{fmtDuration(analytics.avgDuration)}</p>
+              <p className="text-xs text-ink-700/50">per view</p>
+            </div>
+          </div>
+
+          <div className="mt-4 grid gap-4 lg:grid-cols-2">
+            <div className="card p-5">
+              <p className="text-sm font-semibold text-ink-900">Most-viewed pages</p>
+              <div className="mt-3 space-y-2">
+                {analytics.pages.length === 0 && <p className="text-sm text-ink-700/50">No data yet.</p>}
+                {analytics.pages.slice(0, 12).map(([name, n]) => {
+                  const pct = analytics.totalViews ? Math.round((n / analytics.totalViews) * 100) : 0;
+                  return (
+                    <div key={name}>
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="font-medium text-ink-900">{name}</span>
+                        <span className="text-ink-700/60">{n.toLocaleString()} · {pct}%</span>
+                      </div>
+                      <div className="mt-1 h-2 overflow-hidden rounded-full bg-cream-200">
+                        <div className="h-full rounded-full bg-clay-500" style={{ width: `${pct}%` }} />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="card p-5">
+              <p className="text-sm font-semibold text-ink-900">Visitors by country</p>
+              <div className="mt-3 space-y-2">
+                {analytics.countries.length === 0 && <p className="text-sm text-ink-700/50">No data yet.</p>}
+                {analytics.countries.slice(0, 12).map(([code, n]) => {
+                  const pct = analytics.totalViews ? Math.round((n / analytics.totalViews) * 100) : 0;
+                  return (
+                    <div key={code}>
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="font-medium text-ink-900">{code === '—' ? 'Unknown' : fmtCountry(code)}</span>
+                        <span className="text-ink-700/60">{n.toLocaleString()} · {pct}%</span>
+                      </div>
+                      <div className="mt-1 h-2 overflow-hidden rounded-full bg-cream-200">
+                        <div className="h-full rounded-full bg-ink-900/70" style={{ width: `${pct}%` }} />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
       {/* Table */}
       <div className="mt-4 card overflow-hidden">
         <div className="flex items-center justify-between border-b border-cream-300 px-5 py-3">
@@ -288,9 +408,13 @@ export default function Admin() {
                       <div className="line-clamp-4 whitespace-pre-wrap break-words">
                         {c === 'created_at' && r[c]
                           ? new Date(r[c]).toLocaleString()
-                          : typeof r[c] === 'boolean'
-                            ? r[c] ? 'Yes' : 'No'
-                            : (r[c] ?? '—')}
+                          : c === 'duration_sec'
+                            ? fmtDuration(r[c])
+                            : c === 'country'
+                              ? fmtCountry(r[c])
+                              : typeof r[c] === 'boolean'
+                                ? r[c] ? 'Yes' : 'No'
+                                : (r[c] ?? '—')}
                       </div>
                     </td>
                   ))}

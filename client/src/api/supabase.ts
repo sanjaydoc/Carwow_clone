@@ -3,12 +3,14 @@ import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 // Public, frontend-safe credentials (publishable/anon key). Row-Level Security
 // on Supabase restricts these to INSERT-only — no data can be read from the
 // browser. Reading happens in the Supabase Table Editor / an admin backend.
-const URL =
+export const SUPABASE_URL: string =
   (typeof window !== 'undefined' && (window as any).SUPABASE_URL) ||
   'https://kfpjlesdojaslvrmeikt.supabase.co';
-const KEY =
+export const SUPABASE_KEY: string =
   (typeof window !== 'undefined' && (window as any).SUPABASE_KEY) ||
   'sb_publishable_BNsHrXghbwLIPyf3mTTi2A_eLdiVVpn';
+const URL = SUPABASE_URL;
+const KEY = SUPABASE_KEY;
 
 export const supabase: SupabaseClient | null =
   URL && KEY
