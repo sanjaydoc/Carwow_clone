@@ -94,7 +94,10 @@ export default function Admin() {
     try {
       const nextCounts: Record<string, number> = {};
       for (const t of TABLES) {
-        const { count } = await supabase.from(t.key).select('*', { count: 'exact', head: true });
+        let cq = supabase.from(t.key).select('*', { count: 'exact', head: true });
+        // Exclude internal admin-page visits from the page-view totals.
+        if (t.key === 'page_views') cq = cq.neq('page', 'Admin');
+        const { count } = await cq;
         nextCounts[t.key] = count || 0;
       }
       setCounts(nextCounts);
@@ -102,6 +105,8 @@ export default function Admin() {
       let q = supabase.from(tab).select('*');
       // Waiting list: priority patients (methylation test uploaded) first.
       if (tab === 'waitlist') q = q.order('priority', { ascending: false });
+      // Page views: hide internal admin-page traffic from the analytics.
+      if (tab === 'page_views') q = q.neq('page', 'Admin');
       q = q.order('created_at', { ascending: false }).limit(1000);
       if (rangeDays > 0) {
         q = q.gte('created_at', new Date(Date.now() - rangeDays * 86400000).toISOString());

@@ -1,6 +1,10 @@
 import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
-import { SUPABASE_URL, SUPABASE_KEY } from '../api/supabase';
+import { supabase, SUPABASE_URL, SUPABASE_KEY } from '../api/supabase';
+
+// Visits made while signed in as an admin (or to the /admin page itself) are
+// internal and excluded from the public analytics.
+const ADMIN_EMAILS = ['dr.sanjayanbu@gmail.com'];
 
 // ---------------------------------------------------------------------------
 // Lightweight, self-hosted page analytics — records each page visit (path,
@@ -98,6 +102,7 @@ export default function Analytics() {
   const sid = useRef<string>('');
   const country = useRef<string>('');
   const current = useRef<Pending | null>(null);
+  const isAdmin = useRef<boolean>(false);
 
   // Insert a page-view row. `beacon` uses fetch keepalive so the write survives
   // the tab closing (the last page of a visit).
@@ -123,6 +128,8 @@ export default function Analytics() {
     const c = current.current;
     if (!c || c.flushed) return;
     c.flushed = true;
+    // Skip internal traffic: the admin page, and anyone signed in as an admin.
+    if (isAdmin.current || c.path.startsWith('/admin')) return;
     const duration = Math.max(0, Math.round((Date.now() - c.enter) / 1000));
     send(
       {
@@ -141,6 +148,17 @@ export default function Analytics() {
     sid.current = getSessionId();
     resolveCountry().then((c) => { country.current = c; });
 
+    // Flag admin sessions so their own browsing is excluded from analytics.
+    let authSub: { unsubscribe: () => void } | undefined;
+    if (supabase) {
+      supabase.auth.getSession().then(({ data }) => {
+        isAdmin.current = ADMIN_EMAILS.includes(data.session?.user?.email || '');
+      });
+      authSub = supabase.auth.onAuthStateChange((_e, s) => {
+        isAdmin.current = ADMIN_EMAILS.includes(s?.user?.email || '');
+      }).data.subscription;
+    }
+
     const onHide = () => flush(true);
     const onVis = () => { if (document.visibilityState === 'hidden') flush(true); };
     window.addEventListener('pagehide', onHide);
@@ -148,6 +166,7 @@ export default function Analytics() {
     return () => {
       window.removeEventListener('pagehide', onHide);
       document.removeEventListener('visibilitychange', onVis);
+      authSub?.unsubscribe();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
