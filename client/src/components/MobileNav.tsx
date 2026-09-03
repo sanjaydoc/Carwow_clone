@@ -166,12 +166,12 @@ export default function MobileNav() {
         </div>
       )}
 
-      {/* Floating "book a consultation" banner */}
+      {/* Floating "join the waiting list" banner */}
       <Link
-        to="/consultation"
+        to="/waiting-list"
         className="fixed inset-x-3 bottom-[84px] z-40 block rounded-full bg-clay-500 py-2.5 text-center text-sm font-bold text-white shadow-lg underline decoration-2 underline-offset-2 md:hidden"
       >
-        Book a free, no-obligation consultation
+        Join the waiting list
       </Link>
 
       {/* Floating bottom navigation */}
