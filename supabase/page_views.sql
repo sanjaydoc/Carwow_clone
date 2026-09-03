@@ -25,12 +25,17 @@ create policy page_views_insert
   to anon, authenticated
   with check (true);
 
--- Only the admin account can read the analytics.
+-- Only the admin account(s) can read the analytics.
 drop policy if exists page_views_select_admin on public.page_views;
 create policy page_views_select_admin
   on public.page_views for select
   to authenticated
-  using (auth.jwt() ->> 'email' = 'dr.sanjay@stemcellsprotocol.com');
+  using (
+    auth.jwt() ->> 'email' in (
+      'dr.sanjayanbu@gmail.com',
+      'dr.sanjay@stemcellsprotocol.com'
+    )
+  );
 
 -- API-role grants (needed for SQL-created tables, otherwise "API Disabled").
 grant insert on table public.page_views to anon, authenticated;
