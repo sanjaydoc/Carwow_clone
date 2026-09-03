@@ -7,6 +7,7 @@ const links = [
   { to: '/therapies', label: 'Therapies' },
   { to: '/simulator', label: 'Simulator' },
   { to: '/research', label: 'Research' },
+  { to: '/waiting-list', label: 'Waiting list' },
   { to: '/compare', label: 'Compare' },
   { to: '/investors', label: 'Investors' },
 ];

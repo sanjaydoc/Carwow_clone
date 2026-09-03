@@ -4,6 +4,7 @@ import { supabase } from '../api/supabase';
 type Row = Record<string, any>;
 
 const TABLES = [
+  { key: 'waitlist', label: 'Waiting list', cols: ['created_at', 'priority', 'name', 'email', 'disease', 'therapy', 'department', 'has_methylation', 'file_name', 'notes'] },
   { key: 'consultations', label: 'Consultations', cols: ['created_at', 'name', 'email', 'phone', 'department', 'condition', 'notes'] },
   { key: 'signups', label: 'Sign-ups', cols: ['created_at', 'name', 'email'] },
   { key: 'chat_logs', label: 'Chat logs', cols: ['created_at', 'language', 'question', 'answer', 'had_attachment'] },
@@ -73,7 +74,10 @@ export default function Admin() {
       }
       setCounts(nextCounts);
 
-      let q = supabase.from(tab).select('*').order('created_at', { ascending: false }).limit(1000);
+      let q = supabase.from(tab).select('*');
+      // Waiting list: priority patients (methylation test uploaded) first.
+      if (tab === 'waitlist') q = q.order('priority', { ascending: false });
+      q = q.order('created_at', { ascending: false }).limit(1000);
       if (rangeDays > 0) {
         q = q.gte('created_at', new Date(Date.now() - rangeDays * 86400000).toISOString());
       }
@@ -195,7 +199,7 @@ export default function Admin() {
       </div>
 
       {/* KPI cards (all-time totals) */}
-      <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
         {TABLES.map((t) => (
           <button
             key={t.key}
@@ -278,7 +282,7 @@ export default function Admin() {
             </thead>
             <tbody className="text-ink-900">
               {filtered.map((r, i) => (
-                <tr key={r.id || i} className="border-t border-cream-200 align-top">
+                <tr key={r.id || i} className={`border-t border-cream-200 align-top ${tab === 'waitlist' && r.priority ? 'bg-clay-50' : ''}`}>
                   {active.cols.map((c) => (
                     <td key={c} className="max-w-[280px] px-4 py-2.5">
                       <div className="line-clamp-4 whitespace-pre-wrap break-words">
