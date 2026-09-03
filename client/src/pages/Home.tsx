@@ -211,20 +211,20 @@ export default function Home() {
             <br />
             <span className="text-clay-500">Renew.</span>
           </h1>
-          <div className="mt-5 flex flex-col items-start gap-1.5">
+          <div className="mt-5 flex flex-col items-start gap-1 sm:gap-1.5">
             {([
               { icon: 'dna', label: 'Upload Digital DNA' },
               { icon: 'brain', label: 'De Novo LLM (chat)' },
               { icon: 'clinician', label: 'Personalised Healthcare' },
             ] as { icon: IconName; label: string }[]).map((s, i) => (
-              <div key={s.label} className="flex flex-col items-start gap-1.5">
+              <div key={s.label} className="flex flex-col items-start gap-1 sm:gap-1.5">
                 {i > 0 && (
-                  <svg viewBox="0 0 24 24" className="ml-5 h-4 w-4 shrink-0 text-clay-500" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <svg viewBox="0 0 24 24" className="ml-3 h-3 w-3 shrink-0 text-clay-500 sm:ml-5 sm:h-4 sm:w-4" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M12 5v14M6 13l6 6 6-6" />
                   </svg>
                 )}
-                <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white ring-1 ring-white/15 sm:text-base">
-                  <Icon name={s.icon} className="h-4 w-4 text-clay-400 sm:h-5 sm:w-5" />
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-xs font-semibold text-white ring-1 ring-white/15 sm:gap-2 sm:px-4 sm:py-2 sm:text-base">
+                  <Icon name={s.icon} className="h-3 w-3 text-clay-400 sm:h-5 sm:w-5" />
                   {s.label}
                 </span>
               </div>
