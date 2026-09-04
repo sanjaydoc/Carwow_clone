@@ -253,7 +253,7 @@ export default function Home() {
 
   // Patient-friendly titles for the featured slider (full names live on the detail page).
   const posterTitle = (p: Car) =>
-    p.make === 'HIV' ? 'HIV Cure' : /Persona Reversal/i.test(p.model) ? 'Persona Reversal' : p.model;
+    p.make === 'HIV' ? 'HIV Cure' : /Persona Reversal/i.test(p.model) ? 'Persona Reversal (age reversal)' : p.model;
 
   const onFind = (e: FormEvent) => {
     e.preventDefault();

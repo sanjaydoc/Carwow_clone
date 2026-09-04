@@ -111,7 +111,7 @@ export default function Sell() {
                 Recommended therapy
               </p>
               <h3 className="mt-1 font-display text-2xl font-extrabold text-ink-900">
-                Persona Reversal
+                Persona Reversal (age reversal)
               </h3>
               <p className="mt-1 text-sm text-ink-700/70">
                 Our flagship partial epigenetic reprogramming therapy — resetting biological age at the
@@ -146,7 +146,7 @@ export default function Sell() {
                 </Link>
               ) : (
                 <Link to="/browse?search=Persona%20Reversal" className="btn-primary mt-5 inline-block px-6 py-3">
-                  View Persona Reversal
+                  View Persona Reversal (age reversal)
                 </Link>
               )}
 
