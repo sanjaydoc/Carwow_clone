@@ -1,79 +1,36 @@
 import { useEffect, useState } from 'react';
-
-// The browser's `beforeinstallprompt` event (Chrome/Edge/Android). Not in the
-// standard lib types, so we describe the bits we use.
-interface BIPEvent extends Event {
-  prompt: () => Promise<void>;
-  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
-}
+import { usePwa } from '../context/PwaContext';
 
 const DISMISS_KEY = 'sp_pwa_dismissed';
 
-function isStandalone(): boolean {
-  return (
-    window.matchMedia?.('(display-mode: standalone)').matches ||
-    (navigator as any).standalone === true
-  );
-}
-
-function isIos(): boolean {
-  return /iphone|ipad|ipod/i.test(navigator.userAgent) && !(window as any).MSStream;
-}
-
 export default function InstallPrompt() {
-  const [deferred, setDeferred] = useState<BIPEvent | null>(null);
-  const [show, setShow] = useState(false);
-  const [iosHint, setIosHint] = useState(false);
+  const { canInstall, isIos, standalone, promptInstall } = usePwa();
+  const [snoozed, setSnoozed] = useState(true);
 
   useEffect(() => {
-    // Already installed, or dismissed earlier this month → stay quiet.
-    if (isStandalone()) return;
     try {
       const until = Number(localStorage.getItem(DISMISS_KEY) || 0);
-      if (until && Date.now() < until) return;
-    } catch { /* ignore */ }
-
-    const onBIP = (e: Event) => {
-      e.preventDefault();
-      setDeferred(e as BIPEvent);
-      setShow(true);
-    };
-    window.addEventListener('beforeinstallprompt', onBIP);
-
-    const onInstalled = () => setShow(false);
-    window.addEventListener('appinstalled', onInstalled);
-
-    // iOS Safari has no beforeinstallprompt — show a short "Add to Home Screen"
-    // hint instead (only in the normal Safari tab, not once installed).
-    if (isIos()) {
-      setIosHint(true);
-      setShow(true);
+      setSnoozed(Boolean(until && Date.now() < until));
+    } catch {
+      setSnoozed(false);
     }
-
-    return () => {
-      window.removeEventListener('beforeinstallprompt', onBIP);
-      window.removeEventListener('appinstalled', onInstalled);
-    };
   }, []);
 
   const dismiss = () => {
-    setShow(false);
+    setSnoozed(true);
     try {
-      // Snooze for 30 days.
-      localStorage.setItem(DISMISS_KEY, String(Date.now() + 30 * 86400000));
+      localStorage.setItem(DISMISS_KEY, String(Date.now() + 30 * 86400000)); // 30 days
     } catch { /* ignore */ }
   };
 
   const install = async () => {
-    if (!deferred) return;
-    await deferred.prompt();
-    const choice = await deferred.userChoice;
-    if (choice.outcome === 'accepted') setShow(false);
-    else dismiss();
-    setDeferred(null);
+    const r = await promptInstall();
+    if (r !== 'accepted') dismiss();
   };
 
-  if (!show) return null;
+  // Nothing to show if already installed, snoozed, or no way to install here.
+  if (standalone || snoozed) return null;
+  if (!canInstall && !isIos) return null;
 
   return (
     <div className="fixed inset-x-0 top-0 z-[60] flex justify-center px-3 pt-3">
@@ -81,7 +38,7 @@ export default function InstallPrompt() {
         <img src="/pwa-192.png" alt="" className="h-11 w-11 flex-none rounded-xl" />
         <div className="min-w-0 flex-1">
           <p className="text-sm font-bold text-ink-900">Install StemCells Protocol</p>
-          {iosHint ? (
+          {isIos && !canInstall ? (
             <p className="text-xs text-ink-700/70">
               Tap the Share icon, then <b>Add to Home Screen</b>.
             </p>
@@ -89,7 +46,7 @@ export default function InstallPrompt() {
             <p className="text-xs text-ink-700/70">Install the StemCells Protocol app.</p>
           )}
         </div>
-        {!iosHint && (
+        {canInstall && (
           <button
             onClick={install}
             className="flex-none rounded-full bg-clay-500 px-4 py-2 text-sm font-bold text-white transition hover:bg-clay-600"

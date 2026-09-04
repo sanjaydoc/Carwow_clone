@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import InstallButton from './InstallButton';
 
 const linkCols = [
   [
@@ -60,6 +61,7 @@ export default function Footer() {
                 </a>
               ))}
             </div>
+            <InstallButton className="mt-5 inline-flex items-center gap-2 rounded-full bg-clay-500 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-clay-600" />
           </div>
 
           {/* Link columns */}

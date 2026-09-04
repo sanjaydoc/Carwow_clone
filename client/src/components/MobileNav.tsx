@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useSaved } from '../context/SavedContext';
+import InstallButton from './InstallButton';
 
 const itemClass = ({ isActive }: { isActive: boolean }) =>
   `flex flex-1 flex-col items-center justify-center gap-0.5 py-2 text-[11px] font-semibold transition ${
@@ -132,6 +133,7 @@ export default function MobileNav() {
           </nav>
 
           <div className="border-t border-cream-300 p-4">
+            <InstallButton className="mb-3 flex w-full items-center justify-center gap-2 rounded-full bg-clay-500 px-4 py-3 text-sm font-bold text-white transition hover:bg-clay-600" />
             {user ? (
               <div className="flex items-center gap-3">
                 <span className="grid h-11 w-11 place-items-center rounded-full bg-clay-100 font-bold text-clay-700">

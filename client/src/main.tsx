@@ -4,6 +4,7 @@ import { BrowserRouter, HashRouter } from 'react-router-dom';
 import App from './App';
 import { AuthProvider } from './context/AuthContext';
 import { SavedProvider } from './context/SavedContext';
+import { PwaProvider } from './context/PwaContext';
 import './index.css';
 
 // The static Pages build uses HashRouter so client-side routes work without
@@ -15,7 +16,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <Router>
       <AuthProvider>
         <SavedProvider>
-          <App />
+          <PwaProvider>
+            <App />
+          </PwaProvider>
         </SavedProvider>
       </AuthProvider>
     </Router>
