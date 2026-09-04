@@ -21,7 +21,7 @@ import {
  *
  * The real pipeline runs on the local backend; this wraps it in one guided
  * conversation: pick a disease → dataset → real epigenetic age → the single
- * branching question (ER-100 reprogramming vs novel molecule) → carrier
+ * branching question (Persona Reversal reprogramming vs novel molecule) → carrier
  * (AAV vs IV exosome) → therapy. Deterministic + on-device; no data leaves.
  */
 type Role = 'assistant' | 'user';
@@ -108,7 +108,7 @@ export default function SimulatorChat({ onExit }: { onExit?: () => void }) {
     }
     say('assistant', (
       <div>
-        <p><b>{d.disease}</b> — {d.department}. For an ER-100 reprogramming construct I’d target <b>{d.tissue}</b> (capsid {d.capsid.toUpperCase()}).</p>
+        <p><b>{d.disease}</b> — {d.department}. For an Persona Reversal reprogramming construct I’d target <b>{d.tissue}</b> (capsid {d.capsid.toUpperCase()}).</p>
         {d.dataset && !d.dataset.proxy
           ? <p className="mt-1">A curated methylation dataset is available (<b>{d.dataset.accession}</b>, {d.dataset.tissue}). Download it, or upload your own file.</p>
           : <p className="mt-1">No disease-specific cohort yet — a generic blood-methylation baseline (<b>{d.dataset?.accession}</b>) is available, or upload your own file.</p>}
@@ -199,7 +199,7 @@ export default function SimulatorChat({ onExit }: { onExit?: () => void }) {
   // --- approach fork ------------------------------------------------------
   const chooseApproach = (a: 'er100' | 'molecule') => {
     if (a === 'er100') {
-      say('user', <span>ER-100 epigenetic reprogramming (OSK).</span>);
+      say('user', <span>Persona Reversal epigenetic reprogramming (OSK).</span>);
       say('assistant', <p>Good — controlled OCT4·SOX2·KLF4 reprogramming. Which carrier should deliver it?</p>);
       setStage('carrierA');
     } else {
@@ -221,7 +221,7 @@ export default function SimulatorChat({ onExit }: { onExit?: () => void }) {
       });
       setConstruct(res);
       say('assistant', carrier === 'exosome' ? exosomeBubble(res.exosome) : aavBubble(res));
-      say('assistant', <p className="mt-1">That’s a complete ER-100-style protocol for <b>{disease?.disease}</b>. Export it, or start another therapy.</p>);
+      say('assistant', <p className="mt-1">That’s a complete Persona Reversal-style protocol for <b>{disease?.disease}</b>. Export it, or start another therapy.</p>);
       setStage('done');
     } catch (e: any) { setError(e.message || 'Assembly failed'); }
     finally { setBusy(''); }
@@ -292,7 +292,7 @@ export default function SimulatorChat({ onExit }: { onExit?: () => void }) {
           <span className="icon-tile h-11 w-11"><Icon name="ai" className="h-6 w-6" /></span>
           <div>
             <h1 className="font-display text-2xl font-extrabold text-ink-900">De Novo Assistant — live</h1>
-            <p className="text-xs text-ink-700/60">Methylation → epigenetic age → ER-100 construct or novel molecule → IV carrier. On-device.</p>
+            <p className="text-xs text-ink-700/60">Methylation → epigenetic age → Persona Reversal construct or novel molecule → IV carrier. On-device.</p>
           </div>
         </div>
         {onExit && <button onClick={onExit} className="btn-ghost px-3 py-1.5 text-xs">Advanced view →</button>}
@@ -376,7 +376,7 @@ export default function SimulatorChat({ onExit }: { onExit?: () => void }) {
 
           {stage === 'approach' && (
             <div className="flex flex-wrap gap-2">
-              <button onClick={() => chooseApproach('er100')} className="btn-primary px-4 py-2.5 text-sm">🧬 ER-100 reprogramming (OSK)</button>
+              <button onClick={() => chooseApproach('er100')} className="btn-primary px-4 py-2.5 text-sm">🧬 Persona Reversal reprogramming (OSK)</button>
               <button onClick={() => chooseApproach('molecule')} className="btn-outline px-4 py-2.5 text-sm">⚗️ Design a novel molecule</button>
             </div>
           )}

@@ -1,7 +1,7 @@
 """REST routes exposing the real pipeline.
 
 Endpoints:
-  GET  /api/catalog            — disease dropdown: 58 therapies + ER-100 presets + dataset-ready flags
+  GET  /api/catalog            — disease dropdown: 58 therapies + Persona Reversal presets + dataset-ready flags
   POST /api/dataset/download   — download+prep a curated GEO methylation dataset (async job)
   GET  /api/dataset/samples    — list samples of an already-downloaded curated dataset
   POST /api/samples            — list sample columns (upload or curated dataset)
@@ -239,7 +239,7 @@ async def analyze(
 # ---- Disease catalogue + curated datasets (S1/S3/S5) ---------------------
 @router.get("/catalog")
 async def catalog() -> dict:
-    """Disease dropdown data: every therapy with its ER-100 tissue/capsid preset
+    """Disease dropdown data: every therapy with its Persona Reversal tissue/capsid preset
     and whether a curated methylation dataset is one-click ready."""
     data = disease_catalog()
     data["capsids"] = CAPSIDS
@@ -508,7 +508,7 @@ async def construct(spec: dict = Body(default={})) -> dict:
 
     construct_type='gene_replacement' (e.g. muscular dystrophy) → a micro-dystrophin
         AAV gene-replacement vector (payload + muscle-restricted driver), NOT OSK.
-    construct_type='reprogramming' (default) → the ER-100 OSK Tet-On construct.
+    construct_type='reprogramming' (default) → the Persona Reversal OSK Tet-On construct.
     carrier='aav' → AAV vector(s); carrier='exosome' → IV exosome mRNA spec.
     """
     ctype = spec.get("construct_type")

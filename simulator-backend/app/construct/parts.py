@@ -98,7 +98,7 @@ AAV_CAPACITY_BP = 4700
 CAPSIDS = {
     "aav9": "AAV9 — broad, crosses BBB (CNS/systemic)",
     "aavrh74": "AAVrh74 — muscle-tropic (skeletal + cardiac), IV",
-    "aav2": "AAV2 — classic; retina (intravitreal, ER-100-style)",
+    "aav2": "AAV2 — classic; retina (intravitreal, Persona Reversal-style)",
     "aav5": "AAV5 — airway/CNS",
     "aav6": "AAV6 — airway/lung, muscle",
     "aav8": "AAV8 — liver, pancreas",
@@ -111,7 +111,7 @@ _CAPSID_TISSUE_NOTE = {
     "kidney": "broad systemic serotype; reaches the kidney via IV infusion",
     "muscle": "muscle-tropic; transduces skeletal muscle after IV infusion (AAV9/rh74-style)",
     "cns": "crosses the blood–brain barrier for CNS delivery (IV/intrathecal)",
-    "retina": "gold-standard ocular serotype (intravitreal, ER-100-style)",
+    "retina": "gold-standard ocular serotype (intravitreal, Persona Reversal-style)",
     "heart": "strong cardiac and systemic tropism (intracoronary/IV)",
     "liver": "high hepatic tropism (liver-preferential, IV)",
     "lung": "airway/lung tropism (inhaled or IV)",

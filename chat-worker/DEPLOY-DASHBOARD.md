@@ -81,7 +81,7 @@ rebuild, and push — done.
 
 1. Open <https://sanjaydoc.github.io/Stemcellsprotocol/>.
 2. In the hero, click **"Ask our AI care assistant"**.
-3. Ask something like *"What is ER-100 age reversal?"* — you should see a
+3. Ask something like *"What is Persona Reversal age reversal?"* — you should see a
    streaming reply. Try attaching an image or PDF too.
 
 If you get an error: re-check that `ANTHROPIC_API_KEY` is saved as a **Secret**,

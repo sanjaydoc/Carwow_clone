@@ -28,7 +28,7 @@ const GREETING =
 const SUGGESTIONS = [
   'Upload an ECG — explain it simply',
   'What does my prescription treat?',
-  'What is ER-100 age reversal?',
+  'What is Persona Reversal?',
 ];
 
 // Language code (for speech) → English name (for the reply instruction).

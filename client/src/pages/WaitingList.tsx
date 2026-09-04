@@ -6,7 +6,7 @@ import Icon from '../components/Icon';
 
 // Disease/condition → matched therapy + department.
 const CONDITIONS: { disease: string; department: string; therapy: string }[] = [
-  { disease: 'Age-related decline / longevity', department: 'Age Rejuvenation', therapy: 'ER-100 OSK reprogramming (AAV + IV exosome)' },
+  { disease: 'Age-related decline / longevity', department: 'Age Rejuvenation', therapy: 'Persona Reversal OSK reprogramming (AAV + IV exosome)' },
   { disease: 'Osteoarthritis / joint damage', department: 'Orthopedics', therapy: 'MSC intra-articular therapy' },
   { disease: 'Spinal / disc degeneration', department: 'Orthopedics', therapy: 'MSC regenerative therapy' },
   { disease: 'Heart failure / post-heart-attack', department: 'Cardiology', therapy: 'Cardiac MSC regeneration' },

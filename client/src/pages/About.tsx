@@ -10,7 +10,7 @@ const pillars: { icon: IconName; title: string; body: string }[] = [
   {
     icon: 'dna',
     title: 'Age-reversal platform',
-    body: 'An ER-100-class partial-reprogramming (OSK) programme, delivered via IV exosomes — the long-term pipeline.',
+    body: 'Persona Reversal — our partial-reprogramming (OSK) programme, delivered via IV exosomes. The long-term pipeline.',
   },
   {
     icon: 'ai',
@@ -74,8 +74,8 @@ export default function About() {
             <div className="border-t border-cream-200 p-6 sm:border-l sm:border-t-0 sm:p-8">
               <span className="chip bg-clay-100 text-clay-700">Phase 2 · Platform</span>
               <p className="mt-3 text-sm text-ink-700/75">
-                An OSK partial-reprogramming programme delivered via IV exosomes — following the ER-100 clinical
-                template — advanced toward first-in-human on a contained lead indication.
+                Our Persona Reversal programme — OSK partial-reprogramming delivered via IV exosomes —
+                advanced toward first-in-human on a contained lead indication.
               </p>
             </div>
           </div>

@@ -62,10 +62,10 @@ Helper: `./run.sh` (Linux/macOS) starts the backend.
 Open the Simulator UI and just click:
 
 1. **Choose a disease** — the dropdown lists every therapy on the site (58
-   across 11 departments). Each disease carries an **ER-100 tissue/capsid preset**
-   (e.g. Parkinson's → CNS / AAV9; ER-100 eye → retina / AAV2) and shows whether a
+   across 11 departments). Each disease carries an **Persona Reversal tissue/capsid preset**
+   (e.g. Parkinson's → CNS / AAV9; Persona Reversal eye → retina / AAV2) and shows whether a
    **curated methylation dataset** is wired for it.
-2. **Pick a therapy approach** — *Both* (default), *ER-100 reprogramming* only, or
+2. **Pick a therapy approach** — *Both* (default), *Persona Reversal reprogramming* only, or
    *Novel molecules* only.
 3. **Download & prepare dataset** — for dataset-ready diseases, one button
    downloads the public GEO series to `data/downloads/`, slices a few samples into
@@ -77,7 +77,7 @@ Curated datasets currently wired (all public GEO, methylation):
 
 | Disease | GEO | Platform / tissue |
 | --- | --- | --- |
-| Healthy ageing / ER-100 | GSE40279 | 450K, whole blood (has ages) |
+| Healthy ageing / Persona Reversal | GSE40279 | 450K, whole blood (has ages) |
 | Ankylosing spondylitis | GSE179571 | EPIC, PBMC |
 | Rheumatoid arthritis | GSE42861 | 450K, whole blood |
 | Systemic lupus (SLE) | GSE59250 | 450K, blood/sorted |

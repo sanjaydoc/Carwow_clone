@@ -37,12 +37,12 @@ const NEPHRO = '#0d9488';
 export const therapies = [
   // ── Age Rejuvenation ────────────────────────────────────────────────────
   {
-    make: 'Age Rejuvenation', model: 'ER-100 Epigenetic Reprogramming', trim: 'OSK partial reprogramming (OCT4 · SOX2 · KLF4)', year: 2026,
+    make: 'Age Rejuvenation', model: 'Persona Reversal Epigenetic Reprogramming', trim: 'OSK partial reprogramming (OCT4 · SOX2 · KLF4)', year: 2026,
     price: 48000, monthly_price: 2000, body_type: 'iPSC', fuel_type: 'Autologous', transmission: 'Intravitreal injection',
     mileage: 60, color: 'Day-case', condition: 'used', seats: null, doors: 1,
     engine: 'AAV-delivered inducible OSK (OCT4, SOX2, KLF4)', power_bhp: 57, zero_to_sixty: 1, top_speed: 7,
     economy_mpg: 12, rating: 4.3, review_count: 20, accent: AGE,
-    description: 'Built on the Partial Epigenetic Reprogramming platform, ER-100 uses controlled, transient expression of three classic Yamanaka transcription factors — OCT4, SOX2 and KLF4 (“OSK”) — to reset the epigenome of aged or damaged cells toward a younger, healthier state, without changing the underlying DNA sequence. Delivered as a single intravitreal gene therapy, it is being studied to rejuvenate retinal ganglion cells and restore vision in optic neuropathies such as open-angle glaucoma and NAION. First-in-human Phase 1 (investigational).'
+    description: 'Built on the Partial Epigenetic Reprogramming platform, Persona Reversal uses controlled, transient expression of three classic Yamanaka transcription factors — OCT4, SOX2 and KLF4 (“OSK”) — to reset the epigenome of aged or damaged cells toward a younger, healthier state, without changing the underlying DNA sequence. Delivered as a single intravitreal gene therapy, it is being studied to rejuvenate retinal ganglion cells and restore vision in optic neuropathies such as open-angle glaucoma and NAION. First-in-human Phase 1 (investigational).'
   },
   {
     make: 'Age Rejuvenation', model: 'Systemic MSC Infusion', trim: 'Allogeneic UC-MSC', year: 2022,
@@ -466,7 +466,7 @@ export const therapies = [
     mileage: 90, color: 'Day-case', condition: 'used', seats: null, doors: 1,
     engine: 'Epigenetic editor (D4Z4 re-methylation / DUX4 silencing)', power_bhp: 52, zero_to_sixty: 2, top_speed: 7,
     economy_mpg: 12, rating: 4.0, review_count: 14, accent: NEURO,
-    description: 'Unlike Duchenne, facioscapulohumeral dystrophy is fundamentally an EPIGENETIC disease: loss of methylation at the D4Z4 macrosatellite repeat de-represses the normally-silent DUX4 gene, whose toxic protein kills muscle. That makes it uniquely suited to the epigenetic-reprogramming platform — rather than correcting a gene, the therapy restores the missing methylation / re-silences DUX4 (epigenetic editing, CRISPRi, or ER-100-style epigenetic reprogramming) to switch the toxic gene back off, without altering the DNA sequence. Delivered systemically to muscle. First-in-class research concept — investigational, benefit not established.'
+    description: 'Unlike Duchenne, facioscapulohumeral dystrophy is fundamentally an EPIGENETIC disease: loss of methylation at the D4Z4 macrosatellite repeat de-represses the normally-silent DUX4 gene, whose toxic protein kills muscle. That makes it uniquely suited to the epigenetic-reprogramming platform — rather than correcting a gene, the therapy restores the missing methylation / re-silences DUX4 (epigenetic editing, CRISPRi, or Persona Reversal-style epigenetic reprogramming) to switch the toxic gene back off, without altering the DNA sequence. Delivered systemically to muscle. First-in-class research concept — investigational, benefit not established.'
   },
 
   // ── Pulmonology ─────────────────────────────────────────────────────────
@@ -563,12 +563,12 @@ export const therapies = [
     description: 'Cell-free therapy using MSC-derived exosomes — nanoscale vesicles carrying reparative RNA and proteins — for diabetic kidney disease, the leading cause of kidney failure. The exosomes are studied to deliver anti-fibrotic and podocyte-protective cargo to the glomerulus without the risks of whole-cell infusion, aiming to preserve filtration and reduce protein leak. Early-stage research.'
   },
   {
-    make: 'Nephrology', model: 'ER-100 Renal Epigenetic Reprogramming', trim: 'OSK partial reprogramming (OCT4 · SOX2 · KLF4)', year: 2026,
+    make: 'Nephrology', model: 'Persona Reversal Renal Epigenetic Reprogramming', trim: 'OSK partial reprogramming (OCT4 · SOX2 · KLF4)', year: 2026,
     price: 52000, monthly_price: 2167, body_type: 'iPSC', fuel_type: 'Autologous', transmission: 'IV infusion',
     mileage: 90, color: 'Day-case', condition: 'used', seats: null, doors: 1,
     engine: 'Exosome/AAV-delivered inducible OSK (OCT4, SOX2, KLF4)', power_bhp: 54, zero_to_sixty: 1, top_speed: 7,
     economy_mpg: 12, rating: 4.2, review_count: 12, accent: NEPHRO,
-    description: 'A first-in-class research application of the ER-100 partial epigenetic reprogramming platform to the kidney. Controlled, transient expression of OCT4, SOX2 and KLF4 (“OSK”) is used to reset the epigenetic age of injured tubular and glomerular cells toward a younger, more regenerative state — reversing fibrosis-associated methylation changes without altering the DNA sequence. Aimed at the aged/fibrotic kidney in chronic kidney disease, and delivered systemically by a kidney-homing carrier (IV exosome or AAV). First-in-human concept (investigational).'
+    description: 'A first-in-class research application of the Persona Reversal partial epigenetic reprogramming platform to the kidney. Controlled, transient expression of OCT4, SOX2 and KLF4 (“OSK”) is used to reset the epigenetic age of injured tubular and glomerular cells toward a younger, more regenerative state — reversing fibrosis-associated methylation changes without altering the DNA sequence. Aimed at the aged/fibrotic kidney in chronic kidney disease, and delivered systemically by a kidney-homing carrier (IV exosome or AAV). First-in-human concept (investigational).'
   },
 
 ];

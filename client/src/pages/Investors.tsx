@@ -106,13 +106,13 @@ const SHOWCASES = [
 ];
 
 const VISION =
-  'We built StemCells Protocol to make age-reversal therapy truly personal. A patient uploads a digital version of their DNA into our AI care assistant, which orchestrates our De-Novo-LLM to generate novel age-reversal biomolecules for epigenetic reprogramming — the same approach behind ER-100. Instead of one-size-fits-all treatment, every person receives a therapy engineered specifically for their own genome.';
+  'We built StemCells Protocol to make age-reversal therapy truly personal. A patient uploads a digital version of their DNA into our AI care assistant, which orchestrates our De-Novo-LLM to generate novel age-reversal biomolecules for epigenetic reprogramming — our Persona Reversal programme. Instead of one-size-fits-all treatment, every person receives a therapy engineered specifically for their own genome.';
 
 const highlights: { icon: IconName; title: string; body: string }[] = [
   {
     icon: 'dna',
     title: 'Age-reversal — flagship programme',
-    body: 'Partial epigenetic reprogramming (OSK) to reset biological age — delivered via IV exosomes, following the ER-100 clinical template.',
+    body: 'Partial epigenetic reprogramming (OSK) to reset biological age — delivered via IV exosomes. This is our Persona Reversal programme.',
   },
   {
     icon: 'hospital',

@@ -71,7 +71,7 @@ export default function CarDetail() {
     },
   ];
 
-  const isER100 = /ER-100/i.test(car.model);
+  const isPersonaReversal = /Persona Reversal/i.test(car.model);
 
   return (
     <div className="container-x py-8">
@@ -117,11 +117,11 @@ export default function CarDetail() {
             </dl>
           </div>
 
-          {isER100 && (
+          {isPersonaReversal && (
             <div className="mt-6 card p-6">
               <h2 className="font-display text-xl font-bold text-ink-900">Genome vs. epigenome</h2>
               <p className="mt-2 text-ink-700/80">
-                ER-100 works on the <b>epigenome</b>, not the genome — here's the difference, and why that
+                Persona Reversal works on the <b>epigenome</b>, not the genome — here's the difference, and why that
                 matters.
               </p>
 
@@ -158,10 +158,10 @@ export default function CarDetail() {
                 </p>
               </div>
 
-              <h3 className="mt-5 font-display font-bold text-ink-900">Why this matters for ER-100</h3>
+              <h3 className="mt-5 font-display font-bold text-ink-900">Why this matters for Persona Reversal</h3>
               <p className="mt-2 text-ink-700/80">
                 As we age, the epigenome gets "noisy" — genes drift on and off incorrectly even though the DNA
-                sequence is fine. ER-100's partial reprogramming (OSK: OCT4, SOX2, KLF4) <b>re-writes those
+                sequence is fine. Persona Reversal's partial reprogramming (OSK: OCT4, SOX2, KLF4) <b>re-writes those
                 marks back toward a youthful pattern — without editing a single letter of DNA</b>. It changes
                 the <i>settings</i>, not the <i>code</i>, which is the crucial safety point.
               </p>
@@ -172,7 +172,7 @@ export default function CarDetail() {
             </div>
           )}
 
-          {isER100 && (
+          {isPersonaReversal && (
             <div className="mt-6 card p-6">
               <h2 className="font-display text-xl font-bold text-ink-900">
                 Where do OCT4, SOX2 &amp; KLF4 come from?
@@ -234,7 +234,7 @@ export default function CarDetail() {
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
                 <div className="rounded-2xl border border-cream-300 bg-cream-100 p-4 text-sm text-ink-700/80">
                   <b className="text-ink-900">Why only three factors?</b> The original cocktail is OSK{' '}
-                  <b>+ c-Myc</b>. c-Myc is an <b>oncogene</b> (cancer risk), so ER-100 uses only <b>OSK</b> for
+                  <b>+ c-Myc</b>. c-Myc is an <b>oncogene</b> (cancer risk), so Persona Reversal uses only <b>OSK</b> for
                   safety.
                 </div>
                 <div className="rounded-2xl border border-cream-300 bg-cream-100 p-4 text-sm text-ink-700/80">
@@ -250,9 +250,9 @@ export default function CarDetail() {
             </div>
           )}
 
-          {isER100 && (
+          {isPersonaReversal && (
             <div className="mt-6 card p-6">
-              <h2 className="font-display text-xl font-bold text-ink-900">How ER-100 is made &amp; switched on</h2>
+              <h2 className="font-display text-xl font-bold text-ink-900">How Persona Reversal is made &amp; switched on</h2>
               <p className="mt-2 text-ink-700/80">
                 You never manufacture the proteins — you build a piece of <b>DNA</b> (the vector), deliver it to
                 the patient's cells, and <b>their own cells</b> make the OCT4/SOX2/KLF4 proteins on demand, under

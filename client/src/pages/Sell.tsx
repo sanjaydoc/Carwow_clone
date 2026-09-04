@@ -77,9 +77,9 @@ export default function Sell() {
         email: form.email,
       });
       setResult(res);
-      // Recommend the ER-100 Age Reversal therapy instead of nearby clinics.
+      // Recommend the Persona Reversal Age Reversal therapy instead of nearby clinics.
       try {
-        const list = await api.getCars({ search: 'ER-100', limit: 1 });
+        const list = await api.getCars({ search: 'Persona Reversal', limit: 1 });
         setEr100(list.cars?.[0] || null);
       } catch {
         /* ignore — falls back to a link */
@@ -111,7 +111,7 @@ export default function Sell() {
                 Recommended therapy
               </p>
               <h3 className="mt-1 font-display text-2xl font-extrabold text-ink-900">
-                ER-100 Age Reversal
+                Persona Reversal
               </h3>
               <p className="mt-1 text-sm text-ink-700/70">
                 Our flagship partial epigenetic reprogramming therapy — resetting biological age at the
@@ -145,8 +145,8 @@ export default function Sell() {
                   </div>
                 </Link>
               ) : (
-                <Link to="/browse?search=ER-100" className="btn-primary mt-5 inline-block px-6 py-3">
-                  View ER-100 Age Reversal
+                <Link to="/browse?search=Persona%20Reversal" className="btn-primary mt-5 inline-block px-6 py-3">
+                  View Persona Reversal
                 </Link>
               )}
 

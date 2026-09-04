@@ -3,7 +3,7 @@
 Drives the Simulator's disease dropdown. Every entry mirrors a therapy listed on
 the public site (server/src/db/therapies.js). For each disease we record:
 
-  * which **tissue / AAV capsid** the ER-100-style OSK Tet-On construct should
+  * which **tissue / AAV capsid** the Persona Reversal-style OSK Tet-On construct should
     target (Track A preset), and
   * whether a **curated public methylation dataset** is wired for one-click
     download (Track/analyze input). Diseases without a wired dataset fall back to
@@ -17,7 +17,7 @@ Everything here is illustrative research tooling, not medical advice.
 """
 from __future__ import annotations
 
-# --- tissue / capsid presets for the OSK Tet-On (ER-100-style) construct ------
+# --- tissue / capsid presets for the OSK Tet-On (Persona Reversal-style) construct ------
 # Capsid keys must exist in app/construct/parts.py::CAPSIDS.
 TISSUE_PRESETS: dict[str, dict] = {
     "retina":      {"tissue": "Retina (intravitreal)",       "capsid": "aav2",  "route": "Intravitreal injection"},
@@ -118,7 +118,7 @@ DEFAULT_DATASET_KEY = "GSE40279"
 # tissue default by department and "upload your own dataset".
 _DISEASE_MAP: dict[str, dict] = {
     # Age Rejuvenation
-    "ER-100 Epigenetic Reprogramming": {"tissue": "retina", "dataset": "GSE40279", "approach": "both"},
+    "Persona Reversal Epigenetic Reprogramming": {"tissue": "retina", "dataset": "GSE40279", "approach": "both"},
     "Systemic MSC Infusion": {"tissue": "systemic", "dataset": "GSE40279"},
     "Exosome IV Longevity": {"tissue": "systemic", "dataset": "GSE40279"},
     "Immune (Thymic) Rejuvenation": {"tissue": "immune", "dataset": "GSE40279"},
@@ -145,7 +145,7 @@ _DISEASE_MAP: dict[str, dict] = {
     "Chronic Kidney Disease (CKD) MSC Therapy": {"tissue": "kidney", "dataset": "GSE89093"},
     "Acute Kidney Injury (AKI) MSC Therapy": {"tissue": "kidney", "dataset": "GSE89093"},
     "Diabetic Kidney Disease Exosome Therapy": {"tissue": "kidney", "dataset": "GSE89093"},
-    "ER-100 Renal Epigenetic Reprogramming": {"tissue": "kidney", "dataset": "GSE89093", "approach": "both"},
+    "Persona Reversal Renal Epigenetic Reprogramming": {"tissue": "kidney", "dataset": "GSE89093", "approach": "both"},
 }
 
 # Department → default tissue when a disease isn't explicitly mapped.
@@ -173,7 +173,7 @@ DEPARTMENTS = [
 # The therapy catalogue mirrored from server/src/db/therapies.js (model + dept).
 # (dept, model, category, route, status)
 _THERAPIES: list[tuple[str, str, str, str, str]] = [
-    ("Age Rejuvenation", "ER-100 Epigenetic Reprogramming", "iPSC", "Intravitreal injection", "research"),
+    ("Age Rejuvenation", "Persona Reversal Epigenetic Reprogramming", "iPSC", "Intravitreal injection", "research"),
     ("Age Rejuvenation", "Systemic MSC Infusion", "MSC", "IV infusion", "research"),
     ("Age Rejuvenation", "Exosome IV Longevity", "Exosome", "IV infusion", "research"),
     ("Age Rejuvenation", "NK Cell Immune Boost", "Immune cell", "IV infusion", "available"),
@@ -232,7 +232,7 @@ _THERAPIES: list[tuple[str, str, str, str, str]] = [
     ("Nephrology", "Chronic Kidney Disease (CKD) MSC Therapy", "MSC", "IV infusion", "research"),
     ("Nephrology", "Acute Kidney Injury (AKI) MSC Therapy", "MSC", "IV infusion", "research"),
     ("Nephrology", "Diabetic Kidney Disease Exosome Therapy", "Exosome", "IV infusion", "research"),
-    ("Nephrology", "ER-100 Renal Epigenetic Reprogramming", "iPSC", "IV infusion", "research"),
+    ("Nephrology", "Persona Reversal Renal Epigenetic Reprogramming", "iPSC", "IV infusion", "research"),
     ("Cosmetic", "Facial Fat Grafting + SVF", "MSC", "Local injection", "available"),
     ("Cosmetic", "Hair Restoration Exosome", "Exosome", "Local injection", "available"),
     ("Cosmetic", "Skin Rejuvenation Exosomes", "Exosome", "Topical", "available"),
@@ -249,7 +249,7 @@ def _slug(dept: str, model: str) -> str:
 
 def disease_catalog() -> dict:
     """The full disease list for the dropdown, grouped by department, each with
-    its ER-100 tissue/capsid preset and dataset-readiness."""
+    its Persona Reversal tissue/capsid preset and dataset-readiness."""
     items: list[dict] = []
     for dept, model, category, route, status in _THERAPIES:
         mapping = _DISEASE_MAP.get(model, {})

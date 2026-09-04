@@ -31,7 +31,7 @@ import {
  *
  * Disease-driven flow: pick a disease (one of the therapies on the site) →
  * one-click download its curated methylation dataset (or upload your own) →
- * real epigenetic age → then ER-100 OSK construct and/or De-Novo-LLM molecules.
+ * real epigenetic age → then Persona Reversal OSK construct and/or De-Novo-LLM molecules.
  */
 type Approach = 'both' | 'er100' | 'molecules';
 
@@ -238,7 +238,7 @@ export default function SimulatorLocal() {
   const constructTitle =
     ctype === 'gene_replacement' ? 'Micro-dystrophin gene-replacement construct'
     : ctype === 'epigenetic_silencing' ? 'Anti-DUX4 silencing construct'
-    : 'ER-100 OSK Tet-On construct';
+    : 'Persona Reversal OSK Tet-On construct';
 
   const runConstruct = async () => {
     setBusy(isStructuredConstruct ? `Assembling ${constructTitle.toLowerCase()}…` : 'Assembling OSK Tet-On construct…');
@@ -384,7 +384,7 @@ export default function SimulatorLocal() {
           <span className="icon-tile h-12 w-12"><Icon name="dna" className="h-6 w-6" /></span>
           <div>
             <h1 className="font-display text-3xl font-extrabold text-ink-900">Protocol Simulator — live</h1>
-            <p className="text-ink-700/70">Pick a disease → dataset → real epigenetic age → ER-100 construct &amp; De Novo LLM molecules.</p>
+            <p className="text-ink-700/70">Pick a disease → dataset → real epigenetic age → Persona Reversal construct &amp; De Novo LLM molecules.</p>
           </div>
         </div>
         <button onClick={() => setMode('chat')} className="btn-ghost shrink-0 px-3 py-1.5 text-xs">← Chat view</button>
@@ -415,7 +415,7 @@ export default function SimulatorLocal() {
               <div className="mt-4">
                 <label className="block text-sm font-semibold text-ink-800">Therapy approach</label>
                 <div className="mt-2 inline-flex rounded-xl border border-cream-300 bg-cream-100 p-1 text-sm">
-                  {([['both', 'Both'], ['er100', 'ER-100 reprogramming'], ['molecules', 'Novel molecules']] as [Approach, string][]).map(([val, lbl]) => (
+                  {([['both', 'Both'], ['er100', 'Persona Reversal reprogramming'], ['molecules', 'Novel molecules']] as [Approach, string][]).map(([val, lbl]) => (
                     <button
                       key={val}
                       onClick={() => setApproach(val)}
@@ -434,7 +434,7 @@ export default function SimulatorLocal() {
               <p className="font-semibold text-ink-900">{disease.disease}</p>
               <p className="text-ink-700/60">{disease.department} · {disease.category} · {disease.status === 'research' ? 'Under research' : 'Established'}</p>
               <dl className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1.5 text-xs">
-                <dt className="text-ink-700/50">ER-100 tissue</dt><dd className="font-semibold text-ink-900">{disease.tissue}</dd>
+                <dt className="text-ink-700/50">Persona Reversal tissue</dt><dd className="font-semibold text-ink-900">{disease.tissue}</dd>
                 <dt className="text-ink-700/50">AAV capsid</dt><dd className="font-semibold text-ink-900">{disease.capsid.toUpperCase()}</dd>
                 <dt className="text-ink-700/50">Delivery</dt><dd className="font-semibold text-ink-900">{disease.construct_route}</dd>
               </dl>
