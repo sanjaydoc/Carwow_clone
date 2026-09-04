@@ -162,6 +162,28 @@ const kindStyle: Record<EstablishedKind, string> = {
   'Regenerative': 'bg-amber-100 text-amber-700',
 };
 
+// Reuse the real clinic/lab photos bundled for the therapy catalogue so the
+// established-therapy cards look authentic.
+const establishedPhoto: Record<string, string> = {
+  'Bone-marrow / HSC transplant': 'cryo-tanks.jpg',
+  Casgevy: 'cell-lab.jpg',
+  Zolgensma: 'neural-stem.jpg',
+  Luxturna: 'cryo-tech.jpg',
+  Kymriah: 'cleanroom.jpg',
+  Yescarta: 'cell-lab.jpg',
+  Carvykti: 'cryo-tech.jpg',
+  Abecma: 'cleanroom.jpg',
+  Ryoncil: 'cryo-tanks.jpg',
+  Alofisel: 'cell-lab.jpg',
+  Holoclar: 'cleanroom.jpg',
+  Stempeucel: 'cryo-tanks.jpg',
+  Hemgenix: 'cell-lab.jpg',
+  Elevidys: 'neural-stem.jpg',
+  Zynteglo: 'cryo-tech.jpg',
+  MACI: 'cleanroom.jpg',
+  Apligraf: 'age-rejuvenation.jpg',
+};
+
 type Tab = 'find' | 'sell' | 'reviews';
 
 export default function Home() {
@@ -495,18 +517,26 @@ export default function Home() {
           {established.map((t) => (
             <div
               key={t.name}
-              className="flex w-[260px] shrink-0 snap-start flex-col rounded-3xl border border-cream-300 bg-white p-5 transition hover:shadow-card-hover"
+              className="flex w-[260px] shrink-0 snap-start flex-col overflow-hidden rounded-3xl border border-cream-300 bg-white transition hover:shadow-card-hover"
             >
-              <div className="flex items-center justify-between gap-2">
-                <span className={`rounded-full px-2.5 py-1 text-xs font-bold ${kindStyle[t.kind]}`}>{t.kind}</span>
-                <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700">
+              <div className="relative h-32 w-full">
+                <img
+                  src={`${import.meta.env.BASE_URL}therapy/${establishedPhoto[t.name] || 'cleanroom.jpg'}`}
+                  alt={`${t.name} — ${t.indication}`}
+                  loading="lazy"
+                  className="h-full w-full object-cover"
+                />
+                <span className={`absolute left-3 top-3 rounded-full px-2.5 py-1 text-xs font-bold shadow-sm ${kindStyle[t.kind]}`}>{t.kind}</span>
+              </div>
+              <div className="flex flex-1 flex-col p-5">
+                <span className="inline-flex items-center gap-1 self-start text-xs font-semibold text-emerald-700">
                   <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
                   {t.approval}
                 </span>
+                <h3 className="mt-2 font-display text-lg font-bold text-ink-900">{t.name}</h3>
+                <p className="text-sm text-ink-700/60">{t.generic}</p>
+                <p className="mt-3 text-sm text-ink-700/80">{t.indication}</p>
               </div>
-              <h3 className="mt-3 font-display text-lg font-bold text-ink-900">{t.name}</h3>
-              <p className="text-sm text-ink-700/60">{t.generic}</p>
-              <p className="mt-3 text-sm text-ink-700/80">{t.indication}</p>
             </div>
           ))}
         </div>
