@@ -4,6 +4,7 @@ import { api } from '../api/client';
 import type { Car } from '../types';
 import CarCard from '../components/CarCard';
 import CarImage from '../components/CarImage';
+import EstablishedArt, { type Motif } from '../components/EstablishedArt';
 import CarTypeIcon from '../components/CarTypeIcon';
 import BrandLogo from '../components/BrandLogo';
 import Spinner from '../components/Spinner';
@@ -135,24 +136,25 @@ const established: {
   kind: EstablishedKind;
   indication: string;
   approval: string;
+  motif: Motif;
 }[] = [
-  { name: 'Bone-marrow / HSC transplant', generic: 'Haematopoietic stem cells', kind: 'Stem cell', indication: 'Leukaemia, lymphoma & marrow failure', approval: 'Standard of care' },
-  { name: 'Casgevy', generic: 'Exagamglogene autotemcel (CRISPR)', kind: 'Gene therapy', indication: 'Sickle-cell disease & β-thalassaemia', approval: 'FDA · 2023' },
-  { name: 'Zolgensma', generic: 'Onasemnogene abeparvovec (AAV)', kind: 'Gene therapy', indication: 'Spinal muscular atrophy', approval: 'FDA · 2019' },
-  { name: 'Luxturna', generic: 'Voretigene neparvovec (AAV)', kind: 'Gene therapy', indication: 'Inherited retinal dystrophy (RPE65)', approval: 'FDA · 2017' },
-  { name: 'Kymriah', generic: 'Tisagenlecleucel', kind: 'CAR-T', indication: 'B-cell ALL & large B-cell lymphoma', approval: 'FDA · 2017' },
-  { name: 'Yescarta', generic: 'Axicabtagene ciloleucel', kind: 'CAR-T', indication: 'Large B-cell lymphoma', approval: 'FDA · 2017' },
-  { name: 'Carvykti', generic: 'Ciltacabtagene autoleucel', kind: 'CAR-T', indication: 'Multiple myeloma', approval: 'FDA · 2022' },
-  { name: 'Abecma', generic: 'Idecabtagene vicleucel', kind: 'CAR-T', indication: 'Multiple myeloma', approval: 'FDA · 2021' },
-  { name: 'Ryoncil', generic: 'Remestemcel-L (MSC)', kind: 'Stem cell', indication: 'Steroid-refractory acute GvHD', approval: 'FDA · 2024' },
-  { name: 'Alofisel', generic: 'Darvadstrocel (MSC)', kind: 'Stem cell', indication: 'Crohn’s perianal fistulas', approval: 'EMA · 2018' },
-  { name: 'Holoclar', generic: 'Ex-vivo limbal stem cells', kind: 'Stem cell', indication: 'Corneal (limbal) repair', approval: 'EMA · 2015' },
-  { name: 'Stempeucel', generic: 'Allogeneic pooled MSC', kind: 'Stem cell', indication: 'Critical limb ischaemia (Buerger’s)', approval: 'CDSCO India' },
-  { name: 'Hemgenix', generic: 'Etranacogene dezaparvovec (AAV)', kind: 'Gene therapy', indication: 'Haemophilia B', approval: 'FDA · 2022' },
-  { name: 'Elevidys', generic: 'Delandistrogene moxeparvovec (AAV)', kind: 'Gene therapy', indication: 'Duchenne muscular dystrophy', approval: 'FDA · 2023' },
-  { name: 'Zynteglo', generic: 'Betibeglogene autotemcel', kind: 'Gene therapy', indication: 'Transfusion-dependent β-thalassaemia', approval: 'FDA · 2022' },
-  { name: 'MACI', generic: 'Matrix-induced autologous chondrocytes', kind: 'Regenerative', indication: 'Knee cartilage defects', approval: 'FDA · 2016' },
-  { name: 'Apligraf', generic: 'Bioengineered living skin', kind: 'Regenerative', indication: 'Diabetic & venous leg ulcers', approval: 'FDA-approved' },
+  { name: 'Bone-marrow / HSC transplant', generic: 'Haematopoietic stem cells', kind: 'Stem cell', indication: 'Leukaemia, lymphoma & marrow failure', approval: 'Standard of care', motif: 'stemcell' },
+  { name: 'Casgevy', generic: 'Exagamglogene autotemcel (CRISPR)', kind: 'Gene therapy', indication: 'Sickle-cell disease & β-thalassaemia', approval: 'FDA · 2023', motif: 'rbc' },
+  { name: 'Zolgensma', generic: 'Onasemnogene abeparvovec (AAV)', kind: 'Gene therapy', indication: 'Spinal muscular atrophy', approval: 'FDA · 2019', motif: 'neuron' },
+  { name: 'Luxturna', generic: 'Voretigene neparvovec (AAV)', kind: 'Gene therapy', indication: 'Inherited retinal dystrophy (RPE65)', approval: 'FDA · 2017', motif: 'eye' },
+  { name: 'Kymriah', generic: 'Tisagenlecleucel', kind: 'CAR-T', indication: 'B-cell ALL & large B-cell lymphoma', approval: 'FDA · 2017', motif: 'tcell' },
+  { name: 'Yescarta', generic: 'Axicabtagene ciloleucel', kind: 'CAR-T', indication: 'Large B-cell lymphoma', approval: 'FDA · 2017', motif: 'tcell' },
+  { name: 'Carvykti', generic: 'Ciltacabtagene autoleucel', kind: 'CAR-T', indication: 'Multiple myeloma', approval: 'FDA · 2022', motif: 'tcell' },
+  { name: 'Abecma', generic: 'Idecabtagene vicleucel', kind: 'CAR-T', indication: 'Multiple myeloma', approval: 'FDA · 2021', motif: 'tcell' },
+  { name: 'Ryoncil', generic: 'Remestemcel-L (MSC)', kind: 'Stem cell', indication: 'Steroid-refractory acute GvHD', approval: 'FDA · 2024', motif: 'shield' },
+  { name: 'Alofisel', generic: 'Darvadstrocel (MSC)', kind: 'Stem cell', indication: 'Crohn’s perianal fistulas', approval: 'EMA · 2018', motif: 'intestine' },
+  { name: 'Holoclar', generic: 'Ex-vivo limbal stem cells', kind: 'Stem cell', indication: 'Corneal (limbal) repair', approval: 'EMA · 2015', motif: 'eye' },
+  { name: 'Stempeucel', generic: 'Allogeneic pooled MSC', kind: 'Stem cell', indication: 'Critical limb ischaemia (Buerger’s)', approval: 'CDSCO India', motif: 'vessel' },
+  { name: 'Hemgenix', generic: 'Etranacogene dezaparvovec (AAV)', kind: 'Gene therapy', indication: 'Haemophilia B', approval: 'FDA · 2022', motif: 'drop' },
+  { name: 'Elevidys', generic: 'Delandistrogene moxeparvovec (AAV)', kind: 'Gene therapy', indication: 'Duchenne muscular dystrophy', approval: 'FDA · 2023', motif: 'muscle' },
+  { name: 'Zynteglo', generic: 'Betibeglogene autotemcel', kind: 'Gene therapy', indication: 'Transfusion-dependent β-thalassaemia', approval: 'FDA · 2022', motif: 'rbc' },
+  { name: 'MACI', generic: 'Matrix-induced autologous chondrocytes', kind: 'Regenerative', indication: 'Knee cartilage defects', approval: 'FDA · 2016', motif: 'joint' },
+  { name: 'Apligraf', generic: 'Bioengineered living skin', kind: 'Regenerative', indication: 'Diabetic & venous leg ulcers', approval: 'FDA-approved', motif: 'skin' },
 ];
 
 const kindStyle: Record<EstablishedKind, string> = {
@@ -162,26 +164,11 @@ const kindStyle: Record<EstablishedKind, string> = {
   'Regenerative': 'bg-amber-100 text-amber-700',
 };
 
-// Reuse the real clinic/lab photos bundled for the therapy catalogue so the
-// established-therapy cards look authentic.
-const establishedPhoto: Record<string, string> = {
-  'Bone-marrow / HSC transplant': 'cryo-tanks.jpg',
-  Casgevy: 'cell-lab.jpg',
-  Zolgensma: 'neural-stem.jpg',
-  Luxturna: 'cryo-tech.jpg',
-  Kymriah: 'cleanroom.jpg',
-  Yescarta: 'cell-lab.jpg',
-  Carvykti: 'cryo-tech.jpg',
-  Abecma: 'cleanroom.jpg',
-  Ryoncil: 'cryo-tanks.jpg',
-  Alofisel: 'cell-lab.jpg',
-  Holoclar: 'cleanroom.jpg',
-  Stempeucel: 'cryo-tanks.jpg',
-  Hemgenix: 'cell-lab.jpg',
-  Elevidys: 'neural-stem.jpg',
-  Zynteglo: 'cryo-tech.jpg',
-  MACI: 'cleanroom.jpg',
-  Apligraf: 'age-rejuvenation.jpg',
+const kindAccent: Record<EstablishedKind, string> = {
+  'Stem cell': '#4285F4',
+  'CAR-T': '#7c3aed',
+  'Gene therapy': '#059669',
+  'Regenerative': '#d97706',
 };
 
 type Tab = 'find' | 'sell' | 'reviews';
@@ -520,12 +507,7 @@ export default function Home() {
               className="flex w-[260px] shrink-0 snap-start flex-col overflow-hidden rounded-3xl border border-cream-300 bg-white transition hover:shadow-card-hover"
             >
               <div className="relative h-32 w-full">
-                <img
-                  src={`${import.meta.env.BASE_URL}therapy/${establishedPhoto[t.name] || 'cleanroom.jpg'}`}
-                  alt={`${t.name} — ${t.indication}`}
-                  loading="lazy"
-                  className="h-full w-full object-cover"
-                />
+                <EstablishedArt motif={t.motif} accent={kindAccent[t.kind]} className="h-full w-full" />
                 <span className={`absolute left-3 top-3 rounded-full px-2.5 py-1 text-xs font-bold shadow-sm ${kindStyle[t.kind]}`}>{t.kind}</span>
               </div>
               <div className="flex flex-1 flex-col p-5">
