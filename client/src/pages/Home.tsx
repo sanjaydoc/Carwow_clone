@@ -126,6 +126,42 @@ const steps: { title: string; body: string; icon: IconName }[] = [
   { title: 'Exosome IV therapy', body: 'Your personalised biomolecule exosomes are delivered by IV infusion — then you recover and are monitored for weeks to months during a restorative stay in Ooty.', icon: 'syringe' },
 ];
 
+// Real-world, regulator-approved cell, gene & regenerative therapies — shown as
+// an "Established therapies" reference rail (educational; approvals as noted).
+type EstablishedKind = 'Stem cell' | 'CAR-T' | 'Gene therapy' | 'Regenerative';
+const established: {
+  name: string;
+  generic: string;
+  kind: EstablishedKind;
+  indication: string;
+  approval: string;
+}[] = [
+  { name: 'Bone-marrow / HSC transplant', generic: 'Haematopoietic stem cells', kind: 'Stem cell', indication: 'Leukaemia, lymphoma & marrow failure', approval: 'Standard of care' },
+  { name: 'Casgevy', generic: 'Exagamglogene autotemcel (CRISPR)', kind: 'Gene therapy', indication: 'Sickle-cell disease & β-thalassaemia', approval: 'FDA · 2023' },
+  { name: 'Zolgensma', generic: 'Onasemnogene abeparvovec (AAV)', kind: 'Gene therapy', indication: 'Spinal muscular atrophy', approval: 'FDA · 2019' },
+  { name: 'Luxturna', generic: 'Voretigene neparvovec (AAV)', kind: 'Gene therapy', indication: 'Inherited retinal dystrophy (RPE65)', approval: 'FDA · 2017' },
+  { name: 'Kymriah', generic: 'Tisagenlecleucel', kind: 'CAR-T', indication: 'B-cell ALL & large B-cell lymphoma', approval: 'FDA · 2017' },
+  { name: 'Yescarta', generic: 'Axicabtagene ciloleucel', kind: 'CAR-T', indication: 'Large B-cell lymphoma', approval: 'FDA · 2017' },
+  { name: 'Carvykti', generic: 'Ciltacabtagene autoleucel', kind: 'CAR-T', indication: 'Multiple myeloma', approval: 'FDA · 2022' },
+  { name: 'Abecma', generic: 'Idecabtagene vicleucel', kind: 'CAR-T', indication: 'Multiple myeloma', approval: 'FDA · 2021' },
+  { name: 'Ryoncil', generic: 'Remestemcel-L (MSC)', kind: 'Stem cell', indication: 'Steroid-refractory acute GvHD', approval: 'FDA · 2024' },
+  { name: 'Alofisel', generic: 'Darvadstrocel (MSC)', kind: 'Stem cell', indication: 'Crohn’s perianal fistulas', approval: 'EMA · 2018' },
+  { name: 'Holoclar', generic: 'Ex-vivo limbal stem cells', kind: 'Stem cell', indication: 'Corneal (limbal) repair', approval: 'EMA · 2015' },
+  { name: 'Stempeucel', generic: 'Allogeneic pooled MSC', kind: 'Stem cell', indication: 'Critical limb ischaemia (Buerger’s)', approval: 'CDSCO India' },
+  { name: 'Hemgenix', generic: 'Etranacogene dezaparvovec (AAV)', kind: 'Gene therapy', indication: 'Haemophilia B', approval: 'FDA · 2022' },
+  { name: 'Elevidys', generic: 'Delandistrogene moxeparvovec (AAV)', kind: 'Gene therapy', indication: 'Duchenne muscular dystrophy', approval: 'FDA · 2023' },
+  { name: 'Zynteglo', generic: 'Betibeglogene autotemcel', kind: 'Gene therapy', indication: 'Transfusion-dependent β-thalassaemia', approval: 'FDA · 2022' },
+  { name: 'MACI', generic: 'Matrix-induced autologous chondrocytes', kind: 'Regenerative', indication: 'Knee cartilage defects', approval: 'FDA · 2016' },
+  { name: 'Apligraf', generic: 'Bioengineered living skin', kind: 'Regenerative', indication: 'Diabetic & venous leg ulcers', approval: 'FDA-approved' },
+];
+
+const kindStyle: Record<EstablishedKind, string> = {
+  'Stem cell': 'bg-clay-100 text-clay-700',
+  'CAR-T': 'bg-violet-100 text-violet-700',
+  'Gene therapy': 'bg-emerald-100 text-emerald-700',
+  'Regenerative': 'bg-amber-100 text-amber-700',
+};
+
 type Tab = 'find' | 'sell' | 'reviews';
 
 export default function Home() {
@@ -442,6 +478,42 @@ export default function Home() {
           </div>
         </section>
       )}
+
+      {/* ---------- ESTABLISHED THERAPIES (slider) ---------- */}
+      <section className="container-x pt-14 pb-2">
+        <div className="flex items-center gap-3">
+          <span className="icon-tile h-11 w-11"><Icon name="dish" className="h-6 w-6" /></span>
+          <div>
+            <h2 className="font-display text-2xl font-extrabold uppercase text-ink-900 sm:text-3xl">
+              Established therapies
+            </h2>
+            <p className="text-ink-700/70">Regulator-approved cell, gene &amp; regenerative medicines in clinical use worldwide.</p>
+          </div>
+        </div>
+
+        <div className="-mx-4 mt-6 flex snap-x gap-4 overflow-x-auto px-4 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {established.map((t) => (
+            <div
+              key={t.name}
+              className="flex w-[260px] shrink-0 snap-start flex-col rounded-3xl border border-cream-300 bg-white p-5 transition hover:shadow-card-hover"
+            >
+              <div className="flex items-center justify-between gap-2">
+                <span className={`rounded-full px-2.5 py-1 text-xs font-bold ${kindStyle[t.kind]}`}>{t.kind}</span>
+                <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700">
+                  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+                  {t.approval}
+                </span>
+              </div>
+              <h3 className="mt-3 font-display text-lg font-bold text-ink-900">{t.name}</h3>
+              <p className="text-sm text-ink-700/60">{t.generic}</p>
+              <p className="mt-3 text-sm text-ink-700/80">{t.indication}</p>
+            </div>
+          ))}
+        </div>
+        <p className="mt-1 text-xs text-ink-700/50">
+          Reference list of approved therapies for education — not all are offered here. Demo project, not medical advice.
+        </p>
+      </section>
 
       {/* ---------- FEATURED ---------- */}
       <section className="container-x py-14">
