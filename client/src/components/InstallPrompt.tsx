@@ -86,7 +86,7 @@ export default function InstallPrompt() {
               Tap the Share icon, then <b>Add to Home Screen</b>.
             </p>
           ) : (
-            <p className="text-xs text-ink-700/70">Add the app to your home screen for quick, full-screen access.</p>
+            <p className="text-xs text-ink-700/70">Install the StemCells Protocol app.</p>
           )}
         </div>
         {!iosHint && (
