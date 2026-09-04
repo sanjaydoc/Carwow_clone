@@ -5,6 +5,7 @@ import type { Car } from '../types';
 import CarCard from '../components/CarCard';
 import CarImage from '../components/CarImage';
 import EstablishedArt, { type Motif } from '../components/EstablishedArt';
+import AutoRail from '../components/AutoRail';
 import CarTypeIcon from '../components/CarTypeIcon';
 import BrandLogo from '../components/BrandLogo';
 import Spinner from '../components/Spinner';
@@ -177,6 +178,7 @@ export default function Home() {
   const [featured, setFeatured] = useState<Car[]>([]);
   const [trending, setTrending] = useState<Car[]>([]);
   const [posters, setPosters] = useState<Car[]>([]);
+  const [available, setAvailable] = useState<Car[]>([]);
   const [slide, setSlide] = useState(0);
   const [paused, setPaused] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -216,6 +218,10 @@ export default function Home() {
       api.getCars({ search: 'Type 1 Diabetes', limit: 1 }),
       api.getCars({ make: 'HIV', sort: 'rating_desc', limit: 1 }),
     ]).then((res) => setPosters(res.map((r) => r.cars[0]).filter(Boolean) as Car[]));
+    // Our own available (established) therapies for the Established rail.
+    api.getCars({ limit: 200 }).then(({ cars }) =>
+      setAvailable(cars.filter((c) => !isResearch(c.condition))),
+    );
   }, []);
 
   // Auto-advance the featured slider (paused on hover).
@@ -500,11 +506,40 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="-mx-4 mt-6 flex snap-x gap-4 overflow-x-auto px-4 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {established.map((t) => (
+        {/* Our own available therapies (auto-scrolling) */}
+        {available.length > 0 && (
+          <>
+            <p className="mt-6 text-xs font-bold uppercase tracking-wider text-clay-600">Available at StemCells Protocol</p>
+            <AutoRail speed={0.5} className="-mx-4 mt-3 flex gap-4 overflow-x-auto px-4 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {[...available, ...available].map((c, i) => (
+                <Link
+                  key={`${c.id}-${i}`}
+                  to={`/therapies/${c.id}`}
+                  className="group flex w-[260px] shrink-0 flex-col overflow-hidden rounded-3xl border border-cream-300 bg-white transition hover:shadow-card-hover"
+                >
+                  <div className="relative h-32 w-full">
+                    <CarImage accent={c.accent} bodyType={c.body_type} make={c.make} model={c.model} year={c.year} className="h-full w-full" />
+                    <span className="absolute left-3 top-3 rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-bold text-emerald-700 shadow-sm">Available</span>
+                  </div>
+                  <div className="flex flex-1 flex-col p-5">
+                    <span className="text-xs font-bold uppercase tracking-wide text-clay-600">{c.make}</span>
+                    <h3 className="mt-1 font-display text-lg font-bold leading-tight text-ink-900">{c.model}</h3>
+                    <p className="mt-1 line-clamp-1 text-sm text-ink-700/60">{c.trim}</p>
+                    <span className="mt-3 inline-flex items-center gap-1 self-start text-sm font-semibold text-clay-600 transition-all group-hover:gap-2">View therapy →</span>
+                  </div>
+                </Link>
+              ))}
+            </AutoRail>
+          </>
+        )}
+
+        {/* Regulator-approved worldwide (auto-scrolling) */}
+        <p className="mt-6 text-xs font-bold uppercase tracking-wider text-ink-700/50">Approved worldwide</p>
+        <AutoRail speed={0.4} className="-mx-4 mt-3 flex gap-4 overflow-x-auto px-4 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {[...established, ...established].map((t, i) => (
             <div
-              key={t.name}
-              className="flex w-[260px] shrink-0 snap-start flex-col overflow-hidden rounded-3xl border border-cream-300 bg-white transition hover:shadow-card-hover"
+              key={`${t.name}-${i}`}
+              className="flex w-[260px] shrink-0 flex-col overflow-hidden rounded-3xl border border-cream-300 bg-white transition hover:shadow-card-hover"
             >
               <div className="relative h-32 w-full">
                 <EstablishedArt motif={t.motif} accent={kindAccent[t.kind]} className="h-full w-full" />
@@ -521,9 +556,9 @@ export default function Home() {
               </div>
             </div>
           ))}
-        </div>
+        </AutoRail>
         <p className="mt-1 text-xs text-ink-700/50">
-          Reference list of approved therapies for education — not all are offered here. Demo project, not medical advice.
+          “Approved worldwide” is a reference list for education — not all are offered here. Demo project, not medical advice.
         </p>
       </section>
 
