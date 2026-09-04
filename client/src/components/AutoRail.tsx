@@ -33,26 +33,31 @@ export default function AutoRail({
     };
     raf = requestAnimationFrame(tick);
 
-    const pause = () => { paused = true; };
+    const pause = () => { window.clearTimeout(resumeTimer); paused = true; };
     const resume = () => { paused = false; };
-    // After a manual touch/scroll, wait a moment before resuming.
+    // After touching/tapping, wait a moment before resuming so the tap lands
+    // as a click (navigation) rather than being carried off by the scroll.
     const resumeSoon = () => {
       window.clearTimeout(resumeTimer);
       resumeTimer = window.setTimeout(() => { paused = false; }, 2500);
     };
 
+    // Pointer events cover mouse + touch. Pausing on pointerdown freezes the
+    // rail during a tap so the click reaches the card's link.
     el.addEventListener('pointerenter', pause);
     el.addEventListener('pointerleave', resume);
-    el.addEventListener('touchstart', pause, { passive: true });
-    el.addEventListener('touchend', resumeSoon, { passive: true });
+    el.addEventListener('pointerdown', pause);
+    el.addEventListener('pointerup', resumeSoon);
+    el.addEventListener('pointercancel', resumeSoon);
 
     return () => {
       cancelAnimationFrame(raf);
       window.clearTimeout(resumeTimer);
       el.removeEventListener('pointerenter', pause);
       el.removeEventListener('pointerleave', resume);
-      el.removeEventListener('touchstart', pause);
-      el.removeEventListener('touchend', resumeSoon);
+      el.removeEventListener('pointerdown', pause);
+      el.removeEventListener('pointerup', resumeSoon);
+      el.removeEventListener('pointercancel', resumeSoon);
     };
   }, [speed]);
 
