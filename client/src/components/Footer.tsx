@@ -50,10 +50,11 @@ export default function Footer() {
               {socials.map((s) => (
                 <a
                   key={s.label}
-                  href="#"
+                  href={s.href}
                   aria-label={s.label}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="grid h-10 w-10 place-items-center rounded-full bg-white/10 text-white transition hover:bg-clay-500"
-                  onClick={(e) => e.preventDefault()}
                 >
                   {s.icon}
                 </a>
@@ -141,17 +142,25 @@ const countries = [
 ];
 
 const iconCls = 'h-5 w-5';
+const facebookIcon = (
+  <svg viewBox="0 0 24 24" className={iconCls} fill="currentColor">
+    <path d="M13 22v-8h2.7l.4-3H13V9c0-.9.3-1.5 1.6-1.5H16V4.9c-.3 0-1.2-.1-2.3-.1-2.3 0-3.7 1.4-3.7 3.9V11H7.5v3H10v8h3z" />
+  </svg>
+);
 const socials = [
   {
     label: 'Facebook',
-    icon: (
-      <svg viewBox="0 0 24 24" className={iconCls} fill="currentColor">
-        <path d="M13 22v-8h2.7l.4-3H13V9c0-.9.3-1.5 1.6-1.5H16V4.9c-.3 0-1.2-.1-2.3-.1-2.3 0-3.7 1.4-3.7 3.9V11H7.5v3H10v8h3z" />
-      </svg>
-    ),
+    href: 'https://www.facebook.com/share/1KwtnA4Pkh/',
+    icon: facebookIcon,
   },
   {
-    label: 'X',
+    label: 'Facebook page',
+    href: 'https://www.facebook.com/share/1C4hJftL14/',
+    icon: facebookIcon,
+  },
+  {
+    label: 'X (Twitter)',
+    href: 'https://x.com/Stemcellspvclg',
     icon: (
       <svg viewBox="0 0 24 24" className={iconCls} fill="currentColor">
         <path d="M17.5 3h3l-6.6 7.6L21.8 21h-6l-4.7-6.1L5.7 21h-3l7-8.1L2.5 3h6.1l4.2 5.6L17.5 3zm-1 16h1.6L8.1 4.7H6.4L16.5 19z" />
@@ -160,6 +169,7 @@ const socials = [
   },
   {
     label: 'Instagram',
+    href: 'https://www.instagram.com/stemcells_protocol',
     icon: (
       <svg viewBox="0 0 24 24" className={iconCls} fill="none" stroke="currentColor" strokeWidth="2">
         <rect x="3" y="3" width="18" height="18" rx="5" />
@@ -170,6 +180,7 @@ const socials = [
   },
   {
     label: 'YouTube',
+    href: 'https://www.youtube.com/@stemcellsprotocol',
     icon: (
       <svg viewBox="0 0 24 24" className={iconCls} fill="currentColor">
         <path d="M23 12s0-3.2-.4-4.7c-.2-.8-.9-1.5-1.7-1.7C19.3 5.2 12 5.2 12 5.2s-7.3 0-8.9.4c-.8.2-1.5.9-1.7 1.7C1 8.8 1 12 1 12s0 3.2.4 4.7c.2.8.9 1.5 1.7 1.7 1.6.4 8.9.4 8.9.4s7.3 0 8.9-.4c.8-.2 1.5-.9 1.7-1.7C23 15.2 23 12 23 12zM9.7 15.3V8.7l5.7 3.3-5.7 3.3z" />
@@ -177,10 +188,11 @@ const socials = [
     ),
   },
   {
-    label: 'TikTok',
+    label: 'Telegram',
+    href: 'https://t.me/stemcellsprotocol',
     icon: (
       <svg viewBox="0 0 24 24" className={iconCls} fill="currentColor">
-        <path d="M16 3c.3 2.1 1.5 3.6 3.6 3.8V9c-1.3.1-2.5-.3-3.6-1v6.2c0 3.2-2.4 5.3-5.3 5.3-2.7 0-4.9-2-4.9-4.8 0-2.9 2.3-4.9 5.2-4.7v2.4c-.4-.1-.8-.2-1.2-.1-1.2.1-2 .9-2 2.1 0 1.3 1 2.2 2.3 2.1 1.3 0 2.1-1 2.1-2.4V3h3.8z" />
+        <path d="M21.9 4.3 18.9 19c-.2 1-.8 1.2-1.7.8l-4.6-3.4-2.2 2.1c-.3.3-.5.5-1 .5l.3-4.7L18.4 5c.4-.3-.1-.5-.6-.2L6.3 12l-4.6-1.4c-1-.3-1-1 .2-1.5l18-6.9c.8-.3 1.5.2 1.2 1.6z" />
       </svg>
     ),
   },
