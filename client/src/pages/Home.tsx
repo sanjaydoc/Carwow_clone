@@ -14,6 +14,8 @@ import HeroCell from '../components/HeroCell';
 import { supabase } from '../api/supabase';
 import Icon, { type IconName } from '../components/Icon';
 import { gbp, statusLabel, isResearch } from '../utils/format';
+import { useSaved } from '../context/SavedContext';
+import { useAuth } from '../context/AuthContext';
 
 const categories = [
   { label: 'MSC', icon: 'sparkle', carType: 'MSC', to: '/browse?body_type=MSC' },
@@ -196,6 +198,21 @@ export default function Home() {
   }, []);
   const [reg, setReg] = useState('');
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { isSaved, toggle } = useSaved();
+
+  // Save/unsave a therapy from a card without following its link.
+  const onSaveTherapy = async (e: React.MouseEvent, id: number) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!user) {
+      navigate('/login', { state: { from: `/therapies/${id}` } });
+      return;
+    }
+    try {
+      await toggle(id);
+    } catch { /* ignore */ }
+  };
 
   useEffect(() => {
     // Top-rated therapies, with both Diabetes therapies (Type 1 then Type 2)
@@ -520,6 +537,17 @@ export default function Home() {
                   <div className="relative h-32 w-full">
                     <CarImage accent={c.accent} bodyType={c.body_type} make={c.make} model={c.model} year={c.year} className="h-full w-full" />
                     <span className="absolute left-3 top-3 rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-bold text-emerald-700 shadow-sm">Available</span>
+                    <button
+                      onClick={(e) => onSaveTherapy(e, c.id)}
+                      aria-label={isSaved(c.id) ? 'Remove from saved' : 'Save therapy'}
+                      className={`absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-white/90 shadow-sm backdrop-blur transition hover:scale-110 ${
+                        isSaved(c.id) ? 'text-clay-600' : 'text-ink-700 hover:text-clay-600'
+                      }`}
+                    >
+                      <svg viewBox="0 0 24 24" className="h-5 w-5" fill={isSaved(c.id) ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                      </svg>
+                    </button>
                   </div>
                   <div className="flex flex-1 flex-col p-5">
                     <span className="text-xs font-bold uppercase tracking-wide text-clay-600">{c.make}</span>
