@@ -154,11 +154,6 @@ const socials = [
     icon: facebookIcon,
   },
   {
-    label: 'Facebook page',
-    href: 'https://www.facebook.com/share/1C4hJftL14/',
-    icon: facebookIcon,
-  },
-  {
     label: 'X (Twitter)',
     href: 'https://x.com/Stemcellspvclg',
     icon: (
