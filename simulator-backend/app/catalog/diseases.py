@@ -118,7 +118,7 @@ DEFAULT_DATASET_KEY = "GSE40279"
 # tissue default by department and "upload your own dataset".
 _DISEASE_MAP: dict[str, dict] = {
     # Age Rejuvenation
-    "Persona Reversal Epigenetic Reprogramming": {"tissue": "retina", "dataset": "GSE40279", "approach": "both"},
+    "Persona Reversal Epigenetic Reprogramming": {"tissue": "systemic", "dataset": "GSE40279", "approach": "both"},
     "Systemic MSC Infusion": {"tissue": "systemic", "dataset": "GSE40279"},
     "Exosome IV Longevity": {"tissue": "systemic", "dataset": "GSE40279"},
     "Immune (Thymic) Rejuvenation": {"tissue": "immune", "dataset": "GSE40279"},
@@ -173,7 +173,7 @@ DEPARTMENTS = [
 # The therapy catalogue mirrored from server/src/db/therapies.js (model + dept).
 # (dept, model, category, route, status)
 _THERAPIES: list[tuple[str, str, str, str, str]] = [
-    ("Age Rejuvenation", "Persona Reversal Epigenetic Reprogramming", "iPSC", "Intravitreal injection", "research"),
+    ("Age Rejuvenation", "Persona Reversal Epigenetic Reprogramming", "iPSC", "IV infusion", "research"),
     ("Age Rejuvenation", "Systemic MSC Infusion", "MSC", "IV infusion", "research"),
     ("Age Rejuvenation", "Exosome IV Longevity", "Exosome", "IV infusion", "research"),
     ("Age Rejuvenation", "NK Cell Immune Boost", "Immune cell", "IV infusion", "available"),

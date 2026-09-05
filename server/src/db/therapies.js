@@ -38,11 +38,11 @@ export const therapies = [
   // ── Age Rejuvenation ────────────────────────────────────────────────────
   {
     make: 'Age Rejuvenation', model: 'Persona Reversal Epigenetic Reprogramming', trim: 'OSK partial reprogramming (OCT4 · SOX2 · KLF4)', year: 2026,
-    price: 48000, monthly_price: 2000, body_type: 'iPSC', fuel_type: 'Autologous', transmission: 'Intravitreal injection',
+    price: 48000, monthly_price: 2000, body_type: 'iPSC', fuel_type: 'Autologous', transmission: 'IV infusion',
     mileage: 60, color: 'Day-case', condition: 'used', seats: null, doors: 1,
     engine: 'AAV-delivered inducible OSK (OCT4, SOX2, KLF4)', power_bhp: 57, zero_to_sixty: 1, top_speed: 7,
     economy_mpg: 12, rating: 4.3, review_count: 20, accent: AGE,
-    description: 'Built on the Partial Epigenetic Reprogramming platform, Persona Reversal uses controlled, transient expression of three classic Yamanaka transcription factors — OCT4, SOX2 and KLF4 (“OSK”) — to reset the epigenome of aged or damaged cells toward a younger, healthier state, without changing the underlying DNA sequence. Delivered as a single intravitreal gene therapy, it is being studied to rejuvenate retinal ganglion cells and restore vision in optic neuropathies such as open-angle glaucoma and NAION. First-in-human Phase 1 (investigational).'
+    description: 'Built on the Partial Epigenetic Reprogramming platform, Persona Reversal uses controlled, transient expression of three classic Yamanaka transcription factors — OCT4, SOX2 and KLF4 (“OSK”) — to reset the epigenome of aged or damaged cells toward a younger, healthier state, without changing the underlying DNA sequence. Delivered systemically as an intravenous gene therapy, it is being studied for whole-body age reversal — rejuvenating multiple tissues at once rather than a single organ — with the OSK pulse dosed against each person’s DNA-methylation profile to stay inside a safe reprogramming window. First-in-human Phase 1 (investigational).'
   },
   {
     make: 'Age Rejuvenation', model: 'Systemic MSC Infusion', trim: 'Allogeneic UC-MSC', year: 2022,

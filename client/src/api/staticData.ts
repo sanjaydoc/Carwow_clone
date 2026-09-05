@@ -13,7 +13,7 @@ export const CARS: Car[] = [
     "monthly_price": 2000,
     "body_type": "iPSC",
     "fuel_type": "Autologous",
-    "transmission": "Intravitreal injection",
+    "transmission": "IV infusion",
     "mileage": 60,
     "color": "Day-case",
     "condition": "used",
@@ -27,7 +27,7 @@ export const CARS: Car[] = [
     "rating": 4.3,
     "review_count": 20,
     "accent": "#059669",
-    "description": "Built on the Partial Epigenetic Reprogramming platform, Persona Reversal uses controlled, transient expression of three classic Yamanaka transcription factors — OCT4, SOX2 and KLF4 (“OSK”) — to reset the epigenome of aged or damaged cells toward a younger, healthier state, without changing the underlying DNA sequence. Delivered as a single intravitreal gene therapy, it is being studied to rejuvenate retinal ganglion cells and restore vision in optic neuropathies such as open-angle glaucoma and NAION. First-in-human Phase 1 (investigational)."
+    "description": "Built on the Partial Epigenetic Reprogramming platform, Persona Reversal uses controlled, transient expression of three classic Yamanaka transcription factors — OCT4, SOX2 and KLF4 (“OSK”) — to reset the epigenome of aged or damaged cells toward a younger, healthier state, without changing the underlying DNA sequence. Delivered systemically as an intravenous gene therapy, it is being studied for whole-body age reversal — rejuvenating multiple tissues at once rather than a single organ — with the OSK pulse dosed against each person’s DNA-methylation profile to stay inside a safe reprogramming window. First-in-human Phase 1 (investigational)."
   },
   {
     "id": 2,
