@@ -6,7 +6,7 @@ const FOUNDER = {
   role: 'Founder',
   // Fill these two in to finalise the profile:
   credential: 'MBBS · Regenerative Medicine & AI',   // shown under the name
-  photo: '',               // e.g. '/founder.jpg' — drop a headshot in client/public/
+  photo: '/founder.jpg',   // headshot in client/public/
   email: 'dr.sanjay@stemcellsprotocol.com',
   personalEmail: 'dr.sanjayanbu@gmail.com',
   github: 'https://github.com/sanjaydoc',
