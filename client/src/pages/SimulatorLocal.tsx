@@ -354,17 +354,23 @@ export default function SimulatorLocal() {
     }
   };
 
+  const extras = () => ({
+    safety, tumor, cycles, rejView,
+    sample: sample || datasetLabel || undefined,
+    chronoAge: age ? Number(age) : null,
+  });
+
   const runInterpret = async () => {
     setBusy('Writing plain-language summary…');
     try {
-      const payload = buildPayload(analysis, construct, ranked, undefined, disease);
-      setInterpretation((await interpret(payload)) || '(interpretation unavailable offline)');
+      const p = buildPayload(analysis, construct, ranked, undefined, disease, extras());
+      setInterpretation((await interpret(p)) || '(interpretation unavailable offline)');
     } finally {
       setBusy('');
     }
   };
 
-  const payload = () => buildPayload(analysis, construct, ranked, interpretation, disease);
+  const payload = () => buildPayload(analysis, construct, ranked, interpretation, disease, extras());
 
   const ea = analysis?.epigenetic_age;
   const showA = approach !== 'molecules';
@@ -1166,13 +1172,33 @@ function designProps(optimizeFor: string, customLogp: string) {
   }
 }
 
-function buildPayload(analysis: any, construct: any, ranked: any, interpretation?: string | null, disease?: DiseaseEntry | null) {
+function buildPayload(
+  analysis: any,
+  construct: any,
+  ranked: any,
+  interpretation?: string | null,
+  disease?: DiseaseEntry | null,
+  extras?: { safety?: any; tumor?: any; cycles?: number; rejView?: any; sample?: string; chronoAge?: number | null },
+) {
+  const { safety, tumor, cycles, rejView, sample, chronoAge } = extras || {};
+  const rej = analysis?.rejuvenation;
   return {
     disease: disease ? { name: disease.disease, department: disease.department, tissue: disease.tissue, capsid: disease.capsid } : undefined,
+    sample: sample || undefined,
+    chronological_age: chronoAge ?? undefined,
     epigenetic_age: analysis?.epigenetic_age,
+    rejuvenation: rej ? {
+      cycles: cycles ?? 1,
+      projected_age: rejView?.projected_age,
+      years_reversed: rejView?.years_reversed,
+      tissue_rejuvenation_index: rej.tissue_rejuvenation_index,
+      basis: rej.basis,
+    } : undefined,
     targets: analysis?.targets,
     construct,
     candidates: ranked?.candidates,
+    safety: safety || undefined,     // Step 6 — avatar pre-screen
+    tumor: tumor || undefined,       // Step 7 — tumorigenicity safety envelope
     interpretation: interpretation || undefined,
   };
 }

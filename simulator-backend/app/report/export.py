@@ -53,6 +53,7 @@ def build_pdf(payload: dict) -> bytes:
              Spacer(1, 8)]
 
     def kv_table(rows):
+        rows = [[str(a), str(b)] for a, b in rows]
         t = Table(rows, colWidths=[55 * mm, 110 * mm])
         t.setStyle(TableStyle([
             ("BOX", (0, 0), (-1, -1), 0.5, colors.HexColor("#cccccc")),
@@ -63,16 +64,43 @@ def build_pdf(payload: dict) -> bytes:
         ]))
         return t
 
+    # Disease / patient header
+    meta = payload.get("disease") or {}
+    patient = payload.get("sample")
+    hdr_rows = []
+    if meta.get("name"): hdr_rows.append(["Therapy / disease", meta.get("name")])
+    if meta.get("department"): hdr_rows.append(["Department", meta.get("department")])
+    if meta.get("tissue"): hdr_rows.append(["Target tissue", meta.get("tissue")])
+    if meta.get("capsid"): hdr_rows.append(["AAV capsid", str(meta.get("capsid")).upper()])
+    if patient: hdr_rows.append(["Sample / patient", patient])
+    if payload.get("chronological_age") is not None:
+        hdr_rows.append(["Chronological age", payload.get("chronological_age")])
+    if hdr_rows:
+        story += [kv_table(hdr_rows), Spacer(1, 8)]
+
     # Epigenetic age
     ea = payload.get("epigenetic_age") or {}
     if ea:
-        story += [Paragraph("Epigenetic age", h2),
+        story += [Paragraph("1 · Epigenetic age", h2),
                   kv_table([
                       ["Clock", str(ea.get("clock"))],
                       ["Predicted DNAm age (yrs)", str(ea.get("dnam_age"))],
                       ["Chronological age", str(ea.get("chronological_age"))],
                       ["Age acceleration", str(ea.get("age_acceleration"))],
                       ["CpG coverage", f"{ea.get('n_used')}/{ea.get('n_total')} ({ea.get('coverage')})"],
+                  ]), Spacer(1, 8)]
+
+    # Reprogramming projection
+    rej = payload.get("rejuvenation") or {}
+    if rej and rej.get("projected_age") is not None:
+        story += [Paragraph("2 · Reprogramming projection", h2),
+                  kv_table([
+                      ["Cycles", rej.get("cycles")],
+                      ["Projected DNAm age (yrs)", rej.get("projected_age")],
+                      ["Years reversed", rej.get("years_reversed")],
+                      ["Tissue rejuvenation index",
+                       f"{rej.get('tissue_rejuvenation_index')}%" if rej.get("tissue_rejuvenation_index") is not None else "-"],
+                      ["Basis", rej.get("basis") or "-"],
                   ]), Spacer(1, 8)]
 
     # Targets
@@ -89,12 +117,12 @@ def build_pdf(payload: dict) -> bytes:
             ("FONTSIZE", (0, 0), (-1, -1), 8),
             ("GRID", (0, 0), (-1, -1), 0.25, colors.HexColor("#e0e0e0")),
         ]))
-        story += [Paragraph("Top target CpGs", h2), tt, Spacer(1, 8)]
+        story += [Paragraph("3 · Top target CpGs", h2), tt, Spacer(1, 8)]
 
     # Construct
     con = payload.get("construct") or {}
     if con:
-        story += [Paragraph("OSK Tet-On construct (Track A)", h2),
+        story += [Paragraph("4 · OSK Tet-On construct (Track A)", h2),
                   Paragraph(f"Strategy: <b>{con.get('strategy')}</b> · Capsid: {con.get('capsid_desc')}", body)]
         for v in con.get("vectors", []):
             feats = " → ".join(f"{f['name']}({f['length']})" for f in v.get("features", []))
@@ -119,7 +147,45 @@ def build_pdf(payload: dict) -> bytes:
             ("FONTNAME", (1, 1), (1, -1), "Courier"),
             ("GRID", (0, 0), (-1, -1), 0.25, colors.HexColor("#e0e0e0")),
         ]))
-        story += [Paragraph("Candidate molecules (Track B — research hypotheses)", h2), ct, Spacer(1, 8)]
+        story += [Paragraph("5 · Candidate molecules (Track B — research hypotheses)", h2), ct, Spacer(1, 8)]
+
+    # Step 6 — Safety Implant Blob (avatar pre-screen)
+    saf = payload.get("safety") or {}
+    if saf:
+        story += [Paragraph("6 · Safety Implant Blob — avatar pre-screen", h2),
+                  kv_table([
+                      ["Host", saf.get("host")],
+                      ["Avatar cycles", saf.get("avatar_cycles")],
+                      ["Projected success — no pre-screen", f"{saf.get('projected_success_without')}%"],
+                      ["Projected success — with avatar", f"{saf.get('projected_success_with')}%"],
+                      ["Risk caught by avatar", f"{round((saf.get('risk_reduction') or 0) * 100)}%"],
+                  ]), Spacer(1, 4)]
+        if saf.get("detects"):
+            story.append(Paragraph("Avatar can see: " + "; ".join(saf["detects"]), small))
+        if saf.get("misses"):
+            story.append(Paragraph("Avatar cannot see: " + "; ".join(saf["misses"]), small))
+        story.append(Spacer(1, 8))
+
+    # Step 7 — Tumorigenicity safety envelope
+    tum = payload.get("tumor") or {}
+    if tum:
+        story += [Paragraph("7 · Tumorigenicity safety envelope", h2),
+                  kv_table([
+                      ["Risk tier", tum.get("risk_tier")],
+                      ["Estimated over-induction risk",
+                       f"{round((tum.get('estimated_risk') or 0) * 100)}% at {tum.get('requested_cycles')} cycle(s)"],
+                      ["Max safe cycles", tum.get("max_safe_cycles")],
+                      ["Tissue proliferation",
+                       f"{tum.get('tissue_proliferation_factor')}x ({tum.get('tissue_key')})"],
+                      ["Dosing", tum.get("pulse_recommendation")],
+                  ]), Spacer(1, 4)]
+        if tum.get("flags"):
+            story.append(Paragraph("Flags: " + " ".join("• " + f for f in tum["flags"]), small))
+        if tum.get("safety_by_design"):
+            story.append(Paragraph("Safety-by-design: " + "; ".join(tum["safety_by_design"]), small))
+        if tum.get("summary"):
+            story.append(Paragraph(tum["summary"], body))
+        story.append(Spacer(1, 8))
 
     # Optional Claude interpretation
     interp = payload.get("interpretation")
