@@ -662,7 +662,7 @@ async def tumor_safety(spec: dict = Body(default={})) -> dict:
         ],
         "summary": (
             f"At {cycles} cycle(s) on {tissue_key} tissue, estimated over-induction risk is "
-            f"~{int(risk*100)}% ({tier}). Estimated safe envelope: up to {max_safe} cycle(s) "
+            f"~{round(risk*100)}% ({tier}). Estimated safe envelope: up to {max_safe} cycle(s) "
             f"under transient, dose-controlled OSK with a kill-switch."
         ),
         "disclaimer": "Illustrative, personalized RISK ESTIMATION — not risk elimination, not a "
