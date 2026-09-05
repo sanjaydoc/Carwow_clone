@@ -291,7 +291,7 @@ export default function SimulatorLocal() {
     }
   };
 
-  const runTumor = async () => {
+  const runTumor = async (n: number = cycles) => {
     setTumorBusy(true);
     setError('');
     try {
@@ -303,13 +303,21 @@ export default function SimulatorLocal() {
         youth_setpoint: rej?.youth_setpoint,
         efficiency: rej?.efficiency,
         tissue_key: disease?.tissue_key,
-        cycles,
+        cycles: n,
       }));
     } catch (e: any) {
       setError(e.message || 'Tumorigenicity safety failed');
     } finally {
       setTumorBusy(false);
     }
+  };
+
+  // +/- cycles for Step 7 — live-recompute the envelope so risk updates as you step.
+  const stepTumor = (delta: number) => {
+    const n = Math.max(1, Math.min(10, cycles + delta));
+    if (n === cycles) return;
+    setCycles(n);
+    if (tumor) runTumor(n);
   };
 
   const runDesign = async () => {
@@ -1037,8 +1045,20 @@ export default function SimulatorLocal() {
               tissue's proliferation class. It estimates and mitigates risk — it does not eliminate it.
             </p>
 
-            <button onClick={runTumor} disabled={tumorBusy} className="btn-outline mt-4 px-5 py-2.5 disabled:opacity-50">
-              {tumorBusy ? 'Modelling…' : `Compute safety envelope (${cycles} cycle${cycles > 1 ? 's' : ''})`}
+            <div className="mt-4 flex flex-wrap items-center gap-3 rounded-xl border border-cream-300 bg-cream-50 p-3">
+              <span className="text-sm font-semibold text-ink-800">Reprogramming cycles</span>
+              <div className="flex items-center gap-2">
+                <button onClick={() => stepTumor(-1)} disabled={cycles <= 1 || tumorBusy}
+                        className="h-7 w-7 rounded-full border border-cream-300 bg-white text-ink-800 disabled:opacity-40">−</button>
+                <span className="w-6 text-center text-sm font-bold text-ink-900">{cycles}</span>
+                <button onClick={() => stepTumor(1)} disabled={cycles >= 10 || tumorBusy}
+                        className="h-7 w-7 rounded-full border border-cream-300 bg-white text-ink-800 disabled:opacity-40">+</button>
+              </div>
+              <span className="text-xs text-ink-700/60">Step the cycles up to watch over-induction risk climb.</span>
+            </div>
+
+            <button onClick={() => runTumor()} disabled={tumorBusy} className="btn-outline mt-3 px-5 py-2.5 disabled:opacity-50">
+              {tumorBusy ? 'Modelling…' : tumor ? `Recompute (${cycles} cycle${cycles > 1 ? 's' : ''})` : `Compute safety envelope (${cycles} cycle${cycles > 1 ? 's' : ''})`}
             </button>
 
             {tumor && (
@@ -1058,12 +1078,15 @@ export default function SimulatorLocal() {
                   <div className="mt-2 flex items-end gap-2" style={{ height: 90 }}>
                     {tumor.risk_curve.map((p: any) => {
                       const over = p.risk > tumor.risk_threshold;
+                      const sel = p.cycles === tumor.requested_cycles;
                       return (
                         <div key={p.cycles} className="flex flex-1 flex-col items-center justify-end">
+                          {sel && <span className="mb-0.5 text-[10px] font-bold text-ink-900">{Math.round(p.risk * 100)}%</span>}
                           <div className="w-full rounded-t"
-                               style={{ height: `${Math.max(4, p.risk * 100)}%`, background: over ? '#dc2626' : '#059669' }}
+                               style={{ height: `${Math.max(4, p.risk * 100)}%`, background: over ? '#dc2626' : '#059669',
+                                        outline: sel ? '2px solid #4285F4' : 'none', outlineOffset: '1px' }}
                                title={`${p.cycles} cycle(s): ${Math.round(p.risk * 100)}%`} />
-                          <span className="mt-1 text-[10px] text-ink-700/60">{p.cycles}</span>
+                          <span className={`mt-1 text-[10px] ${sel ? 'font-bold text-clay-700' : 'text-ink-700/60'}`}>{p.cycles}</span>
                         </div>
                       );
                     })}
