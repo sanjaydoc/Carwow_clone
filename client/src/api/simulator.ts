@@ -182,6 +182,17 @@ export async function safetyPrescreen(spec: any = {}): Promise<any> {
   return res.json();
 }
 
+/** Step 7 — personalized tumorigenicity safety envelope for OSK reprogramming. */
+export async function tumorSafety(spec: any = {}): Promise<any> {
+  const res = await fetch(api('/api/tumor_safety'), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(spec),
+  });
+  if (!res.ok) throw new Error((await res.json()).detail || 'Tumorigenicity safety failed');
+  return res.json();
+}
+
 /** Design an IV exosome carrier for a novel small molecule (Track B). */
 export async function deliverExosome(spec: any = {}): Promise<any> {
   const res = await fetch(api('/api/deliver/exosome'), {

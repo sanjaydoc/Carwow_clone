@@ -544,6 +544,135 @@ async def construct(spec: dict = Body(default={})) -> dict:
     return out
 
 
+# --- Step 7: Personalized Tumorigenicity Safety envelope ---------------------
+# The central danger of in-vivo OSK reprogramming is over-induction: pushed too
+# hard/long, cells lose identity and can dedifferentiate toward tumors/teratoma.
+# Risk is DOSE-DEPENDENT and PERSON- and TISSUE-SPECIFIC. This module estimates a
+# personalized safe dosing envelope from the patient's REAL computed values
+# (epigenetic-age acceleration, the reprogramming gap, tissue proliferation
+# class) — it does NOT read invented CpG panels, and it estimates/mitigates
+# risk, it does not eliminate it.
+
+# Tissue proliferation class → relative teratoma susceptibility. Post-mitotic
+# tissue (retina, CNS, heart) tolerates transient OSK far better than
+# high-turnover tissue (blood, gut, skin) — this is why the safest first-in-human
+# reprogramming targets the post-mitotic retina.
+_TISSUE_PROLIF = {
+    "retina": 0.5, "cns": 0.55, "heart": 0.6, "muscle": 0.7, "kidney": 0.85,
+    "liver": 1.0, "lung": 1.0, "skin": 1.2, "gut": 1.3, "blood": 1.4,
+    "systemic": 1.0, "generic": 1.0,
+}
+
+
+@router.post("/tumor_safety")
+async def tumor_safety(spec: dict = Body(default={})) -> dict:
+    """Personalized tumorigenicity safety envelope for OSK reprogramming.
+
+    Inputs are the patient's already-computed scalars (no file re-read):
+      dnam_age, age_acceleration, coverage, youth_setpoint, efficiency,
+      tissue_key, cycles. Returns a risk tier, the max safe cycle count, a
+      transient-pulse recommendation, per-patient flags, monitoring plan and
+      safety-by-design measures. ILLUSTRATIVE risk estimation, not a clinical
+      protocol.
+    """
+    def _f(key, default):
+        try:
+            return float(spec.get(key, default))
+        except (TypeError, ValueError):
+            return default
+
+    dnam_age = _f("dnam_age", 0.0)
+    accel = _f("age_acceleration", 0.0)          # +ve = older than chrono = more dysregulated
+    coverage = _f("coverage", 1.0)
+    floor = _f("youth_setpoint", YOUTH_SETPOINT)
+    eff = _f("efficiency", REPROG_EFFICIENCY)
+    tissue_key = (spec.get("tissue_key") or "generic")
+    cycles = max(1, min(int(spec.get("cycles") or 1), 10))
+    prolif = _TISSUE_PROLIF.get(tissue_key, 1.0)
+
+    # Gap above the young-adult setpoint = how far this person is being pushed.
+    gap = max(0.0, dnam_age - floor)
+    gap_frac = min(1.0, gap / 40.0)              # normalise (40 yr = large push)
+
+    # Baseline dysregulation from epigenetic age acceleration (real per-person).
+    baseline = 0.02 + max(0.0, accel) * 0.004    # +5 yr accel ≈ +0.02
+
+    # Per-cycle over-induction hazard scales with how hard we push AND the
+    # tissue's proliferative susceptibility.
+    per_cycle = (0.05 + 0.05 * gap_frac) * prolif
+    per_cycle = min(per_cycle, 0.45)
+
+    def risk_at(n: int) -> float:
+        return round(min(0.99, baseline + (1 - (1 - per_cycle) ** n)), 3)
+
+    risk = risk_at(cycles)
+
+    # Largest cycle count keeping estimated risk under the 15% planning threshold.
+    THRESHOLD = 0.15
+    max_safe = 0
+    for n in range(1, 11):
+        if risk_at(n) <= THRESHOLD:
+            max_safe = n
+        else:
+            break
+
+    tier = "Low" if risk < 0.10 else "Moderate" if risk < 0.20 else "High"
+
+    flags = []
+    if accel >= 5:
+        flags.append(f"Epigenetic age accelerated by +{round(accel,1)} yr — elevated baseline dysregulation; start conservative.")
+    if prolif >= 1.2:
+        flags.append(f"High-turnover tissue ({tissue_key}) — greater teratoma susceptibility; prefer localised, tightly-dosed delivery.")
+    if prolif <= 0.6:
+        flags.append(f"Post-mitotic tissue ({tissue_key}) — comparatively tolerant of transient OSK (safest reprogramming setting).")
+    if coverage < 0.8:
+        flags.append(f"CpG coverage {int(coverage*100)}% — lower confidence; treat the envelope as provisional.")
+    if cycles > max_safe:
+        flags.append(f"Requested {cycles} cycle(s) exceeds the estimated safe envelope ({max_safe}); reduce cycles or add safeguards.")
+
+    pulse = ("3–5 day dox-on pulses with ≥9-day washout, re-methylate and re-run the clock "
+             "between pulses; stop at the youth setpoint (never chase below ~{:.0f} yr).").format(floor)
+
+    return {
+        "risk_tier": tier,
+        "estimated_risk": risk,
+        "risk_threshold": THRESHOLD,
+        "max_safe_cycles": max_safe,
+        "requested_cycles": cycles,
+        "per_cycle_hazard": round(per_cycle, 3),
+        "baseline_from_acceleration": round(baseline, 3),
+        "tissue_key": tissue_key,
+        "tissue_proliferation_factor": prolif,
+        "gap_above_setpoint": round(gap, 1),
+        "risk_curve": [{"cycles": n, "risk": risk_at(n)} for n in range(1, 7)],
+        "pulse_recommendation": pulse,
+        "flags": flags,
+        "safety_by_design": [
+            "Use OSK only (omit c-Myc, the oncogenic Yamanaka factor).",
+            "Inducible, dose-controlled expression (dox-off / Tet system) — transient, never constitutive.",
+            "Built-in kill-switch (e.g., HSV-TK / ganciclovir) so induction can be aborted.",
+            "Tissue-targeted delivery (capsid + promoter) to spare high-turnover bystander tissue.",
+            "Stop at the youth setpoint; pre-screen on the Step 6 avatar before the patient.",
+        ],
+        "monitoring": [
+            "Serum AFP and tumour markers pre/post each pulse.",
+            "Imaging (MRI/ultrasound) of the target site on a fixed schedule.",
+            "Histology/biopsy of the avatar graft before dose-escalation.",
+            "Stop criteria: any AFP rise, mass on imaging, or loss-of-identity markers.",
+        ],
+        "summary": (
+            f"At {cycles} cycle(s) on {tissue_key} tissue, estimated over-induction risk is "
+            f"~{int(risk*100)}% ({tier}). Estimated safe envelope: up to {max_safe} cycle(s) "
+            f"under transient, dose-controlled OSK with a kill-switch."
+        ),
+        "disclaimer": "Illustrative, personalized RISK ESTIMATION — not risk elimination, not a "
+        "clinical protocol or regulatory pathway. Tumorigenicity remains the key unsolved barrier "
+        "for in-vivo reprogramming; these figures are planning heuristics from the patient's "
+        "epigenetic readout and published dose/tissue relationships, and require wet-lab and "
+        "clinical validation.",
+    }
+
+
 @router.post("/deliver/exosome")
 async def deliver_exosome(spec: dict = Body(default={})) -> dict:
     """Design an IV exosome carrier for a novel small molecule (Track B carrier)."""

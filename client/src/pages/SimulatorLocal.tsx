@@ -15,6 +15,7 @@ import {
   reportCsv,
   reportPdf,
   safetyPrescreen,
+  tumorSafety,
   startBatch,
   startDatasetDownload,
   startDesign,
@@ -56,6 +57,8 @@ export default function SimulatorLocal() {
   const [safetyHost, setSafetyHost] = useState('mouse');
   const [safetySens, setSafetySens] = useState(90);         // avatar screen sensitivity %
   const [safetyBusy, setSafetyBusy] = useState(false);
+  const [tumor, setTumor] = useState<any>(null);           // Step 7 tumorigenicity envelope
+  const [tumorBusy, setTumorBusy] = useState(false);
   const [analysis, setAnalysis] = useState<any>(null);
   const [construct, setConstruct] = useState<any>(null);
   const [ranked, setRanked] = useState<any>(null);
@@ -214,6 +217,7 @@ export default function SimulatorLocal() {
     setInterpretation(null);
     setCycles(1);
     setSafety(null);
+    setTumor(null);
     try {
       const res = await analyze({
         methylation: methFile,
@@ -272,6 +276,27 @@ export default function SimulatorLocal() {
       setError(e.message || 'Safety pre-screen failed');
     } finally {
       setSafetyBusy(false);
+    }
+  };
+
+  const runTumor = async () => {
+    setTumorBusy(true);
+    setError('');
+    try {
+      const rej = analysis?.rejuvenation;
+      setTumor(await tumorSafety({
+        dnam_age: ea?.dnam_age,
+        age_acceleration: ea?.age_acceleration,
+        coverage: ea?.coverage,
+        youth_setpoint: rej?.youth_setpoint,
+        efficiency: rej?.efficiency,
+        tissue_key: disease?.tissue_key,
+        cycles,
+      }));
+    } catch (e: any) {
+      setError(e.message || 'Tumorigenicity safety failed');
+    } finally {
+      setTumorBusy(false);
     }
   };
 
@@ -975,6 +1000,88 @@ export default function SimulatorLocal() {
                   </ol>
                 </div>
                 <p className="mt-2 text-[11px] italic text-ink-700/50">{safety.disclaimer}</p>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* 7 · Personalized Tumorigenicity Safety envelope */}
+      {analysis && (
+        <section className="mt-6">
+          <div className="card p-6">
+            <h2 className="font-display text-lg font-bold text-ink-900">7 · Tumorigenicity Safety <span className="text-xs font-normal text-ink-700/50">· personalized OSK dosing envelope</span></h2>
+            <p className="mt-1 text-sm text-ink-700/70">
+              Over-induction is the key danger of OSK reprogramming — pushed too hard, cells lose
+              identity and can turn tumorigenic. This estimates a <b>safe dosing envelope for this
+              patient</b> from their epigenetic-age acceleration, the reprogramming gap and the target
+              tissue's proliferation class. It estimates and mitigates risk — it does not eliminate it.
+            </p>
+
+            <button onClick={runTumor} disabled={tumorBusy} className="btn-outline mt-4 px-5 py-2.5 disabled:opacity-50">
+              {tumorBusy ? 'Modelling…' : `Compute safety envelope (${cycles} cycle${cycles > 1 ? 's' : ''})`}
+            </button>
+
+            {tumor && (
+              <div className="mt-4 text-sm">
+                <div className="flex flex-wrap gap-6">
+                  <Stat label="Risk tier" value={tumor.risk_tier}
+                        tone={tumor.risk_tier === 'Low' ? 'good' : tumor.risk_tier === 'High' ? 'bad' : undefined} big />
+                  <Stat label={`Est. over-induction risk (${tumor.requested_cycles} cyc)`} value={`${Math.round(tumor.estimated_risk * 100)}%`}
+                        tone={tumor.estimated_risk < 0.1 ? 'good' : tumor.estimated_risk >= 0.2 ? 'bad' : undefined} />
+                  <Stat label="Max safe cycles" value={`${tumor.max_safe_cycles}`} tone="good" />
+                  <Stat label="Tissue proliferation" value={`${tumor.tissue_proliferation_factor}× (${tumor.tissue_key})`} />
+                </div>
+
+                {/* Risk-by-cycle mini bar chart */}
+                <div className="mt-4 rounded-xl border border-cream-300 bg-cream-50 p-3">
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-700/50">Estimated risk by cycle count (15% planning threshold)</p>
+                  <div className="mt-2 flex items-end gap-2" style={{ height: 90 }}>
+                    {tumor.risk_curve.map((p: any) => {
+                      const over = p.risk > tumor.risk_threshold;
+                      return (
+                        <div key={p.cycles} className="flex flex-1 flex-col items-center justify-end">
+                          <div className="w-full rounded-t"
+                               style={{ height: `${Math.max(4, p.risk * 100)}%`, background: over ? '#dc2626' : '#059669' }}
+                               title={`${p.cycles} cycle(s): ${Math.round(p.risk * 100)}%`} />
+                          <span className="mt-1 text-[10px] text-ink-700/60">{p.cycles}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <p className="mt-1 text-[10px] text-ink-700/50">Green ≤ 15% · red &gt; 15%. Cycle count on the x-axis.</p>
+                </div>
+
+                {tumor.flags.length > 0 && (
+                  <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-3">
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-amber-700/80">Personalized flags</p>
+                    <ul className="mt-1 space-y-1 text-xs text-amber-900/90">
+                      {tumor.flags.map((f: string) => <li key={f}>• {f}</li>)}
+                    </ul>
+                  </div>
+                )}
+
+                <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-xl bg-cream-100 p-3">
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-green-700/70">Safety-by-design</p>
+                    <ul className="mt-1 space-y-1 text-xs text-ink-700/70">
+                      {tumor.safety_by_design.map((d: string) => <li key={d}>✓ {d}</li>)}
+                    </ul>
+                  </div>
+                  <div className="rounded-xl bg-cream-100 p-3">
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-700/50">Monitoring &amp; stop criteria</p>
+                    <ul className="mt-1 space-y-1 text-xs text-ink-700/70">
+                      {tumor.monitoring.map((d: string) => <li key={d}>• {d}</li>)}
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="mt-3 rounded-xl border border-cream-300 p-3">
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-700/50">Dosing recommendation</p>
+                  <p className="mt-1 text-xs text-ink-700/80">{tumor.pulse_recommendation}</p>
+                  <p className="mt-2 text-sm font-semibold text-ink-900">{tumor.summary}</p>
+                </div>
+                <p className="mt-2 text-[11px] italic text-ink-700/50">{tumor.disclaimer}</p>
               </div>
             )}
           </div>
