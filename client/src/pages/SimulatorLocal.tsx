@@ -147,11 +147,23 @@ export default function SimulatorLocal() {
     }
   };
 
+  // .cov / bedGraph are position-based sequencing output (not cg-id beta), so
+  // they must go through the WGBS→beta conversion before the clock can read them.
+  const COV_EXT = /\.(cov|bedgraph|bed)(\.gz)?$/i;
+
   const pickMeth = async (f: File | null) => {
-    setMethFile(f);
     setDatasetLabel(''); // uploading overrides the curated dataset
     setSamples([]);
     setSample('');
+    if (f && COV_EXT.test(f.name)) {
+      // Auto-route a .cov to the conversion step and open it.
+      setMethFile(null);
+      setWgbsFile(f);
+      if (!wgbsName) setWgbsName(f.name.replace(COV_EXT, ''));
+      setConvertMsg('Detected a .cov sequencing file — pick the genome build and click “Convert → beta” below, then Compute epigenetic age.');
+      return;
+    }
+    setMethFile(f);
     if (f) {
       try {
         setSamples(await listSamples(f));
@@ -509,9 +521,10 @@ export default function SimulatorLocal() {
             </div>
           )}
 
-          <label className="mt-4 block text-sm font-semibold text-ink-800">Methylation file (beta values)</label>
-          <input ref={methRef} type="file" accept=".csv,.txt,.tsv,.gz" className="mt-1 w-full text-sm"
+          <label className="mt-4 block text-sm font-semibold text-ink-800">Methylation file — .csv (beta values) or .cov (sequencing)</label>
+          <input ref={methRef} type="file" accept=".csv,.txt,.tsv,.cov,.bedgraph,.bed,.gz" className="mt-1 w-full text-sm"
                  onChange={(e) => pickMeth(e.target.files?.[0] ?? null)} />
+          <p className="mt-1 text-[11px] text-ink-700/50">.csv = CpG-id beta values (used directly). .cov / bedGraph = bisulfite-sequencing output → auto-routed to “Convert → beta” below.</p>
           {converted.length > 0 && (
             <div className="mt-2 rounded-xl border border-cream-300 bg-cream-50 p-2">
               <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-700/50">
@@ -551,9 +564,9 @@ export default function SimulatorLocal() {
             </>
           )}
           {/* Sequencing (WGBS/RRBS) → beta conversion (optional; array data skips this) */}
-          <details className="mt-3 rounded-xl border border-cream-300 p-3">
+          <details className="mt-3 rounded-xl border border-cream-300 p-3" open={!!wgbsFile}>
             <summary className="cursor-pointer text-sm font-semibold text-ink-800">
-              Have sequencing output (WGBS/RRBS) instead of an array? Convert it →
+              Have sequencing output (.cov / WGBS / RRBS) instead of an array? Convert it →
             </summary>
             <p className="mt-2 text-xs text-ink-700/60">
               Bisulfite sequencing reports methylation by genomic position, not <code>cg</code> id.
