@@ -81,12 +81,15 @@ def build_pdf(payload: dict) -> bytes:
     # Epigenetic age
     ea = payload.get("epigenetic_age") or {}
     if ea:
+        chrono = ea.get("chronological_age")
+        accel = ea.get("age_acceleration")
         story += [Paragraph("1 · Epigenetic age", h2),
                   kv_table([
                       ["Clock", str(ea.get("clock"))],
                       ["Predicted DNAm age (yrs)", str(ea.get("dnam_age"))],
-                      ["Chronological age", str(ea.get("chronological_age"))],
-                      ["Age acceleration", str(ea.get("age_acceleration"))],
+                      ["Chronological age", str(chrono) if chrono is not None else "Not provided"],
+                      ["Age acceleration",
+                       str(accel) if accel is not None else "— (needs chronological age)"],
                       ["CpG coverage", f"{ea.get('n_used')}/{ea.get('n_total')} ({ea.get('coverage')})"],
                   ]), Spacer(1, 8)]
 
