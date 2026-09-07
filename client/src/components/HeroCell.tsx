@@ -7,12 +7,15 @@ import { useEffect, useRef } from 'react';
  * chunk that is fetched ONLY on desktop (the wrapper is `hidden lg:block`, and the
  * effect bails out below the lg breakpoint), never loading on phones.
  */
-export default function HeroCell() {
+export default function HeroCell({ variant = 'desktop' }: { variant?: 'desktop' | 'mobile' }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const isMobile = variant === 'mobile';
 
   useEffect(() => {
-    const mq = window.matchMedia('(min-width: 1024px)');
-    if (!mq.matches) return;               // never run on mobile / small screens
+    // Desktop instance runs at ≥1024px; the small mobile instance runs below it,
+    // so the two never render at the same viewport width.
+    const mq = window.matchMedia(isMobile ? '(max-width: 1023px)' : '(min-width: 1024px)');
+    if (!mq.matches) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -35,8 +38,10 @@ export default function HeroCell() {
       const rim = new THREE.PointLight(0x35d0c0, 0.8, 20); rim.position.set(-3, -1, -2); scene.add(rim);
 
       const group = new THREE.Group(); scene.add(group);
-      group.scale.setScalar(0.29);      // 30% smaller than before (was 0.42)
-      group.position.y = 0.55;          // pushed up a little in the right zone
+      // Mobile renders in a small square box, so the cell is centred and a touch
+      // larger to fill it; desktop sits pushed up in the tall right-hand zone.
+      group.scale.setScalar(isMobile ? 0.42 : 0.29);
+      group.position.y = isMobile ? 0.05 : 0.55;
 
       // helpers
       const rnd = (a: number, b: number) => a + Math.random() * (b - a);
@@ -125,7 +130,34 @@ export default function HeroCell() {
     })();
 
     return () => { disposed = true; cleanup(); };
-  }, []);
+  }, [isMobile]);
+
+  if (isMobile) {
+    // Small rotating cell tucked into the top-right of the hero on phones only.
+    // A radial mask fades every edge so it glows out of the dark hero.
+    const radial = 'radial-gradient(circle at 52% 46%, #000 46%, rgba(0,0,0,0.55) 66%, transparent 78%)';
+    return (
+      <div
+        className="pointer-events-none absolute lg:hidden"
+        aria-hidden="true"
+        style={{
+          // Viewport-relative so it scales proportionally on every device —
+          // small Androids, iPhones and tablets — capped so it can't get huge
+          // on large tablets. Sits in the empty right-hand gap beside the hero
+          // heading / launcher buttons (a small negative right offset hugs the
+          // edge so the cell doesn't crowd the paragraph text).
+          width: 'min(76vw, 380px)',
+          height: 'min(76vw, 380px)',
+          top: 'clamp(95px, 27vw, 200px)',
+          right: '-7%',
+          WebkitMaskImage: radial,
+          maskImage: radial,
+        }}
+      >
+        <canvas ref={canvasRef} className="h-full w-full" />
+      </div>
+    );
+  }
 
   return (
     <div
