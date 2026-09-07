@@ -883,13 +883,6 @@ export default function ChatWidget() {
                   </button>
                 )}
               </div>
-              <p className="mt-2 text-center text-[11px] leading-tight text-ink-700/55">
-                🧬 Methylation: an array beta <b>.csv</b> (cg IDs + values) or a bisulfite <b>.cov</b>/bedGraph — runs on your device.
-              </p>
-              <p className="mt-1 text-center text-[11px] leading-tight text-ink-700/50">
-                AI can be inaccurate. Not a diagnosis or prescription. For emergencies call your local
-                emergency number.
-              </p>
             </div>
           </div>
         </div>
