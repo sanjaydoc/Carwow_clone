@@ -26,6 +26,7 @@ import Specialists from './pages/Specialists';
 import Safety from './pages/Safety';
 import Protocols from './pages/Protocols';
 import ProtocolDetail from './pages/ProtocolDetail';
+import FacilityDetail from './pages/FacilityDetail';
 import WaitingList from './pages/WaitingList';
 import NotFound from './pages/NotFound';
 
@@ -81,6 +82,7 @@ export default function App() {
           <Route path="/specialists" element={<Specialists />} />
           <Route path="/safety" element={<Safety />} />
           <Route path="/protocols" element={<Protocols />} />
+          <Route path="/protocols/facility/:level" element={<FacilityDetail />} />
           <Route path="/protocols/:code" element={<ProtocolDetail />} />
           <Route path="/waiting-list" element={<WaitingList />} />
           <Route path="*" element={<NotFound />} />
