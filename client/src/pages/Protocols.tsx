@@ -247,31 +247,28 @@ export default function Protocols() {
       </section>
 
       {/* Facility levels */}
-      <section className="border-t border-cream-300 bg-cream-50/50">
-        <div className="container-x py-10">
+      <section className="neu-section border-t border-cream-300">
+        <div className="container-x py-12">
           <h2 className="font-display text-2xl font-extrabold text-ink-900">StemCells Protocol facility levels</h2>
           <p className="mt-1 max-w-3xl text-ink-700/70">
             A phased build — a clinic that earns from day one funds the climb to a full cell &amp; gene-therapy
             centre. Each level adds capability and unlocks more of the catalogue.
           </p>
-          <div className="mt-6 grid gap-5 lg:grid-cols-3">
-            {LEVELS.map((lv) => (
-              <Link key={lv.n} to={`/protocols/facility/${lv.n}`} className="card group flex flex-col overflow-hidden p-0 transition hover:-translate-y-0.5 hover:shadow-lg" style={{ borderTop: `3px solid ${lv.accent}` }}>
-                <div className="p-5">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="rounded-lg px-2.5 py-1 font-mono text-xs font-bold text-white" style={{ background: lv.accent }}>
-                      LEVEL {lv.n}
-                    </span>
-                    <div className="text-right">
-                      <p className="font-display text-lg font-extrabold leading-none" style={{ color: lv.accent }}>{lv.cost}</p>
-                      <p className="mt-1 text-[11px] text-ink-700/55">{lv.costNote}</p>
-                    </div>
+          <div className="mt-7 grid gap-6 lg:grid-cols-3">
+            {LEVELS.map((lv, i) => (
+              <Link key={lv.n} to={`/protocols/facility/${lv.n}`} className="neu-card group flex flex-col p-5">
+                <div className="flex items-center gap-3">
+                  <span className="neu-med grid h-11 w-11 shrink-0 place-items-center rounded-full font-display text-lg font-bold text-white" style={{ background: MED_BLUE[i] }}>
+                    {lv.n}
+                  </span>
+                  <div className="min-w-0">
+                    <p className="font-mono text-[10px] font-semibold tracking-wide text-clay-600">LEVEL {lv.n} · {lv.cost}</p>
+                    <h3 className="font-display text-base font-bold leading-snug text-ink-900">{lv.name}</h3>
                   </div>
-                  <h3 className="mt-3 font-display text-base font-bold text-ink-900">{lv.name}</h3>
-                  <p className="mt-1 text-xs font-semibold" style={{ color: lv.accent }}>{lv.cumulative}</p>
-                  <p className="mt-2 text-sm text-ink-700/70">{lv.adds}</p>
                 </div>
-                <div className="mt-auto border-t border-cream-300 bg-white/60 p-5">
+                <p className="mt-2 text-xs font-semibold text-clay-600">{lv.cumulative}</p>
+                <p className="mt-2 text-sm text-ink-700/70">{lv.adds}</p>
+                <div className="neu-well mt-auto p-4">
                   <p className="mb-2.5 text-[11px] font-semibold uppercase tracking-wide text-ink-700/50">Therapies unlocked</p>
                   <div className="flex flex-wrap gap-1.5">
                     {lv.unlocks.map((u) => (
@@ -279,16 +276,16 @@ export default function Protocols() {
                         key={u.label}
                         className="rounded-md px-2 py-1 text-xs font-medium"
                         style={u.flag
-                          ? { background: lv.accent, color: '#fff' }
-                          : { background: `${lv.accent}18`, color: lv.accent }}
+                          ? { background: '#2f6fe0', color: '#fff' }
+                          : { background: 'rgba(47,111,224,0.12)', color: '#1f59c2' }}
                       >
                         {u.flag && '★ '}{u.label}
                       </span>
                     ))}
                   </div>
                   {lv.unlockNote && <p className="mt-3 text-xs italic text-ink-700/60">{lv.unlockNote}</p>}
-                  <p className="mt-3 text-xs font-semibold" style={{ color: lv.accent }}>View equipment &amp; costs →</p>
                 </div>
+                <p className="mt-4 text-xs font-semibold text-clay-600 transition group-hover:text-clay-700">View equipment &amp; costs →</p>
               </Link>
             ))}
           </div>

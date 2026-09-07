@@ -194,3 +194,21 @@
   background: #e4eaf4;
   box-shadow: 3px 3px 7px #c0c9dc, -3px -3px 7px #ffffff;
 }
+
+/* ── Neumorphic facility-level cards (blue, lower /protocols section) ── */
+.neu-section { background: #e6ecf6; }
+.neu-card {
+  background: #e6ecf6;
+  border-radius: 20px;
+  box-shadow: 8px 8px 18px #c8d0df, -8px -8px 18px #ffffff;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.neu-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 11px 11px 24px #c2cbdb, -11px -11px 24px #ffffff;
+}
+.neu-well {
+  background: #e6ecf6;
+  border-radius: 14px;
+  box-shadow: inset 4px 4px 9px #cdd5e3, inset -4px -4px 9px #ffffff;
+}
