@@ -32,7 +32,9 @@ function stepsFor(isReprog: boolean): Kind[] {
 
 const SCAN_MS = 780;
 const prefersReduced = typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
-const IMM_TIER_COLOR = (t: string) => (t === 'Low' ? '#4ade80' : t === 'High' ? '#f87171' : '#fbbf24');
+// Likelihood of common, usually-mild reactions — not a severity grade, so the
+// top tier is a calm informational blue rather than an alarming red.
+const IMM_TIER_COLOR = (t: string) => (t === 'Uncommon' ? '#4ade80' : t === 'Common' ? '#60a5fa' : '#fbbf24');
 
 function useCountUp(target: number, active: boolean, ms = 800, decimals = 0) {
   const [v, setV] = useState(active ? target : 0);
@@ -277,7 +279,7 @@ function StepCard({ kind, num, run, rej, regen, t, im, cycles, cycleLabel, onSte
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', marginBottom: 8 }}>
                 <div>
                   <div style={{ fontSize: 22, fontWeight: 800, color: IMM_TIER_COLOR(im.overall_tier), lineHeight: 1 }}>{im.overall_tier}</div>
-                  <div style={{ fontSize: 10, color: '#9fb4d8' }}>OVERALL AE RISK</div>
+                  <div style={{ fontSize: 10, color: '#9fb4d8' }}>SYMPTOM OUTLOOK · usually mild</div>
                 </div>
                 {im.comorbidities?.length > 0 && (
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginLeft: 4 }}>

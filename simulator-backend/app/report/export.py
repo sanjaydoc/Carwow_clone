@@ -62,6 +62,14 @@ def _tint(c: Color, f: float) -> Color:
 
 def _tier_color(tier: str | None) -> Color:
     t = (tier or "").lower()
+    # immune symptom-likelihood scale (not severity) — top tier is calm blue, not red
+    if t.startswith("uncommon"):
+        return GREEN
+    if t.startswith("possible"):
+        return AMBER
+    if t.startswith("common"):
+        return PRIMARY
+    # tumorigenicity / other severity tiers
     if t.startswith("low"):
         return GREEN
     if t.startswith("mod"):
@@ -775,7 +783,7 @@ def build_pdf(payload: dict) -> bytes:
     if imm and imm.get("classes"):
         ic = _tier_color(imm.get("overall_tier"))
         block = [SectionHeader("8", "Immune & adverse-event safety envelope", ic), Spacer(1, 4)]
-        head = f"Overall relative AE risk: <b>{imm.get('overall_tier')}</b>"
+        head = f"Overall symptom outlook: <b>{imm.get('overall_tier')}</b> <font size=8>(usually mild &amp; short-lived)</font>"
         if imm.get("comorbidities"):
             head += " &nbsp;·&nbsp; Comorbidities: " + ", ".join(imm["comorbidities"])
         block += [Paragraph(head, body), Spacer(1, 4),

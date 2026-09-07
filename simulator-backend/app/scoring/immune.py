@@ -208,7 +208,8 @@ def _tests_for(tissue_key: str, buckets: set[str]) -> list[str]:
 
 
 def _tier_of(x: float) -> str:
-    return "Low" if x < 0.25 else "Moderate" if x < 0.5 else "High"
+    # Likelihood of common, usually-mild reactions (not a severity grade).
+    return "Uncommon" if x < 0.25 else "Possible" if x < 0.5 else "Common"
 
 
 def immune_safety(
@@ -262,8 +263,8 @@ def immune_safety(
         all_drivers.extend(drivers)
 
     classes.sort(key=lambda c: c["index"], reverse=True)
-    order = ["Low", "Moderate", "High"]
-    overall = "Low"
+    order = ["Uncommon", "Possible", "Common"]
+    overall = "Uncommon"
     for c in classes:
         if order.index(c["tier"]) > order.index(overall):
             overall = c["tier"]
@@ -287,11 +288,12 @@ def immune_safety(
                     for k in selected]
     lead = classes[0] if classes else None
     if lead:
-        summary = (f"Leading risk for this route is {lead['label'].lower()} ({lead['tier']}). "
-                   f"Overall relative adverse-event risk: {overall}. This is a relative, probabilistic read "
+        summary = (f"Most likely reaction for this route is {lead['label'].lower()} ({lead['tier'].lower()}) — "
+                   "these are usually mild, short-lived and managed with premedication and observation. "
+                   f"Overall symptom outlook: {overall.lower()}. A relative, probabilistic read "
                    "from your epigenetic profile + history — not a yes/no verdict.")
     else:
-        summary = f"Overall relative adverse-event risk: {overall}."
+        summary = f"Overall symptom outlook: {overall.lower()}."
 
     return {
         "overall_tier": overall,
@@ -302,8 +304,8 @@ def immune_safety(
         "cant_see": _CANT_SEE,
         "comorbidities": comorb_names,
         "summary": summary,
-        "disclaimer": "Illustrative, RELATIVE immune / adverse-event risk stratification — not a diagnosis or a "
-        "yes/no prediction. A methylation file is not a genotype: it cannot read HLA type or clotting variants, "
+        "disclaimer": "Illustrative likelihood of common, usually-mild infusion/procedure reactions — not a severity "
+        "grade, diagnosis or yes/no prediction. A methylation file is not a genotype: it cannot read HLA type or clotting variants, "
         "and it cannot see the product or clinic. It informs the conversation with your clinician; it does not "
         "replace it. Not medical advice.",
     }

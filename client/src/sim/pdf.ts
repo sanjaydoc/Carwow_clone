@@ -21,6 +21,11 @@ function tint(c: RGB, f: number): RGB {
 }
 function tierColor(t?: string): RGB {
   const s = (t || '').toLowerCase();
+  // immune symptom-likelihood scale (not severity) — top tier is calm blue, not red
+  if (s.startsWith('uncommon')) return GREEN;
+  if (s.startsWith('possible')) return AMBER;
+  if (s.startsWith('common')) return PRIMARY;
+  // tumorigenicity / other severity tiers
   if (s.startsWith('low')) return GREEN;
   if (s.startsWith('mod')) return AMBER;
   if (s.startsWith('high')) return RED;
@@ -308,7 +313,7 @@ export function exportSimPdf(p: any, filename = 'StemCells-Simulator-Report.pdf'
     // overall tier + comorbidity chips
     need(24);
     txt(INK); doc.setFont('helvetica', 'bold'); doc.setFontSize(9.5);
-    doc.text(`Overall relative AE risk: `, M, y + 4);
+    doc.text(`Overall symptom outlook: `, M, y + 4);
     txt(ic); doc.text(String(imm.overall_tier), M + 118, y + 4);
     if (imm.comorbidities?.length) {
       txt(SUB); doc.setFont('helvetica', 'normal'); doc.setFontSize(8);

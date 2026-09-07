@@ -1254,8 +1254,8 @@ export default function SimulatorLocal() {
             {immune && (
               <div className="mt-4 text-sm">
                 <div className="flex flex-wrap items-center gap-4">
-                  <Stat label="Overall AE risk" value={immune.overall_tier}
-                        tone={immune.overall_tier === 'Low' ? 'good' : immune.overall_tier === 'High' ? 'bad' : undefined} big />
+                  <Stat label="Symptom outlook" value={immune.overall_tier}
+                        tone={immune.overall_tier === 'Uncommon' ? 'good' : undefined} big />
                   {immune.comorbidities?.length > 0 && (
                     <div className="flex flex-wrap gap-1.5">
                       {immune.comorbidities.map((c: string) => (
@@ -1268,7 +1268,7 @@ export default function SimulatorLocal() {
                 {/* per-class risk bars */}
                 <div className="mt-4 space-y-2.5">
                   {immune.classes.map((c: any) => {
-                    const col = c.tier === 'Low' ? '#16a34a' : c.tier === 'High' ? '#dc2626' : '#f59e0b';
+                    const col = c.tier === 'Uncommon' ? '#16a34a' : c.tier === 'Common' ? '#2563eb' : '#f59e0b';
                     return (
                       <div key={c.key}>
                         <div className="flex justify-between text-xs">

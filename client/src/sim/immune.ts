@@ -246,8 +246,11 @@ export interface ImmuneEnvelope {
   disclaimer: string;
 }
 
+// Likelihood of experiencing the symptom class — framed as expectedness, not
+// severity. These reactions are common, usually mild and self-limiting; we do
+// not want to alarm patients with a severity-style "High risk" badge.
 function tierOf(x: number): string {
-  return x < 0.25 ? 'Low' : x < 0.5 ? 'Moderate' : 'High';
+  return x < 0.25 ? 'Uncommon' : x < 0.5 ? 'Possible' : 'Common';
 }
 
 export function immuneSafety(opts: {
@@ -303,8 +306,8 @@ export function immuneSafety(opts: {
   });
 
   classes.sort((a, b) => b.index - a.index);
-  const order = ['Low', 'Moderate', 'High'];
-  const overall = classes.reduce((mx, c) => (order.indexOf(c.tier) > order.indexOf(mx) ? c.tier : mx), 'Low');
+  const order = ['Uncommon', 'Possible', 'Common'];
+  const overall = classes.reduce((mx, c) => (order.indexOf(c.tier) > order.indexOf(mx) ? c.tier : mx), 'Uncommon');
 
   const modifiable: string[] = [];
   if (accel >= 5) modifiable.push(`Elevated inflammatory baseline (age-acceleration +${Math.round(accel * 10) / 10} yr) is partly reversible — reduce it and re-test before therapy.`);
@@ -317,8 +320,8 @@ export function immuneSafety(opts: {
   const comorbNames = selected.map((k) => (COND_BY_KEY[k]?.label || k) + (k === implied ? ' (indication)' : ''));
   const lead = classes[0];
   const summary = lead
-    ? `Leading risk for this route is ${lead.label.toLowerCase()} (${lead.tier}). Overall relative adverse-event risk: ${overall}. This is a relative, probabilistic read from your epigenetic profile + history — not a yes/no verdict.`
-    : `Overall relative adverse-event risk: ${overall}.`;
+    ? `Most likely reaction for this route is ${lead.label.toLowerCase()} (${lead.tier.toLowerCase()}) — these are usually mild, short-lived and managed with premedication and observation. Overall symptom outlook: ${overall.toLowerCase()}. A relative, probabilistic read from your epigenetic profile + history — not a yes/no verdict.`
+    : `Overall symptom outlook: ${overall.toLowerCase()}.`;
 
   return {
     overall_tier: overall,
@@ -329,7 +332,7 @@ export function immuneSafety(opts: {
     cant_see: CANT_SEE,
     comorbidities: comorbNames,
     summary,
-    disclaimer: 'Illustrative, RELATIVE immune / adverse-event risk stratification — not a diagnosis or a yes/no prediction. '
+    disclaimer: 'Illustrative likelihood of common, usually-mild infusion/procedure reactions — not a severity grade, diagnosis or yes/no prediction. '
       + 'A methylation file is not a genotype: it cannot read HLA type or clotting variants, and it cannot see the product or clinic. '
       + 'It informs the conversation with your clinician; it does not replace it. Not medical advice.',
   };
