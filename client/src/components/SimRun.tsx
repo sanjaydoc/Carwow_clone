@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import type { CSSProperties } from 'react';
 import type { FullRun } from '../sim/full';
 import { summarizeRun } from '../sim/full';
 import { exportSimPdf } from '../sim/pdf';
@@ -68,6 +69,19 @@ function Bar({ pct, color, height = 8 }: { pct: number; color: string; height?: 
 }
 
 const stepBtn = { width: 26, height: 26, borderRadius: 99, border: 0, background: '#fff', color: C.blue, fontSize: 16, fontWeight: 700, cursor: 'pointer', lineHeight: '22px', boxShadow: '2px 2px 5px rgba(21,58,124,.16), -2px -2px 5px #ffffff' } as const;
+
+// Raised neumorphic pill — soft blue-tinted drop shadow + white highlight on a
+// near-white ground so it reads as a lifted chip rather than a flat tag.
+const neuPill = (fg: string, bg = '#f1f6fd', weight = 600): CSSProperties => ({
+  display: 'inline-block', background: bg, color: fg, border: 0, borderRadius: 99,
+  padding: '4px 12px', fontSize: 11.5, fontWeight: weight, lineHeight: 1.35,
+  boxShadow: '3px 3px 7px rgba(21,58,124,.16), -3px -3px 6px #ffffff',
+});
+// Raised neumorphic panel for the two advisory boxes.
+const neuBox = (bg: string): CSSProperties => ({
+  background: bg, border: 0, borderRadius: 12, padding: '9px 11px',
+  boxShadow: '5px 5px 13px rgba(21,58,124,.13), -4px -4px 10px #ffffff',
+});
 
 function Stepper({ label, cycles, onStep, hint }: { label: string; cycles: number; onStep: (d: number) => void; hint?: string }) {
   return (
@@ -179,11 +193,11 @@ function StepCard({ kind, num, run, rej, regen, t, im, cycles, cycleLabel, onSte
       {revealed && (
         <div style={{ fontSize: 12.5, color: C.ink }}>
           {kind === 'sample' && (
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
               {[run.disease.name, run.disease.tissue, isReprog ? `capsid ${run.disease.capsid.toUpperCase()}` : 'IV exosome', run.disease.route].map((x) => (
-                <span key={x} style={{ background: 'rgba(66,133,244,.10)', color: C.blue, border: '1px solid rgba(66,133,244,.22)', borderRadius: 99, padding: '3px 10px', fontSize: 11.5, fontWeight: 600 }}>{x}</span>
+                <span key={x} style={neuPill(C.blue)}>{x}</span>
               ))}
-              <span style={{ background: isReprog ? 'rgba(124,58,237,.10)' : 'rgba(22,163,74,.10)', color: isReprog ? C.purple : '#15803d', border: `1px solid ${isReprog ? 'rgba(124,58,237,.28)' : 'rgba(22,163,74,.28)'}`, borderRadius: 99, padding: '3px 10px', fontSize: 11.5, fontWeight: 700 }}>
+              <span style={neuPill(isReprog ? C.purple : '#15803d', isReprog ? '#f5f1fe' : '#eefaf1', 700)}>
                 {isReprog ? 'Reprogramming (OSK)' : 'Cell / regenerative therapy'}
               </span>
             </div>
@@ -290,7 +304,7 @@ function StepCard({ kind, num, run, rej, regen, t, im, cycles, cycleLabel, onSte
                 {im.comorbidities?.length > 0 && (
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginLeft: 4 }}>
                     {im.comorbidities.map((c: string) => (
-                      <span key={c} style={{ background: 'rgba(217,119,6,.12)', color: '#b45309', border: '1px solid rgba(217,119,6,.3)', borderRadius: 99, padding: '2px 8px', fontSize: 10.5, fontWeight: 600 }}>{c}</span>
+                      <span key={c} style={neuPill('#b45309', '#fdf5ea', 700)}>{c}</span>
                     ))}
                   </div>
                 )}
@@ -307,13 +321,19 @@ function StepCard({ kind, num, run, rej, regen, t, im, cycles, cycleLabel, onSte
                   </div>
                 ))}
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginTop: 10 }}>
-                <div style={{ background: 'rgba(220,38,38,.05)', border: '1px solid rgba(220,38,38,.2)', borderRadius: 10, padding: '7px 9px' }}>
-                  <div style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: '.08em', color: '#b91c1c', marginBottom: 3 }}>WHAT THIS CAN'T SEE</div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: 12 }}>
+                <div style={neuBox('#fdf4f4')}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 9.5, fontWeight: 800, letterSpacing: '.08em', color: '#b91c1c', marginBottom: 5 }}>
+                    <span style={{ display: 'inline-grid', placeItems: 'center', width: 15, height: 15, borderRadius: 99, background: '#fde8e8', color: '#b91c1c', fontSize: 10, boxShadow: 'inset 1px 1px 2px rgba(185,28,28,.18), -1px -1px 2px #ffffff' }}>👁</span>
+                    WHAT THIS CAN'T SEE
+                  </div>
                   {im.cant_see.slice(0, 3).map((x: string) => <div key={x} style={{ fontSize: 10, color: C.ink, marginBottom: 2 }}>✗ {x}</div>)}
                 </div>
-                <div style={{ background: 'rgba(66,133,244,.06)', border: '1px solid rgba(66,133,244,.25)', borderRadius: 10, padding: '7px 9px' }}>
-                  <div style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: '.08em', color: C.blue, marginBottom: 3 }}>ASK YOUR CLINICIAN FOR</div>
+                <div style={neuBox('#f1f6fe')}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 9.5, fontWeight: 800, letterSpacing: '.08em', color: C.blue, marginBottom: 5 }}>
+                    <span style={{ display: 'inline-grid', placeItems: 'center', width: 15, height: 15, borderRadius: 99, background: '#e3edfe', color: C.blue, fontSize: 10, boxShadow: 'inset 1px 1px 2px rgba(47,111,224,.2), -1px -1px 2px #ffffff' }}>✓</span>
+                    ASK YOUR CLINICIAN FOR
+                  </div>
                   {im.tests_to_ask.slice(0, 3).map((x: string) => <div key={x} style={{ fontSize: 10, color: C.ink, marginBottom: 2 }}>• {x}</div>)}
                 </div>
               </div>
