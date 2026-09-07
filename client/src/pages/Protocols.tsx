@@ -30,6 +30,49 @@ const ROUTES: { icon: IconName; name: string; scope: Scope; blurb: string }[] = 
   { icon: 'microscope', name: 'Portal / Subretinal', scope: 'Targeted', blurb: 'Organ-specific access — portal vein for liver or islet cells, subretinal delivery beneath the retina for eye therapies.' },
 ];
 
+// StemCells Protocol facility levels — the capital-staircase from an outpatient
+// clinic to a full cell & gene-therapy centre, and the catalogue each unlocks.
+type Level = {
+  n: string; accent: string; name: string; cost: string; costNote: string;
+  cumulative: string; adds: string; unlocks: { label: string; flag?: boolean }[]; unlockNote?: string;
+};
+const LEVELS: Level[] = [
+  {
+    n: '1', accent: '#4285F4', name: 'Outpatient administration clinic', cost: '$50–150k', costNote: 'one-time · live now',
+    cumulative: '≈ 40 of 64 therapies',
+    adds: 'The minimum kit — cold chain, aseptic prep, IV & injection administration, monitoring and emergency readiness (product supplied by a GMP manufacturer).',
+    unlocks: [
+      { label: 'All MSC IV infusions (age-rejuvenation, autoimmune, organ)' },
+      { label: 'IV & topical exosome therapies' },
+      { label: 'Intra-articular & local injections' },
+      { label: 'PRP' },
+    ],
+    unlockNote: 'Covers every Phase-1 revenue therapy from day one.',
+  },
+  {
+    n: '2', accent: '#22c55e', name: 'Interventional & day-procedure centre', cost: '+$0.2–0.8M', costNote: 'added · cath lab optional',
+    cumulative: '≈ 54 of 64 therapies',
+    adds: 'A minor-OR / day-surgery suite, image guidance (C-arm + ultrasound), point-of-care processing (SVF / BMAC), short-stay beds and harvest suites; optional cath lab.',
+    unlocks: [
+      { label: 'Post-MI repair' }, { label: 'Heart failure' }, { label: 'Cardiosphere' },
+      { label: 'Critical limb ischaemia' }, { label: 'Alveolar bone' }, { label: 'Non-union fracture' },
+    ],
+    unlockNote: 'Plus it graduates Level 1’s dental, disc, fat-grafting + SVF, ALS-intrathecal and inpatient (GvHD / ARDS / AKI) therapies to native.',
+  },
+  {
+    n: '3', accent: '#a855f7', name: 'Advanced cell & gene-therapy centre', cost: '$5–50M', costNote: 'owned · or via CDMO',
+    cumulative: '64 of 64 — the full catalogue',
+    adds: 'Full GMP manufacturing, apheresis, a cryo cell-bank, QC lab, and transplant & gene-therapy programmes — or reached capital-light via a CDMO + partner hospital (the seed’s route to first-in-human).',
+    unlocks: [
+      { label: 'Persona Reversal — age reversal', flag: true }, { label: 'Persona Reversal — renal', flag: true },
+      { label: 'CCR5 transplants & gene-edits' }, { label: 'MS aHSCT' }, { label: 'Systemic sclerosis HSCT' },
+      { label: 'NK-cell & thymic' }, { label: 'Type 1 diabetes islets' }, { label: 'Spinal-cord iPSC' },
+      { label: 'FSHD' }, { label: 'Parkinson’s iPSC' }, { label: 'Whole-tooth' }, { label: 'Airway epithelium' },
+    ],
+    unlockNote: 'The flagship Persona Reversal reprogramming platform lives here — the tier the seed round funds.',
+  },
+];
+
 export default function Protocols() {
   const [cat, setCat] = useState<Category | 'ALL'>('ALL');
   const [q, setQ] = useState('');
@@ -158,6 +201,58 @@ export default function Protocols() {
           Scope: <b>Systemic</b> = whole-body via the circulation · <b>Local</b> = placed at the target · <b>Surface</b> =
           skin / wound · <b>Targeted</b> = organ-specific access. Route detail and risks are listed on each protocol page.
         </p>
+      </section>
+
+      {/* Facility levels */}
+      <section className="border-t border-cream-300 bg-cream-50/50">
+        <div className="container-x py-10">
+          <h2 className="font-display text-2xl font-extrabold text-ink-900">StemCells Protocol facility levels</h2>
+          <p className="mt-1 max-w-3xl text-ink-700/70">
+            A phased build — a clinic that earns from day one funds the climb to a full cell &amp; gene-therapy
+            centre. Each level adds capability and unlocks more of the catalogue.
+          </p>
+          <div className="mt-6 grid gap-5 lg:grid-cols-3">
+            {LEVELS.map((lv) => (
+              <div key={lv.n} className="card flex flex-col overflow-hidden p-0" style={{ borderTop: `3px solid ${lv.accent}` }}>
+                <div className="p-5">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="rounded-lg px-2.5 py-1 font-mono text-xs font-bold text-white" style={{ background: lv.accent }}>
+                      LEVEL {lv.n}
+                    </span>
+                    <div className="text-right">
+                      <p className="font-display text-lg font-extrabold leading-none" style={{ color: lv.accent }}>{lv.cost}</p>
+                      <p className="mt-1 text-[11px] text-ink-700/55">{lv.costNote}</p>
+                    </div>
+                  </div>
+                  <h3 className="mt-3 font-display text-base font-bold text-ink-900">{lv.name}</h3>
+                  <p className="mt-1 text-xs font-semibold" style={{ color: lv.accent }}>{lv.cumulative}</p>
+                  <p className="mt-2 text-sm text-ink-700/70">{lv.adds}</p>
+                </div>
+                <div className="mt-auto border-t border-cream-300 bg-white/60 p-5">
+                  <p className="mb-2.5 text-[11px] font-semibold uppercase tracking-wide text-ink-700/50">Therapies unlocked</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {lv.unlocks.map((u) => (
+                      <span
+                        key={u.label}
+                        className="rounded-md px-2 py-1 text-xs font-medium"
+                        style={u.flag
+                          ? { background: lv.accent, color: '#fff' }
+                          : { background: `${lv.accent}18`, color: lv.accent }}
+                      >
+                        {u.flag && '★ '}{u.label}
+                      </span>
+                    ))}
+                  </div>
+                  {lv.unlockNote && <p className="mt-3 text-xs italic text-ink-700/60">{lv.unlockNote}</p>}
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="mt-4 text-xs italic text-ink-700/55">
+            Costs are representative new-equipment ballparks and therapy mappings are guidance — validation-required,
+            not a compliance or investment guarantee. Level 3 is reachable capital-light via a CDMO + partner hospital.
+          </p>
+        </div>
       </section>
 
       {/* Registry */}
