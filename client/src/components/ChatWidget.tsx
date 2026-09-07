@@ -104,6 +104,7 @@ function loadMessages(): UIMsg[] {
 }
 
 const OPEN_KEY = 'scp_chat_open';
+const EXPAND_KEY = 'scp_chat_expanded';
 
 export default function ChatWidget() {
   // Persist the open state for the browser session so a remount (e.g. a mobile
@@ -115,6 +116,14 @@ export default function ChatWidget() {
   useEffect(() => {
     try { sessionStorage.setItem(OPEN_KEY, open ? '1' : '0'); } catch { /* ignore */ }
   }, [open]);
+  // Desktop-only "expand" — widens/heightens the floating panel. Persisted for
+  // the session; ignored on mobile (the panel is a full-width bottom sheet there).
+  const [expanded, setExpanded] = useState<boolean>(() => {
+    try { return sessionStorage.getItem(EXPAND_KEY) === '1'; } catch { return false; }
+  });
+  useEffect(() => {
+    try { sessionStorage.setItem(EXPAND_KEY, expanded ? '1' : '0'); } catch { /* ignore */ }
+  }, [expanded]);
   const [messages, setMessages] = useState<UIMsg[]>(loadMessages);
   const [input, setInput] = useState('');
   const [attachments, setAttachments] = useState<Attachment[]>([]);
@@ -585,7 +594,13 @@ export default function ChatWidget() {
       {/* Chat panel — floating on desktop, bottom sheet on mobile */}
       {open && (
         <div className="fixed inset-x-0 bottom-0 z-[60] sm:inset-x-auto sm:bottom-6 sm:right-6">
-          <div className="mx-auto flex h-[85vh] w-full flex-col overflow-hidden rounded-t-3xl bg-white shadow-2xl ring-1 ring-ink-900/10 sm:h-[600px] sm:max-h-[80vh] sm:w-[400px] sm:rounded-3xl">
+          <div
+            className={`mx-auto flex h-[85vh] w-full flex-col overflow-hidden rounded-t-3xl bg-white shadow-2xl ring-1 ring-ink-900/10 transition-[width,height] duration-200 sm:max-h-[92vh] sm:rounded-3xl ${
+              expanded
+                ? 'sm:h-[88vh] sm:w-[720px]'
+                : 'sm:h-[600px] sm:max-h-[80vh] sm:w-[400px]'
+            }`}
+          >
             {/* Header */}
             <div className="flex items-center gap-3 bg-ink-900 px-4 py-3.5 text-white">
               <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-clay-500">
@@ -640,6 +655,23 @@ export default function ChatWidget() {
                   )}
                 </div>
               )}
+              <button
+                type="button"
+                onClick={() => setExpanded((v) => !v)}
+                aria-label={expanded ? 'Shrink chat' : 'Expand chat'}
+                title={expanded ? 'Shrink' : 'Expand'}
+                className="hidden h-8 w-8 place-items-center rounded-lg text-white/70 transition hover:bg-white/10 hover:text-white sm:grid"
+              >
+                {expanded ? (
+                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M9 9L4 4m0 0v4m0-4h4M15 9l5-5m0 0v4m0-4h-4M9 15l-5 5m0 0v-4m0 4h4M15 15l5 5m0 0v-4m0 4h-4" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M4 9V4m0 0h5M4 4l6 6M20 9V4m0 0h-5m5 0l-6 6M4 15v5m0 0h5m-5 0l6-6M20 15v5m0 0h-5m5 0l-6-6" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                )}
+              </button>
               <button
                 type="button"
                 onClick={() => setOpen(false)}

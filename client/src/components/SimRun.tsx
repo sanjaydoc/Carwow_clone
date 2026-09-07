@@ -6,10 +6,17 @@ import { projectRejuvenation, projectRegeneration, tumorSafety } from '../sim/pi
 import { immuneSafety } from '../sim/immune';
 import { modalityOf } from '../sim/catalog';
 
-/* Animated, sci-fi simulator run rendered inside the chat / on the page.
-   The step list adapts to the therapy MODALITY:
+/* Animated simulator run rendered inside the chat / on the page.
+   White neumorphic theme. The step list adapts to the therapy MODALITY:
    - reprogramming (Age-Rejuvenation): age reversal + OSK construct + tumorigenicity
    - cell therapy (everything else):   regeneration projection + IV exosome (no tumorigenicity) */
+
+// ── white-neumorphic palette ──────────────────────────────────────────────
+const C = {
+  ink: '#14213d', sub: '#5a6b8a', faint: '#8798b8', line: '#e6ecf6', track: '#eaf0fa',
+  blue: '#2f6fe0', blueBright: '#4285f4', teal: '#0d8478', cyan: '#0891b2',
+  green: '#16a34a', red: '#dc2626', amber: '#d97706', purple: '#7c3aed',
+};
 
 type Kind = 'sample' | 'ingest' | 'age' | 'reversal' | 'regeneration' | 'construct' | 'exosome' | 'avatar' | 'tumor' | 'immune';
 const DEF: Record<Kind, { tag: string; title: string }> = {
@@ -32,9 +39,8 @@ function stepsFor(isReprog: boolean): Kind[] {
 
 const SCAN_MS = 780;
 const prefersReduced = typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
-// Likelihood of common, usually-mild reactions — not a severity grade, so the
-// top tier is a calm informational blue rather than an alarming red.
-const IMM_TIER_COLOR = (t: string) => (t === 'Uncommon' ? '#4ade80' : t === 'Common' ? '#60a5fa' : '#fbbf24');
+// Immune symptom LIKELIHOOD (not severity) — top tier is a calm blue, never red.
+const IMM_TIER_COLOR = (t: string) => (t === 'Uncommon' ? C.green : t === 'Common' ? C.blueBright : C.amber);
 
 function useCountUp(target: number, active: boolean, ms = 800, decimals = 0) {
   const [v, setV] = useState(active ? target : 0);
@@ -55,22 +61,22 @@ function useCountUp(target: number, active: boolean, ms = 800, decimals = 0) {
 
 function Bar({ pct, color, height = 8 }: { pct: number; color: string; height?: number }) {
   return (
-    <div style={{ height, background: 'rgba(255,255,255,.08)', borderRadius: 99, overflow: 'hidden' }}>
+    <div style={{ height, background: C.track, borderRadius: 99, overflow: 'hidden', boxShadow: 'inset 1px 1px 3px rgba(21,58,124,.10)' }}>
       <div style={{ width: `${Math.max(2, Math.min(100, pct))}%`, height: '100%', background: color, borderRadius: 99, transition: 'width .9s cubic-bezier(.2,.8,.2,1)' }} />
     </div>
   );
 }
 
-const stepBtn = { width: 26, height: 26, borderRadius: 99, border: '1px solid rgba(66,133,244,.5)', background: 'rgba(66,133,244,.12)', color: '#bcd3ff', fontSize: 16, fontWeight: 700, cursor: 'pointer', lineHeight: '22px' } as const;
+const stepBtn = { width: 26, height: 26, borderRadius: 99, border: 0, background: '#fff', color: C.blue, fontSize: 16, fontWeight: 700, cursor: 'pointer', lineHeight: '22px', boxShadow: '2px 2px 5px rgba(21,58,124,.16), -2px -2px 5px #ffffff' } as const;
 
 function Stepper({ label, cycles, onStep, hint }: { label: string; cycles: number; onStep: (d: number) => void; hint?: string }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 10, background: 'rgba(255,255,255,.04)', border: '1px solid rgba(66,133,244,.25)', borderRadius: 10, padding: '7px 10px', flexWrap: 'wrap' }}>
-      <span style={{ fontSize: 11.5, fontWeight: 700, color: '#dbe8ff' }}>{label}</span>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 10, background: '#f3f7fd', border: '1px solid ' + C.line, borderRadius: 12, padding: '7px 10px', flexWrap: 'wrap' }}>
+      <span style={{ fontSize: 11.5, fontWeight: 700, color: C.ink }}>{label}</span>
       <button aria-label="fewer" onClick={() => onStep(-1)} disabled={cycles <= 1} style={{ ...stepBtn, opacity: cycles <= 1 ? 0.4 : 1 }}>−</button>
-      <span style={{ minWidth: 18, textAlign: 'center', fontSize: 15, fontWeight: 800, color: '#fff' }}>{cycles}</span>
+      <span style={{ minWidth: 18, textAlign: 'center', fontSize: 15, fontWeight: 800, color: C.ink }}>{cycles}</span>
       <button aria-label="more" onClick={() => onStep(1)} disabled={cycles >= 10} style={{ ...stepBtn, opacity: cycles >= 10 ? 0.4 : 1 }}>+</button>
-      {hint && <span style={{ fontSize: 10.5, color: '#9fb4d8', marginLeft: 4 }}>{hint}</span>}
+      {hint && <span style={{ fontSize: 10.5, color: C.sub, marginLeft: 4 }}>{hint}</span>}
     </div>
   );
 }
@@ -79,7 +85,7 @@ function GeneMap({ vector }: { vector: any }) {
   const color = (nm: string) => {
     const s = nm.toLowerCase();
     if (s.includes('itr')) return '#94a3b8';
-    if (/promoter|tre|efs|ef1|cmv/.test(s)) return '#4285F4';
+    if (/promoter|tre|efs|ef1|cmv/.test(s)) return C.blueBright;
     if (/oct4|sox2|klf4|rtta|cds|pou5f1/.test(s)) return '#22c55e';
     if (/p2a|t2a|peptide/.test(s)) return '#f59e0b';
     if (s.includes('polya')) return '#a78bfa';
@@ -89,13 +95,13 @@ function GeneMap({ vector }: { vector: any }) {
   };
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: '#9fb4d8', marginBottom: 3 }}>
-        <span style={{ fontWeight: 700, color: '#dbe8ff' }}>{vector.name} · {vector.length_bp} bp</span>
-        <span style={{ color: vector.fits_aav ? '#4ade80' : '#f87171', fontWeight: 700 }}>{vector.fits_aav ? '✓ fits AAV' : '✗ over limit'}</span>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: C.sub, marginBottom: 3 }}>
+        <span style={{ fontWeight: 700, color: C.ink }}>{vector.name} · {vector.length_bp} bp</span>
+        <span style={{ color: vector.fits_aav ? C.green : C.red, fontWeight: 700 }}>{vector.fits_aav ? '✓ fits AAV' : '✗ over limit'}</span>
       </div>
-      <div style={{ display: 'flex', height: 16, borderRadius: 5, overflow: 'hidden', boxShadow: '0 0 12px rgba(66,133,244,.4)' }}>
+      <div style={{ display: 'flex', height: 16, borderRadius: 6, overflow: 'hidden', boxShadow: '2px 2px 6px rgba(21,58,124,.14)' }}>
         {vector.features.map((f: any, i: number) => (
-          <div key={i} title={f.name} style={{ flex: Math.max(1, f.length), background: color(f.name), borderRight: '1px solid rgba(5,18,46,.6)' }} />
+          <div key={i} title={f.name} style={{ flex: Math.max(1, f.length), background: color(f.name), borderRight: '1px solid #ffffff' }} />
         ))}
       </div>
     </div>
@@ -107,17 +113,17 @@ function ExosomeCard({ exo }: { exo: any }) {
     <div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
         {/* vesicle motif */}
-        <svg width="34" height="34" viewBox="0 0 34 34" style={{ flexShrink: 0, filter: 'drop-shadow(0 0 6px rgba(66,133,244,.6))' }}>
-          <circle cx="17" cy="17" r="12" fill="none" stroke="#4285F4" strokeWidth="2" />
-          <circle cx="17" cy="17" r="12" fill="rgba(66,133,244,.12)" />
+        <svg width="34" height="34" viewBox="0 0 34 34" style={{ flexShrink: 0, filter: 'drop-shadow(2px 2px 4px rgba(21,58,124,.2))' }}>
+          <circle cx="17" cy="17" r="12" fill="none" stroke={C.blueBright} strokeWidth="2" />
+          <circle cx="17" cy="17" r="12" fill="rgba(66,133,244,.10)" />
           {[0, 60, 120, 180, 240, 300].map((a) => {
-            const r = (a * Math.PI) / 180; return <circle key={a} cx={17 + 12 * Math.cos(r)} cy={17 + 12 * Math.sin(r)} r="2" fill="#22d3ee" />;
+            const r = (a * Math.PI) / 180; return <circle key={a} cx={17 + 12 * Math.cos(r)} cy={17 + 12 * Math.sin(r)} r="2" fill={C.cyan} />;
           })}
           <circle cx="14" cy="15" r="2" fill="#22c55e" /><circle cx="20" cy="19" r="2" fill="#a78bfa" /><circle cx="18" cy="13" r="1.6" fill="#f59e0b" />
         </svg>
         <div>
-          <div style={{ fontSize: 12.5, fontWeight: 700, color: '#eaf1ff' }}>{exo.strategy}</div>
-          <div style={{ fontSize: 10.5, color: '#9fb4d8' }}>{exo.vesicle_size_nm} nm · {exo.route}</div>
+          <div style={{ fontSize: 12.5, fontWeight: 700, color: C.ink }}>{exo.strategy}</div>
+          <div style={{ fontSize: 10.5, color: C.sub }}>{exo.vesicle_size_nm} nm · {exo.route}</div>
         </div>
       </div>
       <div style={{ display: 'grid', gap: 6 }}>
@@ -127,14 +133,14 @@ function ExosomeCard({ exo }: { exo: any }) {
           ['Source', exo.source_cell],
         ].map(([k, v]) => (
           <div key={k as string} style={{ display: 'flex', gap: 8, fontSize: 11.5 }}>
-            <span style={{ minWidth: 64, color: '#7d93b8', fontWeight: 700 }}>{k}</span>
-            <span style={{ color: '#cdd8ee' }}>{v}</span>
+            <span style={{ minWidth: 64, color: C.sub, fontWeight: 700 }}>{k}</span>
+            <span style={{ color: C.ink }}>{v}</span>
           </div>
         ))}
       </div>
       <div style={{ marginTop: 8, display: 'flex', flexWrap: 'wrap', gap: 5 }}>
         {exo.advantages.slice(0, 4).map((a: string) => (
-          <span key={a} style={{ background: 'rgba(34,197,94,.12)', color: '#86efac', border: '1px solid rgba(34,197,94,.3)', borderRadius: 99, padding: '2px 8px', fontSize: 10 }}>✓ {a.split(' — ')[0]}</span>
+          <span key={a} style={{ background: 'rgba(22,163,74,.10)', color: '#15803d', border: '1px solid rgba(22,163,74,.28)', borderRadius: 99, padding: '2px 8px', fontSize: 10 }}>✓ {a.split(' — ')[0]}</span>
         ))}
       </div>
     </div>
@@ -149,35 +155,35 @@ function StepCard({ kind, num, run, rej, regen, t, im, cycles, cycleLabel, onSte
   const dnam = useCountUp(ea.dnam_age, active && kind === 'age', 900, 1);
   const cov = useCountUp(run.coverage_pct, active && kind === 'ingest', 700);
   const state = revealed ? 'revealed' : active ? 'scanning' : 'pending';
-  const tierColor = t.risk_tier === 'Low' ? '#4ade80' : t.risk_tier === 'High' ? '#f87171' : '#fbbf24';
+  const tierColor = t.risk_tier === 'Low' ? C.green : t.risk_tier === 'High' ? C.red : C.amber;
   const risk = Math.round(t.estimated_risk * 100);
   const isReprog = run.modality === 'reprogramming';
 
   return (
     <div style={{
-      opacity: state === 'pending' ? 0.28 : 1,
+      opacity: state === 'pending' ? 0.4 : 1,
       transform: state === 'revealed' ? 'none' : 'translateY(6px)',
       transition: 'opacity .5s, transform .5s',
-      borderLeft: `2px solid ${active ? '#22d3ee' : revealed ? 'rgba(66,133,244,.5)' : 'rgba(255,255,255,.12)'}`,
+      borderLeft: `2px solid ${active ? C.cyan : revealed ? 'rgba(66,133,244,.45)' : C.line}`,
       padding: '10px 0 14px 14px', position: 'relative',
     }}>
       <div style={{ position: 'absolute', left: -7, top: 10, width: 12, height: 12, borderRadius: 99,
-        background: revealed ? '#4285F4' : active ? '#22d3ee' : '#1e2f52',
-        boxShadow: active ? '0 0 12px #22d3ee' : 'none', transition: 'all .3s' }} />
+        background: revealed ? C.blueBright : active ? C.cyan : '#cdd8ea',
+        boxShadow: active ? `0 0 10px ${C.cyan}` : revealed ? '1px 1px 3px rgba(21,58,124,.25)' : 'none', transition: 'all .3s' }} />
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: revealed ? 8 : 0 }}>
-        <span style={{ fontFamily: 'ui-monospace,monospace', fontSize: 10, letterSpacing: '.18em', color: active ? '#22d3ee' : '#7d93b8' }}>{String(num).padStart(2, '0')} · {s.tag}</span>
-        <span style={{ fontSize: 13, fontWeight: 700, color: '#eaf1ff' }}>{s.title}</span>
-        {active && !revealed && <span className="scp-scan" style={{ marginLeft: 'auto', fontSize: 10, color: '#22d3ee', fontFamily: 'ui-monospace,monospace' }}>scanning…</span>}
+        <span style={{ fontFamily: 'ui-monospace,monospace', fontSize: 10, letterSpacing: '.18em', color: active ? C.cyan : C.faint }}>{String(num).padStart(2, '0')} · {s.tag}</span>
+        <span style={{ fontSize: 13, fontWeight: 700, color: C.ink }}>{s.title}</span>
+        {active && !revealed && <span className="scp-scan" style={{ marginLeft: 'auto', fontSize: 10, color: C.cyan, fontFamily: 'ui-monospace,monospace' }}>scanning…</span>}
       </div>
 
       {revealed && (
-        <div style={{ fontSize: 12.5, color: '#cdd8ee' }}>
+        <div style={{ fontSize: 12.5, color: C.ink }}>
           {kind === 'sample' && (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
               {[run.disease.name, run.disease.tissue, isReprog ? `capsid ${run.disease.capsid.toUpperCase()}` : 'IV exosome', run.disease.route].map((x) => (
-                <span key={x} style={{ background: 'rgba(66,133,244,.16)', color: '#bcd3ff', border: '1px solid rgba(66,133,244,.35)', borderRadius: 99, padding: '3px 10px', fontSize: 11.5, fontWeight: 600 }}>{x}</span>
+                <span key={x} style={{ background: 'rgba(66,133,244,.10)', color: C.blue, border: '1px solid rgba(66,133,244,.22)', borderRadius: 99, padding: '3px 10px', fontSize: 11.5, fontWeight: 600 }}>{x}</span>
               ))}
-              <span style={{ background: isReprog ? 'rgba(167,139,250,.16)' : 'rgba(34,197,94,.14)', color: isReprog ? '#c4b5fd' : '#86efac', border: `1px solid ${isReprog ? 'rgba(167,139,250,.4)' : 'rgba(34,197,94,.35)'}`, borderRadius: 99, padding: '3px 10px', fontSize: 11.5, fontWeight: 700 }}>
+              <span style={{ background: isReprog ? 'rgba(124,58,237,.10)' : 'rgba(22,163,74,.10)', color: isReprog ? C.purple : '#15803d', border: `1px solid ${isReprog ? 'rgba(124,58,237,.28)' : 'rgba(22,163,74,.28)'}`, borderRadius: 99, padding: '3px 10px', fontSize: 11.5, fontWeight: 700 }}>
                 {isReprog ? 'Reprogramming (OSK)' : 'Cell / regenerative therapy'}
               </span>
             </div>
@@ -185,19 +191,19 @@ function StepCard({ kind, num, run, rej, regen, t, im, cycles, cycleLabel, onSte
           {kind === 'ingest' && (
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                <span>Clock CpGs mapped ({ea.clock})</span>
-                <span style={{ fontWeight: 700, color: '#22d3ee' }}>{ea.n_used}/{ea.n_total} · {cov}%</span>
+                <span style={{ color: C.sub }}>Clock CpGs mapped ({ea.clock})</span>
+                <span style={{ fontWeight: 700, color: C.blue }}>{ea.n_used}/{ea.n_total} · {cov}%</span>
               </div>
-              <Bar pct={run.coverage_pct} color="linear-gradient(90deg,#4285F4,#22d3ee)" />
+              <Bar pct={run.coverage_pct} color={`linear-gradient(90deg,${C.blueBright},${C.teal})`} />
             </div>
           )}
           {kind === 'age' && (
             <div>
               <div style={{ display: 'flex', gap: 18, alignItems: 'flex-end', flexWrap: 'wrap' }}>
-                <div><div style={{ fontSize: 30, fontWeight: 800, color: '#fff', lineHeight: 1 }}>{dnam}<span style={{ fontSize: 13, color: '#9fb4d8' }}> yr</span></div><div style={{ fontSize: 10.5, color: '#9fb4d8', marginTop: 3 }}>BIOLOGICAL (DNAm) AGE</div></div>
-                {ea.age_acceleration != null && <div><div style={{ fontSize: 22, fontWeight: 800, color: ea.age_acceleration >= 0 ? '#f87171' : '#4ade80', lineHeight: 1 }}>{ea.age_acceleration >= 0 ? '+' : ''}{ea.age_acceleration}</div><div style={{ fontSize: 10.5, color: '#9fb4d8', marginTop: 3 }}>ACCELERATION (yr)</div></div>}
+                <div><div style={{ fontSize: 30, fontWeight: 800, color: C.ink, lineHeight: 1 }}>{dnam}<span style={{ fontSize: 13, color: C.sub }}> yr</span></div><div style={{ fontSize: 10.5, color: C.sub, marginTop: 3 }}>BIOLOGICAL (DNAm) AGE</div></div>
+                {ea.age_acceleration != null && <div><div style={{ fontSize: 22, fontWeight: 800, color: ea.age_acceleration >= 0 ? C.red : C.green, lineHeight: 1 }}>{ea.age_acceleration >= 0 ? '+' : ''}{ea.age_acceleration}</div><div style={{ fontSize: 10.5, color: C.sub, marginTop: 3 }}>ACCELERATION (yr)</div></div>}
               </div>
-              <div style={{ marginTop: 8, fontSize: 11, color: '#9fb4d8' }}>Top drivers: {run.targets.slice(0, 5).map((x: any) => x.gene || x.cpg).join(' · ')}</div>
+              <div style={{ marginTop: 8, fontSize: 11, color: C.sub }}>Top drivers: {run.targets.slice(0, 5).map((x: any) => x.gene || x.cpg).join(' · ')}</div>
               <div style={{ marginTop: 10 }}>
                 <Stepper label={cycleLabel} cycles={cycles} onStep={onStep}
                   hint={isReprog
@@ -208,23 +214,23 @@ function StepCard({ kind, num, run, rej, regen, t, im, cycles, cycleLabel, onSte
           )}
           {kind === 'reversal' && (
             <div style={{ display: 'flex', gap: 18, flexWrap: 'wrap', alignItems: 'flex-end' }}>
-              <div><div style={{ fontSize: 24, fontWeight: 800, color: '#4ade80', lineHeight: 1 }}>−{rej.years_reversed} yr</div><div style={{ fontSize: 10.5, color: '#9fb4d8', marginTop: 3 }}>AGE REVERSAL ({rej.cycles} cycle{rej.cycles > 1 ? 's' : ''})</div></div>
-              <div><div style={{ fontSize: 24, fontWeight: 800, color: '#2dd4bf', lineHeight: 1 }}>{rej.tissue_rejuvenation_index}%</div><div style={{ fontSize: 10.5, color: '#9fb4d8', marginTop: 3 }}>TISSUE REJUVENATION</div></div>
-              <div style={{ fontSize: 12, color: '#cdd8ee' }}>{ea.dnam_age} → <b style={{ color: '#fff' }}>{rej.projected_age} yr</b></div>
+              <div><div style={{ fontSize: 24, fontWeight: 800, color: C.green, lineHeight: 1 }}>−{rej.years_reversed} yr</div><div style={{ fontSize: 10.5, color: C.sub, marginTop: 3 }}>AGE REVERSAL ({rej.cycles} cycle{rej.cycles > 1 ? 's' : ''})</div></div>
+              <div><div style={{ fontSize: 24, fontWeight: 800, color: C.teal, lineHeight: 1 }}>{rej.tissue_rejuvenation_index}%</div><div style={{ fontSize: 10.5, color: C.sub, marginTop: 3 }}>TISSUE REJUVENATION</div></div>
+              <div style={{ fontSize: 12, color: C.sub }}>{ea.dnam_age} → <b style={{ color: C.ink }}>{rej.projected_age} yr</b></div>
             </div>
           )}
           {kind === 'regeneration' && (
             <div>
               <div style={{ display: 'flex', gap: 18, flexWrap: 'wrap', alignItems: 'flex-end', marginBottom: 8 }}>
-                <div><div style={{ fontSize: 28, fontWeight: 800, color: '#4ade80', lineHeight: 1 }}>{regen.regeneration_index}%</div><div style={{ fontSize: 10.5, color: '#9fb4d8', marginTop: 3 }}>TISSUE-REPAIR INDEX ({regen.doses} dose{regen.doses > 1 ? 's' : ''})</div></div>
-                <div style={{ fontSize: 12, color: '#cdd8ee' }}>target: <b style={{ color: '#fff' }}>{run.disease.tissue}</b></div>
+                <div><div style={{ fontSize: 28, fontWeight: 800, color: C.green, lineHeight: 1 }}>{regen.regeneration_index}%</div><div style={{ fontSize: 10.5, color: C.sub, marginTop: 3 }}>TISSUE-REPAIR INDEX ({regen.doses} dose{regen.doses > 1 ? 's' : ''})</div></div>
+                <div style={{ fontSize: 12, color: C.sub }}>target: <b style={{ color: C.ink }}>{run.disease.tissue}</b></div>
               </div>
-              <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, height: 54, borderBottom: '1px solid rgba(255,255,255,.12)', paddingBottom: 2, marginBottom: 8 }}>
+              <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, height: 54, borderBottom: '1px solid ' + C.line, paddingBottom: 2, marginBottom: 8 }}>
                 {regen.per_dose.map((d: any) => (
                   <div key={d.dose} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', height: '100%' }}>
-                    <span style={{ fontSize: 9, color: '#9fb4d8' }}>{d.repaired}%</span>
-                    <div style={{ width: '70%', height: `${Math.max(4, d.repaired)}%`, background: d.dose === cycles ? '#4ade80' : 'rgba(34,197,94,.45)', borderRadius: '3px 3px 0 0', transition: 'height .8s' }} />
-                    <span style={{ fontSize: 9, color: '#7d93b8', marginTop: 2 }}>{d.dose}</span>
+                    <span style={{ fontSize: 9, color: C.sub }}>{d.repaired}%</span>
+                    <div style={{ width: '70%', height: `${Math.max(4, d.repaired)}%`, background: d.dose === cycles ? C.green : 'rgba(22,163,74,.4)', borderRadius: '3px 3px 0 0', transition: 'height .8s' }} />
+                    <span style={{ fontSize: 9, color: C.faint, marginTop: 2 }}>{d.dose}</span>
                   </div>
                 ))}
               </div>
@@ -233,16 +239,16 @@ function StepCard({ kind, num, run, rej, regen, t, im, cycles, cycleLabel, onSte
           )}
           {kind === 'construct' && run.construct && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              <div style={{ fontSize: 11, color: '#9fb4d8' }}>{run.construct.strategy} · {run.construct.capsid_desc}</div>
+              <div style={{ fontSize: 11, color: C.sub }}>{run.construct.strategy} · {run.construct.capsid_desc}</div>
               {run.construct.vectors.map((v: any, k: number) => <GeneMap key={k} vector={v} />)}
             </div>
           )}
           {kind === 'exosome' && run.exosome && <ExosomeCard exo={run.exosome} />}
           {kind === 'avatar' && (
             <div>
-              {[['Without avatar', run.safety.projected_success_without, '#7d93b8'], ['With avatar pre-screen', run.safety.projected_success_with, '#4ade80']].map(([lab, pct, col]) => (
+              {[['Without avatar', run.safety.projected_success_without, C.faint], ['With avatar pre-screen', run.safety.projected_success_with, C.green]].map(([lab, pct, col]) => (
                 <div key={lab as string} style={{ marginBottom: 6 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, marginBottom: 3 }}><span>{lab}</span><span style={{ fontWeight: 700, color: col as string }}>{pct}%</span></div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, marginBottom: 3 }}><span style={{ color: C.sub }}>{lab}</span><span style={{ fontWeight: 700, color: col as string }}>{pct}%</span></div>
                   <Bar pct={pct as number} color={col as string} height={9} />
                 </div>
               ))}
@@ -254,24 +260,24 @@ function StepCard({ kind, num, run, rej, regen, t, im, cycles, cycleLabel, onSte
                 <Stepper label={cycleLabel} cycles={cycles} onStep={onStep} hint="step up to watch over-induction risk climb" />
               </div>
               <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'flex-end', marginBottom: 8 }}>
-                <div><div style={{ fontSize: 22, fontWeight: 800, color: tierColor, lineHeight: 1 }}>{t.risk_tier}</div><div style={{ fontSize: 10, color: '#9fb4d8' }}>RISK TIER</div></div>
-                <div><div style={{ fontSize: 22, fontWeight: 800, color: tierColor, lineHeight: 1 }}>{risk}%</div><div style={{ fontSize: 10, color: '#9fb4d8' }}>@ {t.requested_cycles} CYCLE</div></div>
-                <div><div style={{ fontSize: 22, fontWeight: 800, color: '#60a5fa', lineHeight: 1 }}>{t.max_safe_cycles}</div><div style={{ fontSize: 10, color: '#9fb4d8' }}>MAX SAFE</div></div>
-                <div><div style={{ fontSize: 22, fontWeight: 800, color: '#60a5fa', lineHeight: 1 }}>{t.tissue_proliferation_factor}×</div><div style={{ fontSize: 10, color: '#9fb4d8' }}>{String(t.tissue_key).toUpperCase()}</div></div>
+                <div><div style={{ fontSize: 22, fontWeight: 800, color: tierColor, lineHeight: 1 }}>{t.risk_tier}</div><div style={{ fontSize: 10, color: C.sub }}>RISK TIER</div></div>
+                <div><div style={{ fontSize: 22, fontWeight: 800, color: tierColor, lineHeight: 1 }}>{risk}%</div><div style={{ fontSize: 10, color: C.sub }}>@ {t.requested_cycles} CYCLE</div></div>
+                <div><div style={{ fontSize: 22, fontWeight: 800, color: C.blue, lineHeight: 1 }}>{t.max_safe_cycles}</div><div style={{ fontSize: 10, color: C.sub }}>MAX SAFE</div></div>
+                <div><div style={{ fontSize: 22, fontWeight: 800, color: C.blue, lineHeight: 1 }}>{t.tissue_proliferation_factor}×</div><div style={{ fontSize: 10, color: C.sub }}>{String(t.tissue_key).toUpperCase()}</div></div>
               </div>
-              <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, height: 60, borderBottom: '1px solid rgba(255,255,255,.12)', paddingBottom: 2 }}>
+              <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, height: 60, borderBottom: '1px solid ' + C.line, paddingBottom: 2 }}>
                 {t.risk_curve.map((c: any) => {
                   const over = c.risk > (t.risk_threshold || 0.15);
                   return (
                     <div key={c.cycles} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', height: '100%' }}>
-                      <span style={{ fontSize: 9, color: '#9fb4d8' }}>{Math.round(c.risk * 100)}%</span>
-                      <div style={{ width: '70%', height: `${Math.min(100, c.risk * 100 / 0.6 * 100)}%`, background: c.cycles === t.requested_cycles ? tierColor : over ? 'rgba(248,113,113,.5)' : 'rgba(66,133,244,.5)', borderRadius: '3px 3px 0 0', transition: 'height .8s' }} />
-                      <span style={{ fontSize: 9, color: '#7d93b8', marginTop: 2 }}>{c.cycles}</span>
+                      <span style={{ fontSize: 9, color: C.sub }}>{Math.round(c.risk * 100)}%</span>
+                      <div style={{ width: '70%', height: `${Math.min(100, c.risk * 100 / 0.6 * 100)}%`, background: c.cycles === t.requested_cycles ? tierColor : over ? 'rgba(220,38,38,.45)' : 'rgba(66,133,244,.4)', borderRadius: '3px 3px 0 0', transition: 'height .8s' }} />
+                      <span style={{ fontSize: 9, color: C.faint, marginTop: 2 }}>{c.cycles}</span>
                     </div>
                   );
                 })}
               </div>
-              <div style={{ fontSize: 10, color: '#7d93b8', marginTop: 4 }}>Green ≤ {Math.round((t.risk_threshold || 0.15) * 100)}% · red &gt; threshold · cycles →</div>
+              <div style={{ fontSize: 10, color: C.faint, marginTop: 4 }}>Green ≤ {Math.round((t.risk_threshold || 0.15) * 100)}% · red &gt; threshold · cycles →</div>
             </div>
           )}
           {kind === 'immune' && im && (
@@ -279,12 +285,12 @@ function StepCard({ kind, num, run, rej, regen, t, im, cycles, cycleLabel, onSte
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', marginBottom: 8 }}>
                 <div>
                   <div style={{ fontSize: 22, fontWeight: 800, color: IMM_TIER_COLOR(im.overall_tier), lineHeight: 1 }}>{im.overall_tier}</div>
-                  <div style={{ fontSize: 10, color: '#9fb4d8' }}>SYMPTOM OUTLOOK · usually mild</div>
+                  <div style={{ fontSize: 10, color: C.sub }}>SYMPTOM OUTLOOK · usually mild</div>
                 </div>
                 {im.comorbidities?.length > 0 && (
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginLeft: 4 }}>
                     {im.comorbidities.map((c: string) => (
-                      <span key={c} style={{ background: 'rgba(251,191,36,.14)', color: '#fcd34d', border: '1px solid rgba(251,191,36,.35)', borderRadius: 99, padding: '2px 8px', fontSize: 10.5, fontWeight: 600 }}>{c}</span>
+                      <span key={c} style={{ background: 'rgba(217,119,6,.12)', color: '#b45309', border: '1px solid rgba(217,119,6,.3)', borderRadius: 99, padding: '2px 8px', fontSize: 10.5, fontWeight: 600 }}>{c}</span>
                     ))}
                   </div>
                 )}
@@ -293,26 +299,26 @@ function StepCard({ kind, num, run, rej, regen, t, im, cycles, cycleLabel, onSte
                 {im.classes.map((c: any) => (
                   <div key={c.key}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, marginBottom: 3 }}>
-                      <span style={{ color: '#dbe8ff', fontWeight: 600 }}>{c.label}</span>
+                      <span style={{ color: C.ink, fontWeight: 600 }}>{c.label}</span>
                       <span style={{ fontWeight: 700, color: IMM_TIER_COLOR(c.tier) }}>{c.tier}</span>
                     </div>
                     <Bar pct={Math.round(c.index * 100)} color={IMM_TIER_COLOR(c.tier)} height={7} />
-                    <div style={{ fontSize: 10, color: '#8fa6cc', marginTop: 3 }}>{c.symptoms.slice(0, 4).join(' · ')}</div>
+                    <div style={{ fontSize: 10, color: C.sub, marginTop: 3 }}>{c.symptoms.slice(0, 4).join(' · ')}</div>
                   </div>
                 ))}
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginTop: 10 }}>
-                <div style={{ background: 'rgba(248,113,113,.06)', border: '1px solid rgba(248,113,113,.25)', borderRadius: 9, padding: '7px 9px' }}>
-                  <div style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: '.08em', color: '#fca5a5', marginBottom: 3 }}>WHAT THIS CAN'T SEE</div>
-                  {im.cant_see.slice(0, 3).map((x: string) => <div key={x} style={{ fontSize: 10, color: '#cdd8ee', marginBottom: 2 }}>✗ {x}</div>)}
+                <div style={{ background: 'rgba(220,38,38,.05)', border: '1px solid rgba(220,38,38,.2)', borderRadius: 10, padding: '7px 9px' }}>
+                  <div style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: '.08em', color: '#b91c1c', marginBottom: 3 }}>WHAT THIS CAN'T SEE</div>
+                  {im.cant_see.slice(0, 3).map((x: string) => <div key={x} style={{ fontSize: 10, color: C.ink, marginBottom: 2 }}>✗ {x}</div>)}
                 </div>
-                <div style={{ background: 'rgba(66,133,244,.08)', border: '1px solid rgba(66,133,244,.3)', borderRadius: 9, padding: '7px 9px' }}>
-                  <div style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: '.08em', color: '#93c5fd', marginBottom: 3 }}>ASK YOUR CLINICIAN FOR</div>
-                  {im.tests_to_ask.slice(0, 3).map((x: string) => <div key={x} style={{ fontSize: 10, color: '#cdd8ee', marginBottom: 2 }}>• {x}</div>)}
+                <div style={{ background: 'rgba(66,133,244,.06)', border: '1px solid rgba(66,133,244,.25)', borderRadius: 10, padding: '7px 9px' }}>
+                  <div style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: '.08em', color: C.blue, marginBottom: 3 }}>ASK YOUR CLINICIAN FOR</div>
+                  {im.tests_to_ask.slice(0, 3).map((x: string) => <div key={x} style={{ fontSize: 10, color: C.ink, marginBottom: 2 }}>• {x}</div>)}
                 </div>
               </div>
-              {im.modifiable?.length > 0 && <div style={{ marginTop: 8, fontSize: 10.5, color: '#86efac' }}>↺ {im.modifiable[0]}</div>}
-              <div style={{ fontSize: 9.5, color: '#7d93b8', marginTop: 8, fontStyle: 'italic' }}>Relative, probabilistic — not a yes/no verdict. Informs the conversation with your clinician.</div>
+              {im.modifiable?.length > 0 && <div style={{ marginTop: 8, fontSize: 10.5, color: '#15803d' }}>↺ {im.modifiable[0]}</div>}
+              <div style={{ fontSize: 9.5, color: C.faint, marginTop: 8, fontStyle: 'italic' }}>Relative, probabilistic — not a yes/no verdict. Informs the conversation with your clinician.</div>
             </div>
           )}
         </div>
@@ -374,21 +380,21 @@ export default function SimRun({ run, onExplain, instant, onDone }: { run: FullR
 
   return (
     <div style={{
-      background: 'radial-gradient(130% 100% at 90% -10%, #12244d 0%, #061229 60%)',
-      border: '1px solid rgba(66,133,244,.35)', borderRadius: 14, padding: 14, color: '#eaf1ff',
-      boxShadow: '0 0 24px rgba(66,133,244,.25) inset', fontFamily: 'inherit',
+      background: '#ffffff',
+      border: '1px solid #e9eef7', borderRadius: 16, padding: 14, color: C.ink,
+      boxShadow: '8px 10px 26px rgba(21,58,124,.12), -8px -8px 22px #ffffff', fontFamily: 'inherit',
     }}>
       <style>{`
-        @keyframes scpScan{0%,100%{opacity:.35}50%{opacity:1}}
+        @keyframes scpScan{0%,100%{opacity:.4}50%{opacity:1}}
         .scp-scan{animation:scpScan 1s ease-in-out infinite}
-        @keyframes scpPulse{0%,100%{box-shadow:0 0 0 0 rgba(34,211,238,.4)}50%{box-shadow:0 0 0 6px rgba(34,211,238,0)}}
+        @keyframes scpPulse{0%,100%{box-shadow:0 0 0 0 rgba(66,133,244,.35)}50%{box-shadow:0 0 0 6px rgba(66,133,244,0)}}
       `}</style>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-        <span style={{ width: 8, height: 8, borderRadius: 99, background: done ? '#4ade80' : '#22d3ee', animation: done ? 'none' : 'scpPulse 1.4s infinite' }} />
-        <span style={{ fontFamily: 'ui-monospace,monospace', fontSize: 11, letterSpacing: '.16em', color: '#9fb4d8' }}>
+        <span style={{ width: 8, height: 8, borderRadius: 99, background: done ? C.green : C.blueBright, animation: done ? 'none' : 'scpPulse 1.4s infinite' }} />
+        <span style={{ fontFamily: 'ui-monospace,monospace', fontSize: 11, letterSpacing: '.16em', color: C.sub }}>
           {done ? 'RUN COMPLETE' : 'PROTOCOL SIMULATOR · RUNNING'}
         </span>
-        <span style={{ marginLeft: 'auto', fontFamily: 'ui-monospace,monospace', fontSize: 11, color: '#22d3ee' }}>{Math.min(revealed, steps.length)}/{steps.length}</span>
+        <span style={{ marginLeft: 'auto', fontFamily: 'ui-monospace,monospace', fontSize: 11, color: C.blue }}>{Math.min(revealed, steps.length)}/{steps.length}</span>
       </div>
 
       <div>
@@ -399,12 +405,12 @@ export default function SimRun({ run, onExplain, instant, onDone }: { run: FullR
       </div>
 
       {done && (
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 12, paddingTop: 12, borderTop: '1px solid rgba(255,255,255,.12)' }}>
-          <button onClick={pdf} style={{ background: 'linear-gradient(90deg,#4285F4,#22d3ee)', color: '#04122e', fontWeight: 700, border: 0, borderRadius: 9, padding: '8px 14px', fontSize: 12.5, cursor: 'pointer' }}>⬇ Export PDF</button>
-          {onExplain && <button onClick={() => onExplain(summarizeRun({ ...run, rejuvenation: rej, regeneration: regen, tumor, immune }))} style={{ background: 'transparent', color: '#bcd3ff', border: '1px solid rgba(66,133,244,.45)', borderRadius: 9, padding: '8px 14px', fontSize: 12.5, cursor: 'pointer' }}>💬 Explain in plain language</button>}
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 12, paddingTop: 12, borderTop: '1px solid #e9eef7' }}>
+          <button onClick={pdf} style={{ background: `linear-gradient(90deg,${C.blueBright},${C.teal})`, color: '#fff', fontWeight: 700, border: 0, borderRadius: 10, padding: '8px 14px', fontSize: 12.5, cursor: 'pointer', boxShadow: '3px 4px 10px rgba(21,58,124,.22)' }}>⬇ Export PDF</button>
+          {onExplain && <button onClick={() => onExplain(summarizeRun({ ...run, rejuvenation: rej, regeneration: regen, tumor, immune }))} style={{ background: '#fff', color: C.blue, border: 0, borderRadius: 10, padding: '8px 14px', fontSize: 12.5, cursor: 'pointer', boxShadow: '3px 3px 8px rgba(21,58,124,.12), -3px -3px 8px #ffffff' }}>💬 Explain in plain language</button>}
         </div>
       )}
-      <div style={{ fontSize: 10, color: '#7d93b8', marginTop: 10 }}>Research / illustrative — computed on your device. Not medical advice.</div>
+      <div style={{ fontSize: 10, color: C.faint, marginTop: 10 }}>Research / illustrative — computed on your device. Not medical advice.</div>
     </div>
   );
 }
