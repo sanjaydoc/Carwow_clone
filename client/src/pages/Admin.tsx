@@ -244,7 +244,10 @@ export default function Admin() {
   }
 
   return (
-    <div className="container-x py-8">
+    // Extra bottom padding on mobile so the range toggle, Export CSV and the
+    // country/traffic panels scroll clear of the fixed MobileNav bar + floating
+    // "waiting list" banner (which otherwise overlap and swallow taps).
+    <div className="container-x py-8 pb-44 md:pb-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="font-display text-2xl font-extrabold text-ink-900 sm:text-3xl">Admin dashboard</h1>

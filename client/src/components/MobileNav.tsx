@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useSaved } from '../context/SavedContext';
 import InstallButton from './InstallButton';
@@ -74,9 +74,14 @@ export default function MobileNav() {
   const { user, logout } = useAuth();
   const { count } = useSaved();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const close = () => setMenuOpen(false);
+
+  // The marketing "join the waiting list" banner is irrelevant on the admin
+  // dashboard and its fixed position overlaps the dashboard controls.
+  const hideWaitlistBanner = pathname.startsWith('/admin');
 
   return (
     <>
@@ -171,12 +176,14 @@ export default function MobileNav() {
       )}
 
       {/* Floating "join the waiting list" banner */}
-      <Link
-        to="/waiting-list"
-        className="fixed inset-x-3 bottom-[84px] z-40 block rounded-full bg-clay-500 py-2.5 text-center text-sm font-bold text-white shadow-lg underline decoration-2 underline-offset-2 md:hidden"
-      >
-        Join the waiting list
-      </Link>
+      {!hideWaitlistBanner && (
+        <Link
+          to="/waiting-list"
+          className="fixed inset-x-3 bottom-[84px] z-40 block rounded-full bg-clay-500 py-2.5 text-center text-sm font-bold text-white shadow-lg underline decoration-2 underline-offset-2 md:hidden"
+        >
+          Join the waiting list
+        </Link>
+      )}
 
       {/* Floating bottom navigation */}
       <nav className="fixed inset-x-3 bottom-3 z-40 flex h-[64px] items-stretch overflow-hidden rounded-2xl border border-cream-300 bg-white shadow-[0_8px_30px_rgba(20,20,19,0.18)] md:hidden">
