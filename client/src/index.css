@@ -168,3 +168,29 @@
   border-top: 1px solid rgba(0, 0, 0, 0.1);
   margin: 0.6rem 0;
 }
+
+/* ── Neumorphic facility-level tray (blue control panel on the dark hero) ── */
+.neu-tray {
+  background: #e4eaf4;
+  border-radius: 26px;
+  box-shadow: 0 34px 70px -24px rgba(0, 0, 0, 0.55), 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+.neu-btn {
+  background: #e4eaf4;
+  border-radius: 18px;
+  box-shadow: 6px 6px 13px #c0c9dc, -6px -6px 13px #ffffff;
+  transition: box-shadow 0.16s ease, transform 0.16s ease;
+}
+.neu-btn:hover {
+  box-shadow: inset 5px 5px 11px #c0c9dc, inset -5px -5px 11px #ffffff;
+}
+.neu-btn:active {
+  transform: scale(0.99);
+}
+.neu-med {
+  box-shadow: 4px 4px 9px #c0c9dc, -4px -4px 9px #ffffff;
+}
+.neu-arw {
+  background: #e4eaf4;
+  box-shadow: 3px 3px 7px #c0c9dc, -3px -3px 7px #ffffff;
+}

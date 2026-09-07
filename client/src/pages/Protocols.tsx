@@ -5,6 +5,13 @@ import { CATEGORIES, PROTOCOLS, type Category, type Protocol } from '../protocol
 import { STANDARDS, DISCLAIMER } from '../protocols/standards';
 import { FACILITY_SUMMARY } from '../protocols/facility';
 
+// All-blue medallion gradients (light → deep) for the neumorphic facility tray.
+const MED_BLUE = [
+  'linear-gradient(145deg,#83a9f8,#2f6fe0)',
+  'linear-gradient(145deg,#5b90f6,#1f59c2)',
+  'linear-gradient(145deg,#2f6fe0,#153a7c)',
+];
+
 /**
  * StemCells Protocol — Standard (v0.1): a coded, safety-first protocol registry
  * so cell, stem-cell, regenerative and gene therapies can be administered to one
@@ -98,7 +105,7 @@ export default function Protocols() {
       {/* Hero */}
       <section className="relative overflow-hidden bg-ink-900">
         <div className="absolute -right-24 top-0 h-96 w-96 rounded-full bg-clay-500/20 blur-3xl" />
-        <div className="container-x relative grid gap-10 py-12 sm:py-16 lg:grid-cols-[1fr_340px] lg:items-center">
+        <div className="container-x relative grid gap-10 py-12 sm:py-16 lg:grid-cols-[1fr_368px] lg:items-center">
           <div>
             <span className="chip bg-white/10 text-white"><Icon name="clipboard" className="h-3.5 w-3.5" /> Standard v0.1 · draft</span>
             <h1 className="mt-4 font-display text-4xl font-extrabold uppercase leading-[0.95] tracking-tight text-white sm:text-6xl">
@@ -119,29 +126,37 @@ export default function Protocols() {
             </div>
           </div>
 
-          {/* Facility-level launchers */}
-          <div className="flex flex-col gap-3">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-white/45">Build your facility</p>
-            {FACILITY_SUMMARY.map((lv) => (
-              <Link
-                key={lv.n}
-                to={`/protocols/facility/${lv.n}`}
-                className="group flex items-center gap-3 rounded-xl border border-white/15 bg-white/5 p-4 transition hover:bg-white/10"
-                style={{ borderLeft: `4px solid ${lv.accent}` }}
-              >
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono text-[11px] font-bold" style={{ color: lv.accent }}>FACILITY LEVEL {lv.n}</span>
-                    <span className="text-[11px] text-white/45">· {lv.cost}</span>
-                  </div>
-                  <p className="mt-0.5 truncate text-sm font-semibold text-white">{lv.name}</p>
-                  <p className="text-[11px] text-white/45">{lv.cumulative}</p>
-                </div>
-                <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0 text-white/35 transition group-hover:translate-x-0.5 group-hover:text-white" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </Link>
-            ))}
+          {/* Facility-level launchers — neumorphic blue control panel */}
+          <div className="neu-tray p-5">
+            <p className="mb-4 px-0.5 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-ink-700/50">Build your facility</p>
+            <div className="flex flex-col gap-4">
+              {FACILITY_SUMMARY.map((lv, i) => (
+                <Link
+                  key={lv.n}
+                  to={`/protocols/facility/${lv.n}`}
+                  className="neu-btn group flex items-center gap-4 p-3.5"
+                >
+                  <span
+                    className="neu-med grid h-10 w-10 shrink-0 place-items-center rounded-full font-display text-base font-bold text-white"
+                    style={{ background: MED_BLUE[i] }}
+                  >
+                    {lv.n}
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block font-mono text-[10px] font-semibold tracking-wide text-clay-600">
+                      LEVEL {lv.n} · {lv.cost}
+                    </span>
+                    <span className="mt-0.5 block font-display text-sm font-semibold leading-snug text-ink-900">{lv.name}</span>
+                    <span className="mt-0.5 block text-[11px] text-ink-700/55">{lv.cumulative}</span>
+                  </span>
+                  <span className="neu-arw grid h-8 w-8 shrink-0 place-items-center rounded-full text-clay-600 transition group-hover:text-clay-700">
+                    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.6">
+                      <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </span>
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       </section>
