@@ -756,12 +756,11 @@ export default function ChatWidget() {
                   <circle cx="12" cy="12" r="9" />
                   <path d="M3 12h18M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18" />
                 </svg>
-                <span className="sm:hidden">Lang</span>
-                <span className="hidden sm:inline">Language</span>
+                <span>Lang</span>
                 <select
                   value={voiceLang}
                   onChange={(e) => setVoiceLang(e.target.value)}
-                  className="min-w-0 flex-1 rounded-md border border-cream-300 bg-white px-1.5 py-0.5 font-semibold text-ink-800 focus:border-clay-400 focus:outline-none sm:flex-none"
+                  className="min-w-0 flex-1 rounded-md border border-cream-300 bg-white px-1.5 py-0.5 font-semibold text-ink-800 focus:border-clay-400 focus:outline-none"
                   aria-label="Chat language (typing, voice and replies)"
                 >
                   <option value="">Auto-detect</option>
@@ -791,7 +790,6 @@ export default function ChatWidget() {
                     <option value="ms-MY">Bahasa Melayu (Malay)</option>
                   </optgroup>
                 </select>
-                <span className="hidden text-ink-700/45 sm:inline">· replies &amp; voice</span>
 
                 <button
                   type="button"
