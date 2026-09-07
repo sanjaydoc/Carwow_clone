@@ -148,7 +148,10 @@ export default function HeroCell({ variant = 'desktop' }: { variant?: 'desktop' 
           // edge so the cell doesn't crowd the paragraph text).
           width: 'min(76vw, 380px)',
           height: 'min(76vw, 380px)',
-          top: 'clamp(20px, 10vw, 110px)',
+          // Raised so the cell centres on the RENEW line (the negative offset
+          // lifts it ~55px above the launcher-button row); the transparent top
+          // of the radial mask is all that sits above the hero top edge.
+          top: 'clamp(-34px, calc(10vw - 56px), 40px)',
           right: '-7%',
           WebkitMaskImage: radial,
           maskImage: radial,
