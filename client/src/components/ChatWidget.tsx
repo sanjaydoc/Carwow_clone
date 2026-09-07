@@ -944,7 +944,9 @@ function GreetingBubble() {
         <p className="mt-2.5 text-ink-800">
           You can also <span aria-hidden>🧬</span> attach your{' '}
           <span className="font-semibold text-ink-900">DNA-methylation file</span> (.csv / .cov) and I'll
-          compute your biological age and a personalized reprogramming + safety envelope.
+          compute your biological age and a personalized{' '}
+          <span className="font-semibold text-ink-900">MSC / cell-therapy or reprogramming</span> plan with
+          a safety envelope.
         </p>
 
         <p className="mt-2 flex items-start gap-1.5 rounded-lg bg-green-50 px-2.5 py-1.5 text-xs font-medium text-green-800 ring-1 ring-green-200/70">
