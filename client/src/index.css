@@ -220,17 +220,17 @@
    Remove this block to revert. */
 .card {
   background: #ffffff;
-  box-shadow: 7px 7px 18px rgba(21, 58, 124, 0.09), -7px -7px 18px #ffffff;
+  box-shadow: 6px 8px 22px rgba(21, 58, 124, 0.11);
   border-radius: 20px;
 }
 .btn-primary {
-  box-shadow: 5px 5px 13px rgba(21, 58, 124, 0.26), -4px -4px 10px rgba(255, 255, 255, 0.6);
+  box-shadow: 4px 6px 14px rgba(21, 58, 124, 0.28);
 }
 .btn-primary:active { box-shadow: inset 4px 4px 9px rgba(0, 0, 0, 0.22); }
 .btn-outline {
   background: #ffffff;
   border-color: transparent;
-  box-shadow: 5px 5px 13px rgba(21, 58, 124, 0.11), -5px -5px 13px #ffffff;
+  box-shadow: 5px 6px 15px rgba(21, 58, 124, 0.12);
 }
 .btn-outline:hover { box-shadow: inset 4px 4px 9px rgba(21, 58, 124, 0.13), inset -4px -4px 9px #ffffff; }
 .input {
@@ -243,6 +243,6 @@
 
 /* Sweep: shared card-shadow utilities → soft neumorphic (covers all panels
    using shadow-card / shadow-card-hover, so content cards match). */
-.shadow-card { box-shadow: 7px 7px 18px rgba(21, 58, 124, 0.09), -7px -7px 18px #ffffff !important; }
-.shadow-card-hover:hover, .hover\:shadow-card-hover:hover { box-shadow: 11px 11px 26px rgba(21, 58, 124, 0.14), -9px -9px 22px #ffffff !important; }
-.hover\:shadow-card:hover { box-shadow: 7px 7px 18px rgba(21, 58, 124, 0.09), -7px -7px 18px #ffffff !important; }
+.shadow-card { box-shadow: 6px 8px 22px rgba(21, 58, 124, 0.11) !important; }
+.shadow-card-hover:hover, .hover\:shadow-card-hover:hover { box-shadow: 8px 12px 30px rgba(21, 58, 124, 0.16) !important; }
+.hover\:shadow-card:hover { box-shadow: 6px 8px 22px rgba(21, 58, 124, 0.11) !important; }
