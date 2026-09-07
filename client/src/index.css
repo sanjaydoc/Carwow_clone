@@ -169,46 +169,74 @@
   margin: 0.6rem 0;
 }
 
-/* ── Neumorphic facility-level tray (blue control panel on the dark hero) ── */
+/* ── Neumorphic facility-level tray (white control panel on the dark hero) ── */
 .neu-tray {
-  background: #e4eaf4;
+  background: #ffffff;
   border-radius: 26px;
   box-shadow: 0 34px 70px -24px rgba(0, 0, 0, 0.55), 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 .neu-btn {
-  background: #e4eaf4;
+  background: #ffffff;
   border-radius: 18px;
-  box-shadow: 6px 6px 13px #c0c9dc, -6px -6px 13px #ffffff;
+  box-shadow: 6px 6px 14px rgba(21, 58, 124, 0.13), -6px -6px 14px #ffffff;
   transition: box-shadow 0.16s ease, transform 0.16s ease;
 }
 .neu-btn:hover {
-  box-shadow: inset 5px 5px 11px #c0c9dc, inset -5px -5px 11px #ffffff;
+  box-shadow: inset 5px 5px 11px rgba(21, 58, 124, 0.13), inset -5px -5px 11px #ffffff;
 }
 .neu-btn:active {
   transform: scale(0.99);
 }
 .neu-med {
-  box-shadow: 4px 4px 9px #c0c9dc, -4px -4px 9px #ffffff;
+  box-shadow: 4px 4px 9px rgba(21, 58, 124, 0.18), -4px -4px 9px #ffffff;
 }
 .neu-arw {
-  background: #e4eaf4;
-  box-shadow: 3px 3px 7px #c0c9dc, -3px -3px 7px #ffffff;
+  background: #ffffff;
+  box-shadow: 3px 3px 7px rgba(21, 58, 124, 0.14), -3px -3px 7px #ffffff;
 }
 
-/* ── Neumorphic facility-level cards (blue, lower /protocols section) ── */
-.neu-section { background: #e6ecf6; }
+/* ── Neumorphic facility-level cards (white, lower /protocols section) ── */
+.neu-section { background: #ffffff; }
 .neu-card {
-  background: #e6ecf6;
+  background: #ffffff;
   border-radius: 20px;
-  box-shadow: 8px 8px 18px #c8d0df, -8px -8px 18px #ffffff;
+  box-shadow: 8px 8px 20px rgba(21, 58, 124, 0.10), -8px -8px 20px #ffffff;
   transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
 .neu-card:hover {
   transform: translateY(-3px);
-  box-shadow: 11px 11px 24px #c2cbdb, -11px -11px 24px #ffffff;
+  box-shadow: 12px 12px 26px rgba(21, 58, 124, 0.14), -10px -10px 24px #ffffff;
 }
 .neu-well {
-  background: #e6ecf6;
+  background: #ffffff;
   border-radius: 14px;
-  box-shadow: inset 4px 4px 9px #cdd5e3, inset -4px -4px 9px #ffffff;
+  box-shadow: inset 4px 4px 9px rgba(21, 58, 124, 0.11), inset -4px -4px 9px #ffffff;
 }
+
+/* ================= EXPERIMENTAL: site-wide neumorphic surfaces (MOCKUP) =================
+   Restyles the shared design-system classes so the whole site adopts the soft
+   neumorphic language on WHITE surfaces — depth comes from soft blue-tinted
+   shadows only, keeping the original white backgrounds, colours & gradients.
+   Remove this block to revert. */
+.card {
+  background: #ffffff;
+  box-shadow: 7px 7px 18px rgba(21, 58, 124, 0.09), -7px -7px 18px #ffffff;
+  border-radius: 20px;
+}
+.btn-primary {
+  box-shadow: 5px 5px 13px rgba(21, 58, 124, 0.26), -4px -4px 10px rgba(255, 255, 255, 0.6);
+}
+.btn-primary:active { box-shadow: inset 4px 4px 9px rgba(0, 0, 0, 0.22); }
+.btn-outline {
+  background: #ffffff;
+  border-color: transparent;
+  box-shadow: 5px 5px 13px rgba(21, 58, 124, 0.11), -5px -5px 13px #ffffff;
+}
+.btn-outline:hover { box-shadow: inset 4px 4px 9px rgba(21, 58, 124, 0.13), inset -4px -4px 9px #ffffff; }
+.input {
+  background: #ffffff;
+  border: 1px solid rgba(21, 58, 124, 0.10);
+  box-shadow: inset 3px 3px 7px rgba(21, 58, 124, 0.07);
+}
+.input:focus { border-color: rgba(66, 133, 244, 0.5); box-shadow: inset 3px 3px 7px rgba(21, 58, 124, 0.09), 0 0 0 2px rgba(66, 133, 244, 0.22); }
+/* =============================================================================== */
