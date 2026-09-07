@@ -691,7 +691,7 @@ export default function Home() {
               <Link
                 key={car.id}
                 to={`/therapies/${car.id}`}
-                className="group w-[300px] shrink-0 snap-start rounded-3xl bg-cream-200 p-5 transition hover:shadow-card-hover"
+                className="group w-[300px] shrink-0 snap-start rounded-3xl bg-white shadow-card p-5 transition hover:shadow-card-hover"
               >
                 <h3 className="font-display text-xl font-bold text-ink-900">
                   {car.model}
@@ -857,7 +857,7 @@ export default function Home() {
         </div>
 
         {/* Sample & sequencing — what "digital DNA" actually is */}
-        <div className="mt-8 rounded-3xl bg-cream-200 p-6 sm:p-8">
+        <div className="mt-8 rounded-3xl bg-white shadow-card p-6 sm:p-8">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center">
             <div className="lg:w-1/2">
               <h3 className="font-display text-xl font-extrabold text-ink-900 sm:text-2xl">

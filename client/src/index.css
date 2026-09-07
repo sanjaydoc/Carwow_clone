@@ -240,3 +240,9 @@
 }
 .input:focus { border-color: rgba(66, 133, 244, 0.5); box-shadow: inset 3px 3px 7px rgba(21, 58, 124, 0.09), 0 0 0 2px rgba(66, 133, 244, 0.22); }
 /* =============================================================================== */
+
+/* Sweep: shared card-shadow utilities → soft neumorphic (covers all panels
+   using shadow-card / shadow-card-hover, so content cards match). */
+.shadow-card { box-shadow: 7px 7px 18px rgba(21, 58, 124, 0.09), -7px -7px 18px #ffffff !important; }
+.shadow-card-hover:hover, .hover\:shadow-card-hover:hover { box-shadow: 11px 11px 26px rgba(21, 58, 124, 0.14), -9px -9px 22px #ffffff !important; }
+.hover\:shadow-card:hover { box-shadow: 7px 7px 18px rgba(21, 58, 124, 0.09), -7px -7px 18px #ffffff !important; }

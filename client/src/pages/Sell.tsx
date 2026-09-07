@@ -394,7 +394,7 @@ export default function Sell() {
             { q: 'How soon can I be seen?', a: 'Many patients are matched to specialists within minutes and can book a consultation within days.' },
             { q: 'How do I contact you?', a: 'Reach our patient support team through the support centre, Monday to Saturday.' },
           ].map((f) => (
-            <details key={f.q} className="group rounded-2xl bg-cream-200 px-5">
+            <details key={f.q} className="group rounded-2xl bg-white shadow-card px-5">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-4 font-display font-bold text-ink-900 [&::-webkit-details-marker]:hidden">
                 {f.q}
                 <span className="text-clay-600 transition group-open:rotate-180">
@@ -436,7 +436,7 @@ export default function Sell() {
               key={g}
               href="#"
               onClick={(e) => e.preventDefault()}
-              className="rounded-2xl bg-cream-200 px-5 py-4 text-center font-display font-bold text-ink-900 transition hover:bg-clay-100 hover:text-clay-700"
+              className="rounded-2xl bg-white shadow-card px-5 py-4 text-center font-display font-bold text-ink-900 transition hover:bg-clay-100 hover:text-clay-700"
             >
               {g}
             </a>

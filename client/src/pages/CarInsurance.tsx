@@ -222,7 +222,7 @@ export default function CarInsurance() {
         </h2>
         <div className="mx-auto mt-8 max-w-3xl space-y-3">
           {faqs.map((f) => (
-            <details key={f.q} className="group rounded-2xl bg-cream-200 px-5">
+            <details key={f.q} className="group rounded-2xl bg-white shadow-card px-5">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-4 font-display font-bold text-ink-900 [&::-webkit-details-marker]:hidden">
                 {f.q}
                 <span className="text-clay-600 transition group-open:rotate-180">

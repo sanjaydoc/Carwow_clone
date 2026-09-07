@@ -12,7 +12,7 @@ function EvDealCard({ car, wide = false }: { car: Car; wide?: boolean }) {
     <Link
       data-card
       to={`/therapies/${car.id}`}
-      className={`group flex flex-col rounded-3xl bg-cream-200 p-5 transition hover:shadow-card-hover ${
+      className={`group flex flex-col rounded-3xl bg-white shadow-card p-5 transition hover:shadow-card-hover ${
         wide ? '' : 'w-[300px] shrink-0 snap-start sm:w-[320px]'
       }`}
     >

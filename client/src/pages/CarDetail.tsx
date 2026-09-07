@@ -371,7 +371,7 @@ export default function CarDetail() {
               </p>
             )}
 
-            <div className="mt-5 rounded-2xl bg-cream-200 p-5">
+            <div className="mt-5 rounded-2xl bg-white shadow-card p-5">
               <p className="text-sm text-ink-700/60">Treatment cost</p>
               <p className="font-display text-4xl font-extrabold text-ink-900">{gbp(car.price)}</p>
               <p className="mt-1 text-sm text-ink-700/70">
