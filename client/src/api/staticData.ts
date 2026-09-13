@@ -1952,5 +1952,31 @@ export const CARS: Car[] = [
     "review_count": 120,
     "accent": "#2563eb",
     "description": "Anterior cruciate ligament reconstruction augmented with a scaffold and biologics to improve healing and preserve native tissue. An established surgical option for ACL injury."
+  },
+  {
+    "id": 76,
+    "make": "Orthopedics",
+    "model": "Muse Cell Cartilage Repair",
+    "trim": "Allogeneic Muse cells",
+    "year": 2024,
+    "price": 15000,
+    "monthly_price": 625,
+    "body_type": "Muse",
+    "fuel_type": "Allogeneic",
+    "transmission": "Intra-articular injection",
+    "mileage": 60,
+    "color": "Day-case",
+    "condition": "used",
+    "seats": 30,
+    "doors": 2,
+    "engine": "Bone-marrow / adipose-derived Muse cells",
+    "power_bhp": 55,
+    "zero_to_sixty": 1,
+    "top_speed": 14,
+    "economy_mpg": 12,
+    "rating": 4.1,
+    "review_count": 40,
+    "accent": "#2563eb",
+    "description": "Intra-articular Muse (multilineage-differentiating stress-enduring) cells for cartilage and joint-tissue repair. These naturally pluripotent, non-tumorigenic cells are injected into the joint, where they home to damaged cartilage and can differentiate toward chondrocytes. Investigational — studied for chondral injury and knee osteoarthritis; benefits are not yet established."
   }
 ];
