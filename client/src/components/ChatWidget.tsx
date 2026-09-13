@@ -751,7 +751,7 @@ export default function ChatWidget({ fullPage = false }: { fullPage?: boolean })
                   type="button"
                   onClick={jumpToBottom}
                   aria-label="Scroll to latest"
-                  className="absolute bottom-3 right-3 grid h-9 w-9 place-items-center rounded-full bg-white text-ink-800 shadow-lg ring-1 ring-ink-900/10 transition hover:bg-cream-100"
+                  className="absolute bottom-3 left-1/2 grid h-9 w-9 -translate-x-1/2 place-items-center rounded-full bg-white text-ink-800 shadow-lg ring-1 ring-ink-900/10 transition hover:bg-cream-100"
                 >
                   <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.2">
                     <path d="M6 10l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
