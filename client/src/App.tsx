@@ -29,6 +29,7 @@ import ProtocolDetail from './pages/ProtocolDetail';
 import FacilityDetail from './pages/FacilityDetail';
 import WaitingList from './pages/WaitingList';
 import Assistant from './pages/Assistant';
+import Products from './pages/Products';
 import NotFound from './pages/NotFound';
 
 function ScrollToTop() {
@@ -67,6 +68,7 @@ export default function App() {
           <Route path="/consultation" element={<Sell />} />
           <Route path="/simulator" element={<Simulator />} />
           <Route path="/assistant" element={<Assistant />} />
+          <Route path="/products" element={<Products />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route

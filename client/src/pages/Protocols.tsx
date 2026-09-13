@@ -124,6 +124,15 @@ export default function Protocols() {
                 </span>
               ))}
             </div>
+            <div className="mt-6">
+              <Link
+                to="/products"
+                className="inline-flex items-center gap-2 rounded-full bg-clay-500 px-5 py-3 text-sm font-bold text-white transition hover:bg-clay-600"
+              >
+                <Icon name="clipboard" className="h-4 w-4" /> Product Catalogue
+                <span className="text-white/70">— which product powers each therapy</span>
+              </Link>
+            </div>
           </div>
 
           {/* Facility-level launchers — neumorphic blue control panel */}

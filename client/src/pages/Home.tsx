@@ -14,6 +14,7 @@ import HeroCell from '../components/HeroCell';
 import { supabase } from '../api/supabase';
 import Icon, { type IconName } from '../components/Icon';
 import { gbp, statusLabel, isResearch } from '../utils/format';
+import { PRODUCTS, therapiesForProduct } from '../data/products';
 import { useSaved } from '../context/SavedContext';
 import { useAuth } from '../context/AuthContext';
 
@@ -179,6 +180,7 @@ type Tab = 'find' | 'sell' | 'reviews';
 
 export default function Home() {
   const [featured, setFeatured] = useState<Car[]>([]);
+  const [productCards, setProductCards] = useState<{ product: (typeof PRODUCTS)[number]; count: number }[]>([]);
   const [trending, setTrending] = useState<Car[]>([]);
   const [posters, setPosters] = useState<Car[]>([]);
   const [available, setAvailable] = useState<Car[]>([]);
@@ -239,9 +241,14 @@ export default function Home() {
       api.getCars({ make: 'HIV', sort: 'rating_desc', limit: 1 }),
     ]).then((res) => setPosters(res.map((r) => r.cars[0]).filter(Boolean) as Car[]));
     // Our own available (established) therapies for the Established rail.
-    api.getCars({ limit: 200 }).then(({ cars }) =>
-      setAvailable(cars.filter((c) => !isResearch(c.condition))),
-    );
+    api.getCars({ limit: 300 }).then(({ cars }) => {
+      setAvailable(cars.filter((c) => !isResearch(c.condition)));
+      setProductCards(
+        PRODUCTS.map((p) => ({ product: p, count: therapiesForProduct(p, cars).length }))
+          .filter((x) => x.count > 0)
+          .sort((a, b) => b.count - a.count),
+      );
+    });
   }, []);
 
   // Auto-advance the featured slider (paused on hover).
@@ -837,6 +844,42 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      {/* ---------- PRODUCTS WE USE ---------- */}
+      {productCards.length > 0 && (
+        <section className="container-x py-8">
+          <div className="flex items-end justify-between gap-3">
+            <div>
+              <h2 className="font-display text-2xl font-extrabold uppercase text-ink-900 sm:text-3xl">
+                Products we use
+              </h2>
+              <p className="mt-1 text-sm text-ink-700/60">The biologic product or cell line behind each therapy.</p>
+            </div>
+            <Link to="/products" className="shrink-0 text-sm font-bold text-clay-600 underline-offset-4 hover:underline">
+              Product catalogue →
+            </Link>
+          </div>
+          <div className="mt-5 flex gap-4 overflow-x-auto pb-3 [scrollbar-width:thin]">
+            {productCards.map(({ product, count }) => (
+              <Link
+                key={product.name}
+                to="/products"
+                className="flex w-64 shrink-0 flex-col rounded-2xl border border-cream-300 bg-white p-4 shadow-card transition hover:-translate-y-0.5 hover:shadow-card-hover"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <span className="chip bg-cream-200 text-ink-700">{product.category}</span>
+                  <span className="text-[11px] font-semibold text-ink-700/50">{product.status}</span>
+                </div>
+                <h3 className="mt-3 font-display text-base font-bold leading-snug text-ink-900">{product.name}</h3>
+                <p className="mt-1 text-xs text-ink-700/60">{product.supplier} · {product.country}</p>
+                <p className="mt-auto pt-3 text-[11px] font-semibold uppercase tracking-wide text-clay-600">
+                  {count} therap{count === 1 ? 'y' : 'ies'}
+                </p>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* ---------- HOW IT WORKS ---------- */}
       <section className="container-x py-14">
