@@ -33,6 +33,7 @@ const DIABETES = '#0e7490';
 const AUTOIMMUNE = '#9333ea';
 const HIV = '#e11d48';
 const NEPHRO = '#0d9488';
+const ONCOLOGY = '#9f1239';
 
 export const therapies = [
   // ── Age Rejuvenation ────────────────────────────────────────────────────
@@ -569,6 +570,96 @@ export const therapies = [
     engine: 'Exosome/AAV-delivered inducible OSK (OCT4, SOX2, KLF4)', power_bhp: 54, zero_to_sixty: 1, top_speed: 7,
     economy_mpg: 12, rating: 4.2, review_count: 12, accent: NEPHRO,
     description: 'A first-in-class research application of the Persona Reversal partial epigenetic reprogramming platform to the kidney. Controlled, transient expression of OCT4, SOX2 and KLF4 (“OSK”) is used to reset the epigenetic age of injured tubular and glomerular cells toward a younger, more regenerative state — reversing fibrosis-associated methylation changes without altering the DNA sequence. Aimed at the aged/fibrotic kidney in chronic kidney disease, and delivered systemically by a kidney-homing carrier (IV exosome or AAV). First-in-human concept (investigational).'
+  },
+
+  // ── Competitive gap-fillers (parity with rival clinic menus) ──────────────
+  {
+    make: 'Age Rejuvenation', model: 'Muse Cell IV Therapy', trim: 'Allogeneic Muse cells', year: 2024,
+    price: 18000, monthly_price: 750, body_type: 'Muse', fuel_type: 'Allogeneic', transmission: 'IV infusion',
+    mileage: 90, color: 'Day-case', condition: 'used', seats: 50, doors: 2,
+    engine: 'Bone-marrow / adipose-derived Muse cells', power_bhp: 50, zero_to_sixty: 2, top_speed: 3,
+    economy_mpg: 12, rating: 4.0, review_count: 45, accent: AGE,
+    description: 'Muse (multilineage-differentiating stress-enduring) cells are a naturally pluripotent, non-tumorigenic subpopulation given intravenously and reported to home to injured tissue. Investigational — studied in trials for stroke, myocardial infarction, ALS and spinal-cord injury; benefits are not established.'
+  },
+  {
+    make: 'Age Rejuvenation', model: 'VSEL Regenerative Therapy', trim: 'Autologous VSELs', year: 2024,
+    price: 14000, monthly_price: 583, body_type: 'VSEL', fuel_type: 'Autologous', transmission: 'IV infusion',
+    mileage: 120, color: 'Day-case', condition: 'used', seats: null, doors: 1,
+    engine: 'Very small embryonic-like stem cells (blood-mobilised)', power_bhp: 40, zero_to_sixty: 1, top_speed: 2,
+    economy_mpg: 6, rating: 3.9, review_count: 30, accent: AGE,
+    description: 'Very small embryonic-like stem cells (VSELs) are isolated from the patient’s own mobilised blood and re-administered for cellular rejuvenation. Highly investigational — the existence and clinical value of VSELs remain scientifically debated.'
+  },
+  {
+    make: 'Age Rejuvenation', model: 'Peptide Restoration Program', trim: 'Signalling peptides', year: 2023,
+    price: 3200, monthly_price: 267, body_type: 'Adjunct', fuel_type: 'Synthetic', transmission: 'Subcutaneous',
+    mileage: 15, color: 'Home / clinic', condition: 'new', seats: null, doors: 4,
+    engine: 'Compounded signalling peptides (e.g. BPC-157, thymosin-β4)', power_bhp: 55, zero_to_sixty: 12, top_speed: 0,
+    economy_mpg: 3, rating: 4.0, review_count: 140, accent: AGE,
+    description: 'A supportive programme of signalling peptides for recovery, sleep and tissue repair. Wellness support, not a disease treatment — several peptides are compounded or off-label and not individually approved.'
+  },
+  {
+    make: 'Age Rejuvenation', model: 'NAD+ Infusion Therapy', trim: 'IV NAD+', year: 2022,
+    price: 2400, monthly_price: 200, body_type: 'Adjunct', fuel_type: 'Synthetic', transmission: 'IV infusion',
+    mileage: 180, color: 'Day-case', condition: 'new', seats: null, doors: 4,
+    engine: 'Nicotinamide adenine dinucleotide (NAD+)', power_bhp: 50, zero_to_sixty: 6, top_speed: 0,
+    economy_mpg: 3, rating: 4.1, review_count: 210, accent: AGE,
+    description: 'Intravenous NAD+ used to support cellular energy metabolism and recovery. Supportive wellness therapy; long-term anti-ageing benefits are not established.'
+  },
+  {
+    make: 'Age Rejuvenation', model: 'Hormone Optimization (BHRT)', trim: 'Bioidentical hormone therapy', year: 2021,
+    price: 2800, monthly_price: 120, body_type: 'Adjunct', fuel_type: 'Bioidentical', transmission: 'Pellet / injection',
+    mileage: 20, color: 'Clinic', condition: 'new', seats: null, doors: 4,
+    engine: 'Bioidentical hormones (testosterone, oestrogen, thyroid)', power_bhp: 65, zero_to_sixty: 4, top_speed: 0,
+    economy_mpg: 6, rating: 4.2, review_count: 300, accent: AGE,
+    description: 'Physician-supervised optimisation of age-related hormone decline via bioidentical hormone replacement. Established endocrine practice when clinically indicated; requires monitoring.'
+  },
+  {
+    make: 'Age Rejuvenation', model: 'IV Nutrition (Myers’ Cocktail)', trim: 'Micronutrient IV', year: 2020,
+    price: 350, monthly_price: 29, body_type: 'Adjunct', fuel_type: 'Micronutrient', transmission: 'IV infusion',
+    mileage: 45, color: 'Day-case', condition: 'new', seats: null, doors: 4,
+    engine: 'Vitamin / mineral micronutrient blend', power_bhp: 45, zero_to_sixty: 6, top_speed: 0,
+    economy_mpg: 1, rating: 4.0, review_count: 420, accent: AGE,
+    description: 'A vitamin-and-mineral IV blend used for hydration, recovery and general wellness. Supportive only — not a treatment for any specific disease.'
+  },
+  {
+    make: 'Cosmetic', model: 'PRP Facial Rejuvenation', trim: 'Autologous PRP', year: 2019,
+    price: 900, monthly_price: 75, body_type: 'PRP', fuel_type: 'Autologous', transmission: 'Microneedling / injection',
+    mileage: 45, color: 'Clinic', condition: 'new', seats: null, doors: 4,
+    engine: 'Platelet-rich plasma (own blood)', power_bhp: 62, zero_to_sixty: 3, top_speed: 1,
+    economy_mpg: 3, rating: 4.3, review_count: 260, accent: COSMETIC,
+    description: 'Platelet-rich plasma from the patient’s own blood, applied with microneedling or injection to improve skin tone and texture. A widely offered aesthetic treatment.'
+  },
+  {
+    make: 'Cosmetic', model: 'PRP Hair Restoration', trim: 'Autologous PRP', year: 2019,
+    price: 1200, monthly_price: 100, body_type: 'PRP', fuel_type: 'Autologous', transmission: 'Scalp injection',
+    mileage: 40, color: 'Clinic', condition: 'new', seats: null, doors: 4,
+    engine: 'Platelet-rich plasma (own blood)', power_bhp: 60, zero_to_sixty: 4, top_speed: 1,
+    economy_mpg: 6, rating: 4.2, review_count: 300, accent: COSMETIC,
+    description: 'Scalp injections of platelet-rich plasma to slow hair loss and support regrowth in androgenetic alopecia. Commonly offered; results vary and maintenance sessions are needed.'
+  },
+  {
+    make: 'Oncology', model: 'CAR-T Cell Therapy', trim: 'Autologous CD19 CAR-T', year: 2018,
+    price: 380000, monthly_price: 15833, body_type: 'Immune cell', fuel_type: 'Autologous', transmission: 'IV infusion',
+    mileage: 60, color: 'Inpatient', condition: 'new', seats: null, doors: 4,
+    engine: 'Genetically engineered chimeric antigen receptor T cells', power_bhp: 80, zero_to_sixty: 1, top_speed: 21,
+    economy_mpg: 24, rating: 4.6, review_count: 500, accent: ONCOLOGY,
+    description: 'A patient’s own T cells are genetically engineered to target a cancer antigen (e.g. CD19), expanded and re-infused. FDA/EMA-approved for certain blood cancers (some leukaemias, lymphomas and multiple myeloma) — an established, high-complexity cell therapy delivered in specialist inpatient centres.'
+  },
+  {
+    make: 'Orthopedics', model: 'BioKnee Biologic Reconstruction', trim: 'Cartilage paste graft + meniscus + biologics', year: 2020,
+    price: 22000, monthly_price: 917, body_type: 'Surgical', fuel_type: 'Autologous + allograft', transmission: 'Surgical implantation',
+    mileage: 120, color: 'Day-surgery', condition: 'new', seats: null, doors: 4,
+    engine: 'Articular cartilage paste graft, meniscus allograft, growth factors', power_bhp: 78, zero_to_sixty: 1, top_speed: 90,
+    economy_mpg: 24, rating: 4.5, review_count: 160, accent: ORTHO,
+    description: 'A biologic alternative to knee replacement that rebuilds the arthritic knee — articular cartilage paste grafting, meniscus replacement where needed, and biologic augmentation — to preserve the natural joint. An established surgical programme for select arthritic knees.'
+  },
+  {
+    make: 'Orthopedics', model: 'BioACL Biologic Reconstruction', trim: 'Scaffold + allograft ACL + biologics', year: 2021,
+    price: 16000, monthly_price: 667, body_type: 'Surgical', fuel_type: 'Autologous + allograft', transmission: 'Surgical implantation',
+    mileage: 100, color: 'Day-surgery', condition: 'new', seats: null, doors: 4,
+    engine: 'Biologically augmented ACL reconstruction (scaffold + growth factors)', power_bhp: 75, zero_to_sixty: 1, top_speed: 120,
+    economy_mpg: 24, rating: 4.4, review_count: 120, accent: ORTHO,
+    description: 'Anterior cruciate ligament reconstruction augmented with a scaffold and biologics to improve healing and preserve native tissue. An established surgical option for ACL injury.'
   },
 
 ];
