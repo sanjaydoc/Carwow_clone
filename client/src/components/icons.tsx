@@ -111,6 +111,15 @@ function deptPaths(name: string): ReactNode {
           <path d="M13.6 11.2 16 21" />
         </>
       );
+    case 'Oncology':
+      // Targeted cell: a crosshair over a cell — immunotherapy homing on a tumour cell.
+      return (
+        <>
+          <circle cx="12" cy="12" r="6" />
+          <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
+          <circle cx="12" cy="12" r="2" fill="currentColor" stroke="none" />
+        </>
+      );
     default:
       return (
         <>
