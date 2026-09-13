@@ -195,9 +195,9 @@ export default function MobileNav() {
           <CalendarIcon />
           Consult
         </NavLink>
-        <NavLink to="/research" className={itemClass} onClick={close}>
-          <FlaskIcon />
-          Research
+        <NavLink to="/assistant" className={itemClass} onClick={close}>
+          <ChatIcon />
+          Assistant
         </NavLink>
         <NavLink to={user ? '/saved' : '/login'} className={itemClass} onClick={close}>
           <span className="relative">
@@ -253,12 +253,11 @@ function CalendarIcon() {
     </svg>
   );
 }
-function FlaskIcon() {
+function ChatIcon() {
   return (
     <svg {...iconProps}>
-      <path d="M9 3h6" />
-      <path d="M10 3v6l-4.4 8c-.6 1 .1 2.3 1.3 2.3h10.2c1.2 0 1.9-1.3 1.3-2.3L14 9V3" />
-      <path d="M7.6 14h8.8" />
+      <path d="M4 5.5h16a1.5 1.5 0 011.5 1.5v8a1.5 1.5 0 01-1.5 1.5H9l-4 3v-3H4A1.5 1.5 0 012.5 15V7A1.5 1.5 0 014 5.5z" />
+      <path d="M8 10.5h8M8 13h5" />
     </svg>
   );
 }

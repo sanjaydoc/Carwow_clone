@@ -147,6 +147,7 @@ export default function ChatWidget({ fullPage = false }: { fullPage?: boolean })
     }
   });
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [showJump, setShowJump] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const abortRef = useRef<AbortController | null>(null);
   const recognitionRef = useRef<any>(null);
@@ -567,6 +568,17 @@ export default function ChatWidget({ fullPage = false }: { fullPage?: boolean })
     }
   };
 
+  // Show a "jump to latest" chevron when the user has scrolled up from the bottom.
+  const onMsgScroll = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setShowJump(el.scrollHeight - el.scrollTop - el.clientHeight > 120);
+  };
+  const jumpToBottom = () => {
+    const el = scrollRef.current;
+    if (el) el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+  };
+
   return (
     <>
       {/* Launcher — sits above the hero search card */}
@@ -689,7 +701,8 @@ export default function ChatWidget({ fullPage = false }: { fullPage?: boolean })
             </div>
 
             {/* Messages */}
-            <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto bg-cream-100 p-4">
+            <div className="relative min-h-0 flex-1">
+              <div ref={scrollRef} onScroll={onMsgScroll} className="h-full space-y-4 overflow-y-auto bg-cream-100 p-4">
               <GreetingBubble />
               {messages.length === 0 && (
                 <div className="flex flex-wrap gap-2">
@@ -724,6 +737,19 @@ export default function ChatWidget({ fullPage = false }: { fullPage?: boolean })
                   />
                 )
               ))}
+              </div>
+              {showJump && (
+                <button
+                  type="button"
+                  onClick={jumpToBottom}
+                  aria-label="Scroll to latest"
+                  className="absolute bottom-3 right-3 grid h-9 w-9 place-items-center rounded-full bg-white text-ink-800 shadow-lg ring-1 ring-ink-900/10 transition hover:bg-cream-100"
+                >
+                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.2">
+                    <path d="M6 10l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+              )}
             </div>
 
             {/* Composer */}
