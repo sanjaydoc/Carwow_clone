@@ -80,8 +80,10 @@ export default function MobileNav() {
   const close = () => setMenuOpen(false);
 
   // The marketing "join the waiting list" banner is irrelevant on the admin
-  // dashboard and its fixed position overlaps the dashboard controls.
-  const hideWaitlistBanner = pathname.startsWith('/admin');
+  // dashboard and the full-page assistant, and its fixed position overlaps
+  // the dashboard controls / the chat input on those pages.
+  const hideWaitlistBanner =
+    pathname.startsWith('/admin') || pathname.startsWith('/assistant');
 
   return (
     <>
