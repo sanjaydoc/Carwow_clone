@@ -177,6 +177,7 @@ export default function Investors() {
             <h3 className="font-display text-2xl font-extrabold text-ink-900">{FOUNDER.name}</h3>
             <p className="mt-0.5 text-sm font-semibold text-clay-600">
               {FOUNDER.role}, StemCells Protocol{FOUNDER.credential ? ` · ${FOUNDER.credential}` : ''}
+              {' · '}<span className="font-normal text-ink-900/20">pursuing</span> Fellowship in Regenerative Medicine
             </p>
 
             <p className="mt-4 leading-relaxed text-ink-700/80">{FOUNDER_BIO}</p>
