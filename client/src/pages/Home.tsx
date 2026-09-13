@@ -228,9 +228,11 @@ export default function Home() {
       })
       .finally(() => setLoading(false));
     api.getCars({ sort: 'rating_desc', limit: 6 }).then(({ cars }) => setTrending(cars));
-    // Featured-therapies slider: Persona Reversal, Exosome IV Longevity, Type 1 Diabetes, HIV cure.
+    // Featured-therapies slider: Persona Reversal, Muse cells, CAR-T, Exosome IV, Type 1 Diabetes, HIV cure.
     Promise.all([
       api.getCars({ search: 'Persona Reversal', limit: 1 }),
+      api.getCars({ search: 'Muse', limit: 1 }),
+      api.getCars({ make: 'Oncology', limit: 1 }),
       api.getCars({ search: 'Exosome IV Longevity', limit: 1 }),
       api.getCars({ search: 'Type 1 Diabetes', limit: 1 }),
       api.getCars({ make: 'HIV', sort: 'rating_desc', limit: 1 }),
@@ -253,7 +255,11 @@ export default function Home() {
 
   // Patient-friendly titles for the featured slider (full names live on the detail page).
   const posterTitle = (p: Car) =>
-    p.make === 'HIV' ? 'HIV Cure' : /Persona Reversal/i.test(p.model) ? 'Persona Reversal (age reversal)' : p.model;
+    p.make === 'HIV' ? 'HIV Cure'
+      : p.make === 'Oncology' ? 'CAR-T Cell Therapy'
+      : /Muse/i.test(p.model) ? 'Muse Cells'
+      : /Persona Reversal/i.test(p.model) ? 'Persona Reversal (age reversal)'
+      : p.model;
 
   const onFind = (e: FormEvent) => {
     e.preventDefault();
