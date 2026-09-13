@@ -260,12 +260,17 @@ export default function ChatWidget({ fullPage = false }: { fullPage?: boolean })
   };
 
   useEffect(() => {
-    if (!open || !scrollRef.current) return;
-    // On first open (only the greeting, no conversation yet) keep the view at the
-    // top so the greeting + sample-file CTA read from the start; once there are
-    // real messages, follow the conversation to the bottom.
-    scrollRef.current.scrollTop = messages.length === 0 ? 0 : scrollRef.current.scrollHeight;
-  }, [messages, open, busy]);
+    const el = scrollRef.current;
+    if ((!open && !fullPage) || !el) return;
+    // First open (only the greeting, no conversation yet): keep the view at the top
+    // so the greeting + sample CTA read from the start — no jump arrow here.
+    if (messages.length === 0) { el.scrollTop = 0; setShowJump(false); return; }
+    // Otherwise follow the conversation to the bottom ONLY if the user is already
+    // near it. If they've scrolled up to read, don't yank them down — the jump
+    // arrow lets them return (Claude-style).
+    const nearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 160;
+    if (nearBottom) { el.scrollTop = el.scrollHeight; setShowJump(false); }
+  }, [messages, open, busy, fullPage]);
 
   // Persist the conversation (keep the last 60 turns to stay well under quota).
   useEffect(() => {
@@ -572,7 +577,10 @@ export default function ChatWidget({ fullPage = false }: { fullPage?: boolean })
   const onMsgScroll = () => {
     const el = scrollRef.current;
     if (!el) return;
-    setShowJump(el.scrollHeight - el.scrollTop - el.clientHeight > 120);
+    // Only offer "jump to latest" once a real conversation exists AND the user
+    // has scrolled up away from the newest message.
+    const scrolledUp = el.scrollHeight - el.scrollTop - el.clientHeight > 120;
+    setShowJump(messages.length > 0 && scrolledUp);
   };
   const jumpToBottom = () => {
     const el = scrollRef.current;
