@@ -104,7 +104,7 @@ function loadMessages(): UIMsg[] {
 const OPEN_KEY = 'scp_chat_open';
 const EXPAND_KEY = 'scp_chat_expanded';
 
-export default function ChatWidget() {
+export default function ChatWidget({ fullPage = false }: { fullPage?: boolean }) {
   // Persist the open state for the browser session so a remount (e.g. a mobile
   // browser reloading the page after the native file picker, or a parent
   // re-render) does not "kick the user out" of the chat mid-upload.
@@ -570,7 +570,7 @@ export default function ChatWidget() {
   return (
     <>
       {/* Launcher — sits above the hero search card */}
-      {!open && (
+      {!fullPage && !open && (
         <button
           type="button"
           onClick={() => setOpen(true)}
@@ -591,15 +591,15 @@ export default function ChatWidget() {
         </button>
       )}
 
-      {/* Chat panel — floating on desktop, bottom sheet on mobile */}
-      {open && (
-        <div className="fixed inset-x-0 bottom-0 z-[60] sm:inset-x-auto sm:bottom-6 sm:right-6">
+      {/* Chat panel — full page on /assistant, else floating on desktop / bottom sheet on mobile */}
+      {(open || fullPage) && (
+        <div className={fullPage ? 'w-full' : 'fixed inset-x-0 bottom-0 z-[60] sm:inset-x-auto sm:bottom-6 sm:right-6'}>
           <div
-            className={`mx-auto flex h-[85vh] w-full flex-col overflow-hidden rounded-t-3xl bg-white shadow-2xl ring-1 ring-ink-900/10 transition-[width,height] duration-200 sm:max-h-[92vh] sm:rounded-3xl ${
-              expanded
-                ? 'sm:h-[88vh] sm:w-[720px]'
-                : 'sm:h-[600px] sm:max-h-[80vh] sm:w-[400px]'
-            }`}
+            className={fullPage
+              ? 'mx-auto flex h-[calc(100vh-8rem)] min-h-[500px] w-full max-w-3xl flex-col overflow-hidden rounded-3xl bg-white shadow-card ring-1 ring-ink-900/10'
+              : `mx-auto flex h-[85vh] w-full flex-col overflow-hidden rounded-t-3xl bg-white shadow-2xl ring-1 ring-ink-900/10 transition-[width,height] duration-200 sm:max-h-[92vh] sm:rounded-3xl ${
+                  expanded ? 'sm:h-[88vh] sm:w-[720px]' : 'sm:h-[600px] sm:max-h-[80vh] sm:w-[400px]'
+                }`}
           >
             {/* Header */}
             <div className="flex items-center gap-3 bg-ink-900 px-4 py-3.5 text-white">
@@ -655,33 +655,37 @@ export default function ChatWidget() {
                   )}
                 </div>
               )}
-              <button
-                type="button"
-                onClick={() => setExpanded((v) => !v)}
-                aria-label={expanded ? 'Shrink chat' : 'Expand chat'}
-                title={expanded ? 'Shrink' : 'Expand'}
-                className="hidden h-8 w-8 place-items-center rounded-lg text-white/70 transition hover:bg-white/10 hover:text-white sm:grid"
-              >
-                {expanded ? (
-                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M9 9L4 4m0 0v4m0-4h4M15 9l5-5m0 0v4m0-4h-4M9 15l-5 5m0 0v-4m0 4h4M15 15l5 5m0 0v-4m0 4h-4" strokeLinecap="round" strokeLinejoin="round" />
+              {!fullPage && (
+                <button
+                  type="button"
+                  onClick={() => setExpanded((v) => !v)}
+                  aria-label={expanded ? 'Shrink chat' : 'Expand chat'}
+                  title={expanded ? 'Shrink' : 'Expand'}
+                  className="hidden h-8 w-8 place-items-center rounded-lg text-white/70 transition hover:bg-white/10 hover:text-white sm:grid"
+                >
+                  {expanded ? (
+                    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M9 9L4 4m0 0v4m0-4h4M15 9l5-5m0 0v4m0-4h-4M9 15l-5 5m0 0v-4m0 4h4M15 15l5 5m0 0v-4m0 4h-4" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  ) : (
+                    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M4 9V4m0 0h5M4 4l6 6M20 9V4m0 0h-5m5 0l-6 6M4 15v5m0 0h5m-5 0l6-6M20 15v5m0 0h-5m5 0l-6-6" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  )}
+                </button>
+              )}
+              {!fullPage && (
+                <button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  aria-label="Minimise chat"
+                  className="grid h-8 w-8 place-items-center rounded-lg text-white/70 transition hover:bg-white/10 hover:text-white"
+                >
+                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M5 12h14" strokeLinecap="round" />
                   </svg>
-                ) : (
-                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M4 9V4m0 0h5M4 4l6 6M20 9V4m0 0h-5m5 0l-6 6M4 15v5m0 0h5m-5 0l6-6M20 15v5m0 0h-5m5 0l-6-6" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                )}
-              </button>
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                aria-label="Minimise chat"
-                className="grid h-8 w-8 place-items-center rounded-lg text-white/70 transition hover:bg-white/10 hover:text-white"
-              >
-                <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M5 12h14" strokeLinecap="round" />
-                </svg>
-              </button>
+                </button>
+              )}
             </div>
 
             {/* Messages */}

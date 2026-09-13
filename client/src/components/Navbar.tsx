@@ -8,6 +8,7 @@ const links = [
   { to: '/therapies', label: 'Therapies' },
   { to: '/protocols', label: 'Protocols' },
   { to: '/simulator', label: 'Simulator' },
+  { to: '/assistant', label: 'Assistant' },
   { to: '/research', label: 'Research' },
   { to: '/waiting-list', label: 'Waiting list' },
   { to: '/investors', label: 'Investors' },
@@ -26,7 +27,7 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-cream-300 bg-cream-100/95">
-      <div className="container-x flex h-16 items-center justify-between gap-4">
+      <div className="mx-auto flex h-16 w-full max-w-[1600px] items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
         <Link to="/" className="flex items-center gap-2" onClick={() => setOpen(false)}>
           <Logo />
           <span className="font-display text-lg font-extrabold tracking-tight text-ink-900 sm:text-xl">
