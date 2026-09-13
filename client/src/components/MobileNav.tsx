@@ -34,6 +34,7 @@ const menuSections: MenuSection[] = [
       ['Cardiology', '/browse?make=Cardiology'],
       ['Neurology', '/browse?make=Neurology'],
       ['Pulmonology', '/browse?make=Pulmonology'],
+      ['Oncology', '/browse?make=Oncology'],
       ['All departments', '/browse'],
     ],
   },

@@ -24,6 +24,7 @@ const categories = [
   { label: 'Orthopedics', icon: 'bolt', to: '/browse?make=Orthopedics' },
   { label: 'Cardiology', icon: 'leaf', to: '/browse?make=Cardiology' },
   { label: 'Neurology', icon: 'sparkle', to: '/browse?make=Neurology' },
+  { label: 'Oncology', icon: 'bolt', to: '/browse?make=Oncology' },
 ];
 
 function ChipIcon({ name }: { name: string }) {
