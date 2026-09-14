@@ -64,9 +64,13 @@ const LOCAL: Record<string, string> = {
 };
 const DEFAULT_PHOTO = 'cleanroom.jpg';
 
+// Bump when a therapy image is re-saved under the same filename, so browsers
+// re-fetch instead of serving a stale cached crop.
+const IMG_VERSION = '2';
+
 function photoUrl(make: string, model: string): string {
   const file = BY_MODEL[model] ?? LOCAL[make] ?? DEFAULT_PHOTO;
-  return `${import.meta.env.BASE_URL}therapy/${file}`;
+  return `${import.meta.env.BASE_URL}therapy/${file}?v=${IMG_VERSION}`;
 }
 
 export default function CarImage({ accent, className = '', make = '', model = '', fit }: Props) {
