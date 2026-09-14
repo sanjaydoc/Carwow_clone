@@ -10,6 +10,7 @@ const departments: { icon: IconName; label: string }[] = [
   { icon: 'flask', label: 'Gastroenterology' },
   { icon: 'syringe', label: 'Dental' },
   { icon: 'star', label: 'Cosmetic & Aesthetic' },
+  { icon: 'microscope', label: 'Oncology' },
 ];
 
 export default function Specialists() {
@@ -30,12 +31,17 @@ export default function Specialists() {
       {/* Founder / lead */}
       <div className="mx-auto mt-12 max-w-4xl">
         <div className="card flex flex-col gap-6 p-6 sm:flex-row sm:items-center sm:gap-8 sm:p-8">
-          <span className="grid h-28 w-28 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-clay-500 to-clay-700 font-display text-4xl font-bold text-white sm:h-32 sm:w-32">
-            SA
-          </span>
+          <img
+            src="/founder.jpg"
+            alt="Dr. Sanjay Anbu"
+            className="h-28 w-28 shrink-0 rounded-2xl object-cover ring-1 ring-ink-900/10 sm:h-32 sm:w-32"
+          />
           <div className="min-w-0 flex-1">
             <h2 className="font-display text-2xl font-extrabold text-ink-900">Dr. Sanjay Anbu</h2>
             <p className="mt-0.5 text-sm font-semibold text-clay-600">Founder &amp; Lead · MBBS · Regenerative Medicine &amp; AI</p>
+            <p className="text-sm font-semibold text-clay-600">
+              <span className="font-normal text-ink-900/20">pursuing</span> Fellowship in Regenerative Medicine
+            </p>
             <p className="mt-3 text-ink-700/80">
               A clinician working at the intersection of regenerative medicine, de novo molecular design and
               neurotechnology — building the tools to make age-reversal therapy personal to each patient's genome.
