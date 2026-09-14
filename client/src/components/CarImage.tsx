@@ -46,6 +46,10 @@ const BY_MODEL: Record<string, string> = {
   'CCR5 Gene-Edited HSC Therapy': 'ccr5-gene-edited-hsc-therapy.jpg',
   'Anti-HIV Gene Therapy in HSCs': 'anti-hiv-gene-therapy-in-hscs.jpg',
   'CCR5-Disrupted CD4 T-cell Therapy': 'ccr5-disrupted-cd4-t-cell-therapy.jpg',
+  'Crohn’s Perianal Fistula': 'crohn-s-perianal-fistula.jpg',
+  'Gut GvHD MSC Therapy': 'gut-gvhd-msc-therapy.jpg',
+  'Liver Cirrhosis MSC Therapy': 'liver-cirrhosis-msc-therapy.jpg',
+  'Ulcerative Colitis MSC': 'ulcerative-colitis-msc.jpg',
 };
 
 // Per-department bundled photos.
