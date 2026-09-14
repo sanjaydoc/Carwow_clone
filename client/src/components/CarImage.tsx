@@ -21,6 +21,10 @@ const BY_MODEL: Record<string, string> = {
   'Hair Restoration Exosome': 'hair-exosome.jpg',
   'Type 1 Diabetes': 'type-1-diabetes.jpg',
   'Type 2 Diabetes': 'type-2-diabetes.jpg',
+  'COPD MSC Therapy': 'copd-msc-therapy.jpg',
+  'Pulmonary Fibrosis (IPF) MSC': 'pulmonary-fibrosis-ipf-msc.jpg',
+  'ARDS MSC Therapy': 'ards-msc-therapy.jpg',
+  'Airway Epithelial Regeneration': 'airway-epithelial-regeneration.jpg',
 };
 
 // Per-department bundled photos.
