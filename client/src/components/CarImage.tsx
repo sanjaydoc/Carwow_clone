@@ -19,6 +19,8 @@ interface Props {
 // Per-therapy bundled photos (checked first, keyed by therapy name).
 const BY_MODEL: Record<string, string> = {
   'Hair Restoration Exosome': 'hair-exosome.jpg',
+  'Type 1 Diabetes': 'type-1-diabetes.jpg',
+  'Type 2 Diabetes': 'type-2-diabetes.jpg',
 };
 
 // Per-department bundled photos.
