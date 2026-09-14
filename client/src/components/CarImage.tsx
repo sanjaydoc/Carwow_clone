@@ -41,6 +41,11 @@ const BY_MODEL: Record<string, string> = {
   'ALS / MND MSC Therapy': 'als-mnd-msc-therapy.jpg',
   'Muscular Dystrophy': 'muscular-dystrophy.jpg',
   'FSHD (Facioscapulohumeral Dystrophy)': 'fshd-facioscapulohumeral-dystrophy.jpg',
+  'CCR5-Δ32 Stem-Cell Transplant': 'ccr5-32-stem-cell-transplant.jpg',
+  'Cord-Blood CCR5-Δ32 Transplant': 'cord-blood-ccr5-32-transplant.jpg',
+  'CCR5 Gene-Edited HSC Therapy': 'ccr5-gene-edited-hsc-therapy.jpg',
+  'Anti-HIV Gene Therapy in HSCs': 'anti-hiv-gene-therapy-in-hscs.jpg',
+  'CCR5-Disrupted CD4 T-cell Therapy': 'ccr5-disrupted-cd4-t-cell-therapy.jpg',
 };
 
 // Per-department bundled photos.
