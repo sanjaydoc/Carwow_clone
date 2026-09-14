@@ -77,6 +77,7 @@ const BY_MODEL: Record<string, string> = {
   'Alopecia Areata': 'alopecia-areata.jpg',
   'Polymyositis & Dermatomyositis': 'polymyositis-dermatomyositis.jpg',
   'Behçet’s Disease': 'behcet-s-disease.jpg',
+  'Systemic Sclerosis (Scleroderma)': 'systemic-sclerosis-scleroderma.jpg',
 };
 
 // Per-department bundled photos.
