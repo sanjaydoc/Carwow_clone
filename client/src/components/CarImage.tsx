@@ -25,6 +25,14 @@ const BY_MODEL: Record<string, string> = {
   'Pulmonary Fibrosis (IPF) MSC': 'pulmonary-fibrosis-ipf-msc.jpg',
   'ARDS MSC Therapy': 'ards-msc-therapy.jpg',
   'Airway Epithelial Regeneration': 'airway-epithelial-regeneration.jpg',
+  'Knee Osteoarthritis MSC Therapy': 'knee-osteoarthritis-msc-therapy.jpg',
+  'Cartilage Repair': 'cartilage-repair.jpg',
+  'Non-union Fracture Repair': 'non-union-fracture-repair.jpg',
+  'Intervertebral Disc Regeneration': 'intervertebral-disc-regeneration.jpg',
+  'Tendon & Ligament PRP-MSC': 'tendon-ligament-prp-msc.jpg',
+  'BioKnee Biologic Reconstruction': 'bioknee-biologic-reconstruction.jpg',
+  'BioACL Biologic Reconstruction': 'bioacl-biologic-reconstruction.jpg',
+  'Muse Cell Cartilage Repair': 'muse-cell-cartilage-repair.jpg',
 };
 
 // Per-department bundled photos.
