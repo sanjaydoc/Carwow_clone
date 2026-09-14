@@ -69,10 +69,16 @@ function photoUrl(make: string, model: string): string {
   return `${import.meta.env.BASE_URL}therapy/${file}`;
 }
 
-export default function CarImage({ accent, className = '', make = '', model = '', fit = 'cover' }: Props) {
+export default function CarImage({ accent, className = '', make = '', model = '', fit }: Props) {
   const [failed, setFailed] = useState(false);
   useEffect(() => setFailed(false), [make, model]);
   const hasPhoto = Boolean(make) && !failed;
+
+  // Per-therapy infographics (BY_MODEL) carry titles + edge labels, so they must
+  // be fully visible — 'contain'. Plain department photos (LOCAL/DEFAULT) look
+  // best filling the frame — 'cover'. A caller can still force either via `fit`.
+  const isInfographic = Boolean(model) && Boolean(BY_MODEL[model]);
+  const effFit = fit ?? (isInfographic ? 'contain' : 'cover');
 
   return (
     <div
@@ -80,7 +86,7 @@ export default function CarImage({ accent, className = '', make = '', model = ''
       style={{
         // 'contain' letterboxes onto a clean white ground so the full infographic reads;
         // 'cover' keeps the branded accent gradient behind the glyph fallback.
-        background: fit === 'contain'
+        background: effFit === 'contain'
           ? '#ffffff'
           : `linear-gradient(160deg, #ffffff 0%, ${hexA(accent, 0.1)} 60%, ${hexA(accent, 0.2)} 100%)`,
       }}
@@ -111,7 +117,7 @@ export default function CarImage({ accent, className = '', make = '', model = ''
           alt={`${make} clinical treatment`}
           loading="lazy"
           onError={() => setFailed(true)}
-          className={`absolute inset-0 h-full w-full ${fit === 'contain' ? 'object-contain' : 'object-cover'}`}
+          className={`absolute inset-0 h-full w-full ${effFit === 'contain' ? 'object-contain' : 'object-cover'}`}
           draggable={false}
         />
       )}

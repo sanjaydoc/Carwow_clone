@@ -38,7 +38,7 @@ export default function CarCard({ car }: { car: Car }) {
           make={car.make}
           model={car.model}
           year={car.year}
-          className="h-44 w-full"
+          className="aspect-[3/2] w-full"
         />
         <span
           className={`absolute left-3 top-3 chip backdrop-blur ${
