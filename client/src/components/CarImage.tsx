@@ -50,6 +50,10 @@ const BY_MODEL: Record<string, string> = {
   'Gut GvHD MSC Therapy': 'gut-gvhd-msc-therapy.jpg',
   'Liver Cirrhosis MSC Therapy': 'liver-cirrhosis-msc-therapy.jpg',
   'Ulcerative Colitis MSC': 'ulcerative-colitis-msc.jpg',
+  'Dental Pulp Regeneration': 'dental-pulp-regeneration.jpg',
+  'Periodontal Ligament Repair': 'periodontal-ligament-repair.jpg',
+  'Alveolar Bone Regeneration': 'alveolar-bone-regeneration.jpg',
+  'Whole-Tooth Bioengineering': 'whole-tooth-bioengineering.jpg',
 };
 
 // Per-department bundled photos.
