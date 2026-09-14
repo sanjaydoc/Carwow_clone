@@ -778,8 +778,8 @@ export default function Home() {
             </div>
             <div className="grid gap-3 sm:grid-cols-3">
               {[
-                { k: '8', v: 'Specialties' },
-                { k: '40+', v: 'Therapies' },
+                { k: '13', v: 'Specialties' },
+                { k: '70+', v: 'Therapies' },
                 { k: '5 mins', v: 'To book a consultation' },
               ].map((s) => (
                 <div key={s.v} className="rounded-2xl bg-white/10 p-5 backdrop-blur">
