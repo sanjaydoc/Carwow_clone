@@ -75,9 +75,11 @@ export default function CarImage({ accent, className = '', make = '', model = ''
   const hasPhoto = Boolean(make) && !failed;
 
   // Per-therapy infographics (BY_MODEL) carry titles + edge labels, so they must
-  // be fully visible — 'contain'. Plain department photos (LOCAL/DEFAULT) look
-  // best filling the frame — 'cover'. A caller can still force either via `fit`.
-  const isInfographic = Boolean(model) && Boolean(BY_MODEL[model]);
+  // be fully visible — 'contain'. Plain department photos (LOCAL/DEFAULT) and the
+  // few plain-photo overrides look best filling the frame — 'cover'. A caller can
+  // still force either via `fit`.
+  const PHOTO_OVERRIDES = new Set(['Hair Restoration Exosome']); // real photos, not infographics
+  const isInfographic = Boolean(model) && Boolean(BY_MODEL[model]) && !PHOTO_OVERRIDES.has(model);
   const effFit = fit ?? (isInfographic ? 'contain' : 'cover');
 
   return (
