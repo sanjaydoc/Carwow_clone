@@ -90,6 +90,7 @@ const BY_MODEL: Record<string, string> = {
   'NAD+ Infusion Therapy': 'nad-infusion-therapy.jpg',
   'Hormone Optimization (BHRT)': 'hormone-optimization-bhrt.jpg',
   'IV Nutrition (Myers’ Cocktail)': 'iv-nutrition-myers-cocktail.jpg',
+  'CAR-T Cell Therapy': 'car-t-cell-therapy.jpg',
 };
 
 // Per-department bundled photos.
