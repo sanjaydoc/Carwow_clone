@@ -63,6 +63,20 @@ const BY_MODEL: Record<string, string> = {
   'Heart Failure MSC Therapy': 'heart-failure-msc-therapy.jpg',
   'Cardiosphere-derived Cell Therapy': 'cardiosphere-derived-cell-therapy.jpg',
   'Critical Limb Ischaemia': 'critical-limb-ischaemia.jpg',
+  'Ankylosing Spondylitis': 'ankylosing-spondylitis.jpg',
+  'Rheumatoid Arthritis': 'rheumatoid-arthritis.jpg',
+  'Systemic Lupus Erythematosus (SLE)': 'systemic-lupus-erythematosus-sle.jpg',
+  'Psoriasis & Psoriatic Arthritis': 'psoriasis-psoriatic-arthritis.jpg',
+  'Sjögren’s Syndrome': 'sjogren-s-syndrome.jpg',
+  'Hashimoto’s Thyroiditis': 'hashimoto-s-thyroiditis.jpg',
+  'Graves’ Disease': 'graves-disease.jpg',
+  'Myasthenia Gravis': 'myasthenia-gravis.jpg',
+  'Autoimmune Hepatitis': 'autoimmune-hepatitis.jpg',
+  'Vasculitis': 'vasculitis.jpg',
+  'Vitiligo': 'vitiligo.jpg',
+  'Alopecia Areata': 'alopecia-areata.jpg',
+  'Polymyositis & Dermatomyositis': 'polymyositis-dermatomyositis.jpg',
+  'Behçet’s Disease': 'behcet-s-disease.jpg',
 };
 
 // Per-department bundled photos.
