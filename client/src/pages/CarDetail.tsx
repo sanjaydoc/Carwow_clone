@@ -99,7 +99,8 @@ export default function CarDetail() {
               model={car.model}
               year={car.year}
               angle={29}
-              className="aspect-[16/10] w-full"
+              fit="contain"
+              className="aspect-[3/2] w-full"
             />
           </div>
 

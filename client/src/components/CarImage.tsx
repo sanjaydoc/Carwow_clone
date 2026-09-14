@@ -9,6 +9,7 @@ interface Props {
   model?: string; // therapy name
   year?: number;
   angle?: number;
+  fit?: 'cover' | 'contain'; // 'contain' keeps the whole infographic visible (detail hero)
 }
 
 // Card photography — all real stem-cell clinic/lab photos bundled in the repo
@@ -56,15 +57,20 @@ function photoUrl(make: string, model: string): string {
   return `${import.meta.env.BASE_URL}therapy/${file}`;
 }
 
-export default function CarImage({ accent, className = '', make = '', model = '' }: Props) {
+export default function CarImage({ accent, className = '', make = '', model = '', fit = 'cover' }: Props) {
   const [failed, setFailed] = useState(false);
   useEffect(() => setFailed(false), [make, model]);
+  const hasPhoto = Boolean(make) && !failed;
 
   return (
     <div
       className={`relative flex items-center justify-center overflow-hidden ${className}`}
       style={{
-        background: `linear-gradient(160deg, #ffffff 0%, ${hexA(accent, 0.1)} 60%, ${hexA(accent, 0.2)} 100%)`,
+        // 'contain' letterboxes onto a clean white ground so the full infographic reads;
+        // 'cover' keeps the branded accent gradient behind the glyph fallback.
+        background: fit === 'contain'
+          ? '#ffffff'
+          : `linear-gradient(160deg, #ffffff 0%, ${hexA(accent, 0.1)} 60%, ${hexA(accent, 0.2)} 100%)`,
       }}
     >
       {/* branded gradient + glyph — the backdrop and the fallback */}
@@ -87,13 +93,13 @@ export default function CarImage({ accent, className = '', make = '', model = ''
       </div>
 
       {/* real clinical photo on top; hides itself (revealing the glyph) on error */}
-      {Boolean(make) && !failed && (
+      {hasPhoto && (
         <img
           src={photoUrl(make, model)}
           alt={`${make} clinical treatment`}
           loading="lazy"
           onError={() => setFailed(true)}
-          className="absolute inset-0 h-full w-full object-cover"
+          className={`absolute inset-0 h-full w-full ${fit === 'contain' ? 'object-contain' : 'object-cover'}`}
           draggable={false}
         />
       )}
