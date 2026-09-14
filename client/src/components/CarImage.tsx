@@ -54,6 +54,11 @@ const BY_MODEL: Record<string, string> = {
   'Periodontal Ligament Repair': 'periodontal-ligament-repair.jpg',
   'Alveolar Bone Regeneration': 'alveolar-bone-regeneration.jpg',
   'Whole-Tooth Bioengineering': 'whole-tooth-bioengineering.jpg',
+  'Facial Fat Grafting + SVF': 'facial-fat-grafting-svf.jpg',
+  'PRP Facial Rejuvenation': 'prp-facial-rejuvenation.jpg',
+  'PRP Hair Restoration': 'prp-hair-restoration.jpg',
+  'Skin Rejuvenation Exosomes': 'skin-rejuvenation-exosomes.jpg',
+  'Scar & Wound MSC Therapy': 'scar-wound-msc-therapy.jpg',
 };
 
 // Per-department bundled photos.
