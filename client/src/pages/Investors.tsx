@@ -5,7 +5,7 @@ const FOUNDER = {
   name: 'Dr. Sanjay Anbu',
   role: 'Founder',
   // Fill these two in to finalise the profile:
-  credential: 'MBBS (Bachelor of Medicine and Bachelor of Surgery)',   // shown under the name
+  credential: 'MBBS · (Bachelor of Medicine and Bachelor of Surgery)',   // shown under the name
   photo: '/founder.jpg',   // headshot in client/public/
   email: 'dr.sanjay@stemcellsprotocol.com',
   personalEmail: 'dr.sanjayanbu@gmail.com',
