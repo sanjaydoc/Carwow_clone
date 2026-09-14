@@ -5,7 +5,7 @@ const FOUNDER = {
   name: 'Dr. Sanjay Anbu',
   role: 'Founder',
   // Fill these two in to finalise the profile:
-  credential: 'MBBS · Regenerative Medicine & AI',   // shown under the name
+  credential: 'MBBS (Bachelor of Medicine and Bachelor of Surgery)',   // shown under the name
   photo: '/founder.jpg',   // headshot in client/public/
   email: 'dr.sanjay@stemcellsprotocol.com',
   personalEmail: 'dr.sanjayanbu@gmail.com',
@@ -178,6 +178,7 @@ export default function Investors() {
             <p className="mt-0.5 text-sm font-semibold text-clay-600">
               {FOUNDER.role}, StemCells Protocol{FOUNDER.credential ? ` · ${FOUNDER.credential}` : ''}
             </p>
+            <p className="text-sm font-semibold text-clay-600">Regenerative Medicine &amp; AI</p>
             <p className="text-sm font-semibold text-clay-600">
               <span className="font-normal text-ink-900/20">pursuing</span> Fellowship in Regenerative Medicine
             </p>

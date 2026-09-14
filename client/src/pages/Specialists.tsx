@@ -38,7 +38,8 @@ export default function Specialists() {
           />
           <div className="min-w-0 flex-1">
             <h2 className="font-display text-2xl font-extrabold text-ink-900">Dr. Sanjay Anbu</h2>
-            <p className="mt-0.5 text-sm font-semibold text-clay-600">Founder &amp; Lead · MBBS · Regenerative Medicine &amp; AI</p>
+            <p className="mt-0.5 text-sm font-semibold text-clay-600">Founder &amp; Lead · MBBS (Bachelor of Medicine and Bachelor of Surgery)</p>
+            <p className="text-sm font-semibold text-clay-600">Regenerative Medicine &amp; AI</p>
             <p className="text-sm font-semibold text-clay-600">
               <span className="font-normal text-ink-900/20">pursuing</span> Fellowship in Regenerative Medicine
             </p>
