@@ -81,7 +81,7 @@ export function createLabBand(
       reset() { t = 0; fill = 0; },
       update(dt) { t += dt; fill += dt * 0.30; if (fill > 1.5) fill = 0; },
       render() {
-        const cx = W * 0.5, tw = 30, top = H * 0.20, th = H * 0.60, bot = top + th;
+        const cx = W * 0.5, tw = 30, top = H * 0.15, th = H * 0.50, bot = top + th;
         const tube = (x: number, frac: number, focus: boolean) => {
           rr(x - tw / 2, top, tw, th, 7); ctx.fillStyle = hexA(P.muted, 0.10); ctx.fill();
           ctx.strokeStyle = hexA(P.ink, focus ? 0.5 : 0.28); ctx.lineWidth = 1.5; ctx.stroke();
@@ -105,7 +105,7 @@ export function createLabBand(
         if (fill >= 1) { ctx.strokeStyle = P.rate; ctx.lineWidth = 2.4; ctx.lineCap = 'round';
           ctx.beginPath(); ctx.moveTo(cx + tw / 2 + 8, top + 8); ctx.lineTo(cx + tw / 2 + 13, top + 13);
           ctx.lineTo(cx + tw / 2 + 22, top + 2); ctx.stroke(); ctx.lineCap = 'butt'; }
-        cap(cx, bot + 16, 'EDTA · WHOLE BLOOD', 'center');
+        cap(cx, bot + 13, 'EDTA · WHOLE BLOOD', 'center');
       },
     };
   })();
