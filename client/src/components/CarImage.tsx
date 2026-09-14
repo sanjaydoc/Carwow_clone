@@ -59,6 +59,10 @@ const BY_MODEL: Record<string, string> = {
   'PRP Hair Restoration': 'prp-hair-restoration.jpg',
   'Skin Rejuvenation Exosomes': 'skin-rejuvenation-exosomes.jpg',
   'Scar & Wound MSC Therapy': 'scar-wound-msc-therapy.jpg',
+  'Post-MI Cardiac Repair': 'post-mi-cardiac-repair.jpg',
+  'Heart Failure MSC Therapy': 'heart-failure-msc-therapy.jpg',
+  'Cardiosphere-derived Cell Therapy': 'cardiosphere-derived-cell-therapy.jpg',
+  'Critical Limb Ischaemia': 'critical-limb-ischaemia.jpg',
 };
 
 // Per-department bundled photos.
