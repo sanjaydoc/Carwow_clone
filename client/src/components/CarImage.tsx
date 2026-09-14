@@ -34,6 +34,13 @@ const BY_MODEL: Record<string, string> = {
   'BioKnee Biologic Reconstruction': 'bioknee-biologic-reconstruction.jpg',
   'BioACL Biologic Reconstruction': 'bioacl-biologic-reconstruction.jpg',
   'Muse Cell Cartilage Repair': 'muse-cell-cartilage-repair.jpg',
+  'Multiple Sclerosis aHSCT': 'multiple-sclerosis-ahsct.jpg',
+  'Spinal Cord Injury NSC': 'spinal-cord-injury-nsc.jpg',
+  'Stroke Recovery MSC': 'stroke-recovery-msc.jpg',
+  'Parkinson’s iPSC Dopaminergic': 'parkinson-s-ipsc-dopaminergic.jpg',
+  'ALS / MND MSC Therapy': 'als-mnd-msc-therapy.jpg',
+  'Muscular Dystrophy': 'muscular-dystrophy.jpg',
+  'FSHD (Facioscapulohumeral Dystrophy)': 'fshd-facioscapulohumeral-dystrophy.jpg',
 };
 
 // Per-department bundled photos.
