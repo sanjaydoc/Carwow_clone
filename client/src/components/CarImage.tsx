@@ -78,6 +78,18 @@ const BY_MODEL: Record<string, string> = {
   'Polymyositis & Dermatomyositis': 'polymyositis-dermatomyositis.jpg',
   'Behçet’s Disease': 'behcet-s-disease.jpg',
   'Systemic Sclerosis (Scleroderma)': 'systemic-sclerosis-scleroderma.jpg',
+  'Persona Reversal Epigenetic Reprogramming': 'persona-reversal-epigenetic-reprogramming.jpg',
+  'Systemic MSC Infusion': 'systemic-msc-infusion.jpg',
+  'Exosome IV Longevity': 'exosome-iv-longevity.jpg',
+  'NK Cell Immune Boost': 'nk-cell-immune-boost.jpg',
+  'Immune (Thymic) Rejuvenation': 'immune-thymic-rejuvenation.jpg',
+  'Senolytic + MSC Program': 'senolytic-msc-program.jpg',
+  'Muse Cell IV Therapy': 'muse-cell-iv-therapy.jpg',
+  'VSEL Regenerative Therapy': 'vsel-regenerative-therapy.jpg',
+  'Peptide Restoration Program': 'peptide-restoration-program.jpg',
+  'NAD+ Infusion Therapy': 'nad-infusion-therapy.jpg',
+  'Hormone Optimization (BHRT)': 'hormone-optimization-bhrt.jpg',
+  'IV Nutrition (Myers’ Cocktail)': 'iv-nutrition-myers-cocktail.jpg',
 };
 
 // Per-department bundled photos.
