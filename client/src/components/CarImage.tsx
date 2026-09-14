@@ -91,6 +91,10 @@ const BY_MODEL: Record<string, string> = {
   'Hormone Optimization (BHRT)': 'hormone-optimization-bhrt.jpg',
   'IV Nutrition (Myers’ Cocktail)': 'iv-nutrition-myers-cocktail.jpg',
   'CAR-T Cell Therapy': 'car-t-cell-therapy.jpg',
+  'Chronic Kidney Disease (CKD) MSC Therapy': 'chronic-kidney-disease-ckd-msc-therapy.jpg',
+  'Acute Kidney Injury (AKI) MSC Therapy': 'acute-kidney-injury-aki-msc-therapy.jpg',
+  'Diabetic Kidney Disease Exosome Therapy': 'diabetic-kidney-disease-exosome-therapy.jpg',
+  'Persona Reversal Renal Epigenetic Reprogramming': 'persona-reversal-renal-epigenetic-reprogramming.jpg',
 };
 
 // Per-department bundled photos.
