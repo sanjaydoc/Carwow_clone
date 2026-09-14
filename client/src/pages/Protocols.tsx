@@ -124,12 +124,18 @@ export default function Protocols() {
                 </span>
               ))}
             </div>
-            <div className="mt-6">
+            <div className="mt-6 flex flex-wrap gap-3">
               <Link
                 to="/products"
                 className="inline-flex items-center gap-2 rounded-full bg-clay-500 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-clay-600"
               >
                 <Icon name="clipboard" className="h-4 w-4" /> Product Catalogue
+              </Link>
+              <Link
+                to="/synthesizer"
+                className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-5 py-2.5 text-sm font-bold text-white transition hover:border-clay-400 hover:bg-white/10"
+              >
+                <Icon name="flask" className="h-4 w-4" /> Synthesizer
               </Link>
             </div>
           </div>
