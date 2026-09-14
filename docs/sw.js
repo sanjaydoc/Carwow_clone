@@ -1,12 +1,21 @@
 // StemCells Protocol — service worker (app-shell caching + offline fallback).
-// Bump CACHE when the shell changes to invalidate old caches.
-const CACHE = 'stemcells-v1';
+// Bump CACHE when the shell changes to invalidate old caches — the activate
+// handler deletes every cache whose name !== CACHE, so a bump evicts the stale
+// shell. Paired with updateViaCache:'none' + a controllerchange reload in
+// main.tsx, a new deploy takes effect on the next load with no manual refresh.
+const CACHE = 'stemcells-v2';
 const SHELL = ['/', '/index.html', '/favicon.svg', '/manifest.webmanifest', '/pwa-192.png', '/pwa-512.png'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()),
+    // don't let one missing shell asset abort the whole install
+    caches.open(CACHE).then((c) => Promise.allSettled(SHELL.map((u) => c.add(u)))).then(() => self.skipWaiting()),
   );
+});
+
+// allow the page to tell a waiting worker to take over immediately
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
