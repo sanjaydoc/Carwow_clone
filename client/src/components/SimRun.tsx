@@ -497,7 +497,7 @@ export default function SimRun({ run, onExplain, instant, onDone }: { run: FullR
       disease: run.disease, modality, sample: run.sample, chronological_age: run.chronological_age,
       epigenetic_age: run.epigenetic_age, targets: run.targets, rejuvenation: rej, regeneration: regen,
       construct: run.construct, exosome: run.exosome, safety: run.safety,
-      tumor: isReprog ? tumor : undefined, immune,
+      tumor: isReprog ? tumor : undefined, immune, cellular,
     }, `StemCells-Simulator-${run.sample}.pdf`);
   };
 

@@ -12,6 +12,7 @@ const GREEN: RGB = [22, 163, 74];
 const AMBER: RGB = [245, 158, 11];
 const RED: RGB = [220, 38, 38];
 const TEAL: RGB = [13, 148, 136];
+const VIOLET: RGB = [124, 58, 237];
 const BORDER: RGB = [226, 232, 240];
 const BGSOFT: RGB = [241, 245, 249];
 const WHITE: RGB = [255, 255, 255];
@@ -32,8 +33,32 @@ function tierColor(t?: string): RGB {
   return PRIMARY;
 }
 
+// jsPDF's built-in fonts only cover CP1252 (WinAnsi); any other glyph (Greek
+// letters like β, ≤/≥, arrows, ✓/✗) makes jsPDF re-encode the whole run and it
+// comes out garbled ("(cid:0)…"). Sanitise every string drawn: keep CP1252,
+// transliterate common scientific glyphs, drop the rest.
+const CP1252_EXTRA = new Set([0x20ac, 0x201a, 0x0192, 0x201e, 0x2026, 0x2020, 0x2021, 0x02c6, 0x2030, 0x0160, 0x2039, 0x0152, 0x017d, 0x2018, 0x2019, 0x201c, 0x201d, 0x2022, 0x2013, 0x2014, 0x02dc, 0x2122, 0x0161, 0x203a, 0x0153, 0x017e, 0x0178]);
+const TRANSLIT: Record<string, string> = {
+  'β': 'beta', 'α': 'alpha', 'γ': 'gamma', 'δ': 'delta', 'ε': 'e', 'κ': 'kappa', 'λ': 'lambda',
+  'μ': 'u', 'σ': 'sigma', 'τ': 'tau', 'ω': 'omega', 'Δ': 'Delta', 'Ω': 'Omega',
+  '≤': '<=', '≥': '>=', '≈': '~', '→': '->', '←': '<-', '↑': 'up', '↓': 'down', '▲': '^', '▼': 'v',
+  '✓': 'v', '✗': 'x', '■': '#', '∞': 'inf',
+};
+function sanitizePdfText(v: unknown): string {
+  let out = '';
+  for (const ch of String(v)) {
+    const cp = ch.codePointAt(0) as number;
+    if (cp <= 0x7f || (cp >= 0xa0 && cp <= 0xff) || CP1252_EXTRA.has(cp)) out += ch;
+    else if (TRANSLIT[ch] != null) out += TRANSLIT[ch];
+    // else drop
+  }
+  return out;
+}
+
 export function exportSimPdf(p: any, filename = 'StemCells-Simulator-Report.pdf') {
   const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+  const _rawText = doc.text.bind(doc);
+  (doc as any).text = (t: any, ...rest: any[]) => (_rawText as any)(Array.isArray(t) ? t.map(sanitizePdfText) : sanitizePdfText(t), ...rest);
   const W = doc.internal.pageSize.getWidth();
   const H = doc.internal.pageSize.getHeight();
   const M = 40; const CW = W - 2 * M;
@@ -254,6 +279,31 @@ export function exportSimPdf(p: any, filename = 'StemCells-Simulator-Report.pdf'
       ['Source', exo.source_cell],
     ], TEAL);
     if (exo.advantages?.length) { need(20); txt(SUB); doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5); doc.text(doc.splitTextToSize('Advantages: ' + exo.advantages.join('; '), CW), M, y + 4); y += 22; }
+  }
+
+  // ---- §5 cellular outcome (illustrative variant-informed pathway model) ----
+  const cel = p.cellular;
+  if (cel && cel.headline && cel.headline.length) {
+    section('5', 'Cellular outcome (variant-informed pathway model)', VIOLET);
+    need(14); txt(SUB); doc.setFont('helvetica', 'italic'); doc.setFontSize(7.5);
+    doc.text(doc.splitTextToSize('Reduced pathway model (senescence / oxidative-stress / stemness), started from this sample’s epigenetic signals — not a molecular whole-cell simulation. Untreated vs +therapy at endpoint.', CW), M, y); y += 14;
+    cel.headline.forEach((m: any) => {
+      need(24);
+      const improved = m.better === 'up' ? m.delta > 0 : m.delta < 0;
+      const col: RGB = improved ? GREEN : (m.delta === 0 ? SUB : AMBER);
+      const arrow = m.delta === 0 ? '=' : (m.delta > 0 ? '+' : '-');
+      txt(INK); doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5); doc.text(m.label, M, y + 8);
+      txt(col); doc.text(`${m.untreated}% → ${m.treated}%  (${arrow}${Math.abs(m.delta)})`, M + CW, y + 8, { align: 'right' });
+      const tw = CW;
+      fill(BGSOFT); doc.roundedRect(M, y + 11, tw, 7, 3.5, 3.5, 'F');
+      fill(tint(SUB, 0.45)); doc.roundedRect(M, y + 11, Math.max(4, tw * Math.min(1, m.untreated / 100)), 7, 3.5, 3.5, 'F');
+      fill(col); doc.roundedRect(M, y + 11, Math.max(4, tw * Math.min(1, m.treated / 100)), 7, 3.5, 3.5, 'F');
+      y += 26;
+    });
+    const gsrc = cel.variant_source === 'curated' ? 'demo panel' : 'illustrative — not called from your file';
+    const glist = (cel.variants || []).map((v: any) => `${v.gene} ${v.genotype}`).join(', ');
+    kv([['Genotype panel', `${glist}  (${gsrc})`], ['Pathways', (cel.pathways || []).join(' · ')]], VIOLET);
+    if (cel.disclaimer) { need(16); txt(SUB); doc.setFont('helvetica', 'italic'); doc.setFontSize(7.5); doc.text(doc.splitTextToSize(cel.disclaimer, CW), M, y + 2); y += 16; }
   }
 
   // ---- §6 safety avatar ----

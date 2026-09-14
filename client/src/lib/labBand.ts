@@ -21,7 +21,7 @@ export const STEP_CAPTIONS = [
   'ANALYSIS · epigenetic age from the reads',
   'VECTOR PRODUCTION · AAV grown in culture',
   'MOLECULE LAB · synthesis & screening',
-  'AVATAR PRE-SCREEN · engrafted safety model',
+  'TISSUE PRE-SCREEN · engrafted tissue safety model',
 ];
 
 interface Scene { reset(): void; update(dt: number): void; render(): void; }
@@ -255,23 +255,48 @@ export function createLabBand(
     };
   })();
 
-  // 6 · avatar pre-screen
-  const sAvatar = ((): Scene => {
+  // 6 · tissue pre-screen — an engrafted tissue patch (organic blob of packed
+  // cells) with a pulsing viability glow, replacing the earlier rodent avatar.
+  const sTissue = ((): Scene => {
     let t = 0, prog = 0;
+    // deterministic packed-cell layout (computed once so it never flickers)
+    const cells = Array.from({ length: 18 }, (_, i) => {
+      const col = i % 5, row = Math.floor(i / 5);
+      return { x: -40 + col * 21 + (row % 2) * 10, y: -26 + row * 16, r: 5.5 + ((i * 7) % 3) };
+    });
     return {
       reset() { t = 0; prog = 0; },
       update(dt) { t += dt; prog += dt * 0.22; if (prog > 1.2) prog = 0; },
       render() {
-        const cx = W * 0.30, cy = H * 0.62, breathe = 1 + Math.sin(t * 1.6) * 0.02;
+        const cx = W * 0.30, cy = H * 0.58, breathe = 1 + Math.sin(t * 1.6) * 0.02;
         ctx.save(); ctx.translate(cx, cy); ctx.scale(breathe, breathe);
-        ctx.fillStyle = hexA(P.muted, 0.32); ctx.strokeStyle = hexA(P.ink, 0.5); ctx.lineWidth = 1.5;
-        ctx.beginPath(); ctx.ellipse(0, 0, 44, 24, 0, 0, 7); ctx.fill(); ctx.stroke();
-        ctx.beginPath(); ctx.arc(46, -4, 14, 0, 7); ctx.fill(); ctx.stroke();
-        ctx.beginPath(); ctx.arc(44, -16, 7, 0, 7); ctx.fill(); ctx.stroke();
-        ctx.beginPath(); ctx.arc(56, -6, 1.7, 0, 7); ctx.fillStyle = P.ink; ctx.fill();
-        ctx.beginPath(); ctx.moveTo(-42, 4); ctx.quadraticCurveTo(-74, 10, -70, -14); ctx.strokeStyle = hexA(P.ink, 0.45); ctx.lineWidth = 2; ctx.stroke();
+        // organic tissue patch outline
+        const blob = () => {
+          ctx.beginPath();
+          const R = 40, lobes = 10;
+          for (let i = 0; i <= lobes; i++) {
+            const a = (i / lobes) * Math.PI * 2;
+            const rr2 = R * (0.82 + 0.16 * Math.sin(a * 3 + 1.3));
+            const x = Math.cos(a) * rr2 * 1.28, y = Math.sin(a) * rr2 * 0.92;
+            if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+          }
+          ctx.closePath();
+        };
+        ctx.fillStyle = hexA(P.spike, 0.14); ctx.strokeStyle = hexA(P.ink, 0.5); ctx.lineWidth = 1.5;
+        blob(); ctx.fill(); ctx.stroke();
+        // packed cells + nuclei, clipped to the patch
+        ctx.save(); blob(); ctx.clip();
+        for (const c of cells) {
+          ctx.beginPath(); ctx.arc(c.x, c.y, c.r, 0, 7);
+          ctx.fillStyle = hexA(P.spike, 0.22); ctx.fill();
+          ctx.strokeStyle = hexA(P.ink, 0.28); ctx.lineWidth = 0.8; ctx.stroke();
+          ctx.beginPath(); ctx.arc(c.x, c.y, c.r * 0.42, 0, 7);
+          ctx.fillStyle = hexA(P.data, 0.5); ctx.fill();
+        }
+        ctx.restore();
+        // pulsing viability / engraftment glow
         const bp = 0.5 + 0.5 * Math.sin(t * 3.2);
-        ctx.beginPath(); ctx.arc(-6, -18, 8 + bp * 2, 0, 7); ctx.fillStyle = P.rate;
+        ctx.beginPath(); ctx.arc(-10, -4, 7 + bp * 2, 0, 7); ctx.fillStyle = P.rate;
         ctx.shadowColor = hexA(P.rate, 0.6); ctx.shadowBlur = 15; ctx.fill(); ctx.shadowBlur = 0;
         ctx.restore();
         const mx = W * 0.52, my = 18, mw = W * 0.24, mh = H * 0.34;
@@ -297,7 +322,7 @@ export function createLabBand(
     ctx.textAlign = align; ctx.fillText(text, x, y); ctx.textAlign = 'start';
   }
 
-  const scenes: Scene[] = [sIntake, sSeq, sAnalysis, sVector, sMolLab, sAvatar];
+  const scenes: Scene[] = [sIntake, sSeq, sAnalysis, sVector, sMolLab, sTissue];
 
   const disp = () => (preview != null ? preview : active);
   function setShown(i: number) { if (i !== shown) { shown = i; scenes[i].reset(); fade = 1; opts.onStep?.(i); } }
