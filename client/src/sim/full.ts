@@ -3,6 +3,8 @@
 import { predict, parseMethylation, discoverTargets, projectRejuvenation, projectRegeneration, tumorSafety } from './pipeline';
 import { assembleOSK, assembleExosome, safetyPrescreen } from './construct';
 import { immuneSafety } from './immune';
+import { buildCellular, summarizeCellular } from './cell';
+import type { CellularOutcome } from './cell';
 import type { DiseaseEntry, Modality } from './catalog';
 
 export interface FullRun {
@@ -23,6 +25,7 @@ export interface FullRun {
   safety: any;
   tumor: any;           // reprogramming only (hidden for cell)
   immune: any;
+  cellular: CellularOutcome;  // illustrative variant-informed cellular-outcome layer
 }
 
 export function buildRun(text: string, opts: {
@@ -52,6 +55,12 @@ export function buildRun(text: string, opts: {
     tissueKey: dz.tissue_key, department: dz.department, ageAcceleration: age.ageAcceleration,
     coverage: age.coverage, cycles, comorbidities,
   });
+  const cellular = buildCellular({
+    modality: dz.modality, tissueKey: dz.tissue_key, sample: opts.sample || 'patient',
+    dnamAge: age.dnamAge, ageAccel: age.ageAcceleration, coverage: age.coverage,
+    rejuvenationIndex: rej.tissue_rejuvenation_index, regenerationIndex: regen.regeneration_index,
+    cycles, drivers: targets.map((t) => t.gene || t.cpg),
+  });
   return {
     ok: true,
     disease: { name: dz.disease, department: dz.department, tissue: dz.tissue, capsid: dz.capsid, route: dz.route },
@@ -67,7 +76,7 @@ export function buildRun(text: string, opts: {
       age_acceleration: age.ageAcceleration != null ? Math.round(age.ageAcceleration * 100) / 100 : null,
       n_used: age.nUsed, n_total: age.nTotal, coverage: Math.round(age.coverage * 1000) / 1000,
     },
-    targets, rejuvenation: rej, regeneration: regen, construct, exosome, safety, tumor, immune,
+    targets, rejuvenation: rej, regeneration: regen, construct, exosome, safety, tumor, immune, cellular,
   };
 }
 
@@ -89,6 +98,7 @@ export function summarizeRun(r: FullRun): string {
     isReprog
       ? `Tumorigenicity: ${t.risk_tier}, ~${Math.round(t.estimated_risk * 100)}% at ${t.requested_cycles} cycle(s); max safe ${t.max_safe_cycles}; proliferation ${t.tissue_proliferation_factor}× (${t.tissue_key}).`
       : '',
+    r.cellular ? summarizeCellular(r.cellular) : '',
     r.immune ? `Immune & adverse-event envelope — symptom outlook: ${r.immune.overall_tier} (usually mild & short-lived)${r.immune.classes?.[0] ? `; most likely = ${r.immune.classes[0].label} (${r.immune.classes[0].tier})` : ''}${r.immune.comorbidities?.length ? `; comorbidities: ${r.immune.comorbidities.join(', ')}` : ''}. Likelihood read (not a severity grade or yes/no); a methylation file can't see HLA/clotting genes or the clinic.` : '',
     `Research/illustrative — projections are model estimates, not measured outcomes; not medical advice.`,
   ].filter(Boolean).join('\n');

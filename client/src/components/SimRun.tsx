@@ -5,6 +5,8 @@ import { summarizeRun } from '../sim/full';
 import { exportSimPdf } from '../sim/pdf';
 import { projectRejuvenation, projectRegeneration, tumorSafety } from '../sim/pipeline';
 import { immuneSafety } from '../sim/immune';
+import { buildCellular } from '../sim/cell';
+import type { CellularOutcome } from '../sim/cell';
 import { modalityOf } from '../sim/catalog';
 
 /* Animated simulator run rendered inside the chat / on the page.
@@ -19,13 +21,14 @@ const C = {
   green: '#16a34a', red: '#dc2626', amber: '#d97706', purple: '#7c3aed',
 };
 
-type Kind = 'sample' | 'ingest' | 'age' | 'reversal' | 'regeneration' | 'construct' | 'exosome' | 'avatar' | 'tumor' | 'immune';
+type Kind = 'sample' | 'ingest' | 'age' | 'reversal' | 'regeneration' | 'cellular' | 'construct' | 'exosome' | 'avatar' | 'tumor' | 'immune';
 const DEF: Record<Kind, { tag: string; title: string }> = {
   sample: { tag: 'SAMPLE', title: 'Sample & therapy' },
   ingest: { tag: 'SEQUENCE', title: 'Data ingest' },
   age: { tag: 'ANALYSE', title: 'Epigenetic age' },
   reversal: { tag: 'REVERSE', title: 'Reprogramming projection' },
   regeneration: { tag: 'REGEN', title: 'Regeneration projection' },
+  cellular: { tag: 'CELL', title: 'Cellular outcome' },
   construct: { tag: 'VECTOR', title: 'OSK construct' },
   exosome: { tag: 'CARRIER', title: 'IV exosome carrier' },
   avatar: { tag: 'AVATAR', title: 'Safety pre-screen' },
@@ -34,8 +37,8 @@ const DEF: Record<Kind, { tag: string; title: string }> = {
 };
 function stepsFor(isReprog: boolean): Kind[] {
   return isReprog
-    ? ['sample', 'ingest', 'age', 'reversal', 'construct', 'avatar', 'tumor', 'immune']
-    : ['sample', 'ingest', 'age', 'regeneration', 'exosome', 'avatar', 'immune'];
+    ? ['sample', 'ingest', 'age', 'reversal', 'cellular', 'construct', 'avatar', 'tumor', 'immune']
+    : ['sample', 'ingest', 'age', 'regeneration', 'cellular', 'exosome', 'avatar', 'immune'];
 }
 
 const SCAN_MS = 780;
@@ -161,8 +164,101 @@ function ExosomeCard({ exo }: { exo: any }) {
   );
 }
 
-function StepCard({ kind, num, run, rej, regen, t, im, cycles, cycleLabel, onStep, active, revealed }: {
-  kind: Kind; num: number; run: FullRun; rej: any; regen: any; t: any; im: any; cycles: number; cycleLabel: string; onStep: (d: number) => void; active: boolean; revealed: boolean;
+// A stylised "cell field" — a cartoon driven by the pathway model's numbers,
+// never a molecular rendering. Senescent fraction → grey enlarged cells; ROS →
+// red membrane glow; SASP → orange inflammatory particles; stem → nucleus glow.
+function CellScene({ label, e, tint }: { label: string; e: { sen: number; ros: number; sasp: number; stem: number }; tint: string }) {
+  const N = 16;
+  const nSen = Math.round((N * e.sen) / 100);
+  const cols = 4;
+  const cells = Array.from({ length: N }, (_, i) => {
+    const cx = 20 + (i % cols) * 30 + ((Math.floor(i / cols) % 2) * 6);
+    const cy = 22 + Math.floor(i / cols) * 28;
+    return { cx, cy, sen: i < nSen };
+  });
+  const sasp = Math.round((e.sasp / 100) * 10);
+  const glow = 0.15 + (e.ros / 100) * 0.5;
+  return (
+    <div style={{ flex: 1, minWidth: 130 }}>
+      <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: '.06em', color: tint, marginBottom: 4, textTransform: 'uppercase' }}>{label}</div>
+      <svg viewBox="0 0 140 130" width="100%" style={{ borderRadius: 12, background: 'radial-gradient(circle at 50% 45%, #fbfdff, #eef3fb)', boxShadow: 'inset 2px 2px 6px rgba(21,58,124,.10), inset -2px -2px 6px #ffffff' }}>
+        {/* oxidative-stress membrane glow */}
+        <circle cx="70" cy="62" r="60" fill="none" stroke={C.red} strokeWidth={2 + (e.ros / 100) * 4} opacity={glow} />
+        {/* SASP inflammatory particles */}
+        {Array.from({ length: sasp }, (_, i) => {
+          const a = (i / Math.max(1, sasp)) * Math.PI * 2;
+          const r = 44 + (i % 3) * 6;
+          return <circle key={`p${i}`} cx={70 + r * Math.cos(a)} cy={62 + r * Math.sin(a)} r="1.8" fill={C.amber} opacity={0.75} />;
+        })}
+        {/* cell population */}
+        {cells.map((c, i) => (
+          <g key={i}>
+            <circle cx={c.cx} cy={c.cy} r={c.sen ? 9 : 7} fill={c.sen ? '#c3ccdb' : 'rgba(66,133,244,.22)'} stroke={c.sen ? '#9aa6bb' : C.blueBright} strokeWidth="1.2" />
+            {/* nucleus — brighter when more youthful/stem */}
+            <circle cx={c.cx} cy={c.cy} r={c.sen ? 3 : 2.6} fill={c.sen ? '#8b97ad' : `rgba(13,132,120,${0.35 + (e.stem / 100) * 0.5})`} />
+          </g>
+        ))}
+      </svg>
+    </div>
+  );
+}
+
+function CellularCard({ cel }: { cel: CellularOutcome }) {
+  const u = cel.endpoint.untreated, tr = cel.endpoint.treated;
+  const toneColor = (t: string) => (t === 'protective' ? '#15803d' : t === 'risk' ? C.red : C.sub);
+  const toneBg = (t: string) => (t === 'protective' ? '#eefaf1' : t === 'risk' ? '#fdf4f4' : '#f1f6fd');
+  return (
+    <div>
+      <div style={{ display: 'flex', gap: 10, marginBottom: 10, flexWrap: 'wrap' }}>
+        <CellScene label="Untreated" e={u} tint={C.sub} />
+        <CellScene label="With therapy" e={tr} tint={C.teal} />
+      </div>
+      {/* headline metric shifts */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 10 }}>
+        {cel.headline.map((m) => {
+          const improved = m.better === 'up' ? m.delta > 0 : m.delta < 0;
+          const arrow = m.delta === 0 ? '→' : m.delta > 0 ? '▲' : '▼';
+          return (
+            <div key={m.key}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, marginBottom: 3 }}>
+                <span style={{ color: C.ink, fontWeight: 600 }}>{m.label}</span>
+                <span style={{ fontWeight: 700, color: improved ? C.green : m.delta === 0 ? C.sub : C.amber }}>
+                  {m.untreated}% <span style={{ color: C.faint }}>→</span> {m.treated}% <span style={{ fontSize: 10 }}>{arrow} {Math.abs(m.delta)}</span>
+                </span>
+              </div>
+              <div style={{ position: 'relative' }}>
+                <Bar pct={m.untreated} color="rgba(138,152,184,.5)" height={7} />
+                <div style={{ position: 'absolute', inset: 0 }}><Bar pct={m.treated} color={improved ? `linear-gradient(90deg,${C.blueBright},${C.teal})` : C.amber} height={7} /></div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      {/* variant panel */}
+      <div style={neuBox('#f1f6fe')}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 9.5, fontWeight: 800, letterSpacing: '.08em', color: C.blue, marginBottom: 6 }}>
+          <span style={{ display: 'inline-grid', placeItems: 'center', width: 15, height: 15, borderRadius: 99, background: '#e3edfe', color: C.blue, fontSize: 10 }}>🧬</span>
+          GENOTYPE PANEL
+          <span style={{ marginLeft: 'auto', fontWeight: 700, color: cel.variant_source === 'curated' ? '#15803d' : C.amber, letterSpacing: 0 }}>
+            {cel.variant_source === 'curated' ? 'demo panel' : 'illustrative — not called from your file'}
+          </span>
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
+          {cel.variants.map((v) => (
+            <span key={v.gene} title={`${v.rsid} · ${v.note}`} style={{ ...neuPill(toneColor(v.tone), toneBg(v.tone), 700), fontSize: 10.5 }}>
+              {v.gene} {v.genotype}
+            </span>
+          ))}
+        </div>
+      </div>
+      <div style={{ marginTop: 8, fontSize: 10, color: C.sub }}>Pathways: {cel.pathways.join(' · ')}</div>
+      <div style={{ marginTop: 6, fontSize: 9.5, color: C.faint, fontStyle: 'italic' }}>{cel.disclaimer}</div>
+    </div>
+  );
+}
+
+function StepCard({ kind, num, run, rej, regen, t, im, cel, cycles, cycleLabel, onStep, active, revealed }: {
+  kind: Kind; num: number; run: FullRun; rej: any; regen: any; t: any; im: any; cel: CellularOutcome; cycles: number; cycleLabel: string; onStep: (d: number) => void; active: boolean; revealed: boolean;
 }) {
   const s = DEF[kind];
   const ea = run.epigenetic_age;
@@ -251,6 +347,7 @@ function StepCard({ kind, num, run, rej, regen, t, im, cycles, cycleLabel, onSte
               <Stepper label={cycleLabel} cycles={cycles} onStep={onStep} hint="repair compounds with diminishing returns" />
             </div>
           )}
+          {kind === 'cellular' && cel && <CellularCard cel={cel} />}
           {kind === 'construct' && run.construct && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               <div style={{ fontSize: 11, color: C.sub }}>{run.construct.strategy} · {run.construct.capsid_desc}</div>
@@ -372,6 +469,12 @@ export default function SimRun({ run, onExplain, instant, onDone }: { run: FullR
     tissueKey: tk, department: run.disease?.department, ageAcceleration: ea.age_acceleration,
     coverage: ea.coverage, cycles, comorbidities: run.comorbidities || [],
   }), [cycles, ea, tk, run.disease, run.comorbidities]);
+  const cellular = useMemo(() => buildCellular({
+    modality, tissueKey: tk, sample: run.sample,
+    dnamAge: ea.dnam_age, ageAccel: ea.age_acceleration, coverage: ea.coverage,
+    rejuvenationIndex: rej.tissue_rejuvenation_index, regenerationIndex: regen.regeneration_index,
+    cycles, drivers: (run.targets || []).map((x: any) => x.gene || x.cpg),
+  }), [modality, tk, run.sample, ea, rej, regen, cycles, run.targets]);
   const stepCycles = (d: number) => setCycles((c) => Math.max(1, Math.min(10, c + d)));
 
   useEffect(() => {
@@ -419,7 +522,7 @@ export default function SimRun({ run, onExplain, instant, onDone }: { run: FullR
 
       <div>
         {steps.map((kind, i) => (
-          <StepCard key={kind} kind={kind} num={i + 1} run={run} rej={rej} regen={regen} t={tumor} im={immune}
+          <StepCard key={kind} kind={kind} num={i + 1} run={run} rej={rej} regen={regen} t={tumor} im={immune} cel={cellular}
             cycles={cycles} cycleLabel={cycleLabel} onStep={stepCycles} active={active === i} revealed={i < revealed} />
         ))}
       </div>
@@ -427,7 +530,7 @@ export default function SimRun({ run, onExplain, instant, onDone }: { run: FullR
       {done && (
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 12, paddingTop: 12, borderTop: '1px solid #e9eef7' }}>
           <button onClick={pdf} style={{ background: `linear-gradient(90deg,${C.blueBright},${C.teal})`, color: '#fff', fontWeight: 700, border: 0, borderRadius: 10, padding: '8px 14px', fontSize: 12.5, cursor: 'pointer', boxShadow: '3px 4px 10px rgba(21,58,124,.22)' }}>⬇ Export PDF</button>
-          {onExplain && <button onClick={() => onExplain(summarizeRun({ ...run, rejuvenation: rej, regeneration: regen, tumor, immune }))} style={{ background: '#fff', color: C.blue, border: 0, borderRadius: 10, padding: '8px 14px', fontSize: 12.5, cursor: 'pointer', boxShadow: '3px 3px 8px rgba(21,58,124,.12), -3px -3px 8px #ffffff' }}>💬 Explain in plain language</button>}
+          {onExplain && <button onClick={() => onExplain(summarizeRun({ ...run, rejuvenation: rej, regeneration: regen, tumor, immune, cellular }))} style={{ background: '#fff', color: C.blue, border: 0, borderRadius: 10, padding: '8px 14px', fontSize: 12.5, cursor: 'pointer', boxShadow: '3px 3px 8px rgba(21,58,124,.12), -3px -3px 8px #ffffff' }}>💬 Explain in plain language</button>}
         </div>
       )}
       <div style={{ fontSize: 10, color: C.faint, marginTop: 10 }}>Research / illustrative — computed on your device. Not medical advice.</div>
