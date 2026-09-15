@@ -98,7 +98,9 @@ PhenoAge) is planned to remove single-estimator dependence.
 
 Source code and the validation harness are available at
 <https://github.com/sanjaydoc/Stemcellsprotocol>; the tool runs at
-<https://stemcellsprotocol.com>. The validation dataset GSE40279 is available from NCBI GEO.
+<https://stemcellsprotocol.com>. This release is archived on Zenodo
+(DOI: [10.5281/zenodo.22760374](https://doi.org/10.5281/zenodo.22760374)).
+The validation dataset GSE40279 is available from NCBI GEO.
 
 # Acknowledgements
 
