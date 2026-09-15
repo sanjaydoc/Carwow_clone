@@ -9,7 +9,7 @@ tags:
   - privacy-preserving
 authors:
   - name: Dr. Sanjay Anbu
-    orcid: 0000-0000-0000-0000   # <<REPLACE with your ORCID (create free at orcid.org)>>
+    orcid: 0009-0007-8480-6069
     affiliation: 1
     corresponding: true
 # <<Optional co-author — add only if agreed:
