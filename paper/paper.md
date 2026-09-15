@@ -17,7 +17,7 @@ authors:
 #    orcid: 0000-0000-0000-0000
 #    affiliation: 2 >>
 affiliations:
-  - name: StemCells Protocol, Ooty, Tamil Nadu, India   # <<edit affiliation as you wish>>
+  - name: StemCells Protocol, Chennai, Tamil Nadu, India   # <<edit affiliation as you wish>>
     index: 1
 date: 15 September 2026
 bibliography: paper.bib
