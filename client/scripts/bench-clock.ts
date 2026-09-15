@@ -66,15 +66,23 @@ async function readAgesCsv(path: string): Promise<Map<string, number>> {
 async function readAgesSeriesMatrix(path: string): Promise<Map<string, number>> {
   const ages = new Map<string, number>();
   let gsms: string[] = [];
+  let titles: string[] = [];
   const rl = lineReader(path);
   for await (const line of rl) {
     if (line.startsWith('!Sample_geo_accession')) {
       gsms = splitCells(line).slice(1).map(unquote);
+    } else if (line.startsWith('!Sample_title')) {
+      titles = splitCells(line).slice(1).map(unquote);
     } else if (line.startsWith('!Sample_characteristics_ch1') && /age/i.test(line)) {
       const vals = splitCells(line).slice(1).map(unquote);
       vals.forEach((v, i) => {
         const m = v.match(/([-+]?\d+(?:\.\d+)?)/);
-        if (m && gsms[i]) { const a = parseFloat(m[1]); if (a > 0 && a < 130) ages.set(gsms[i], a); }
+        if (!m) return;
+        const a = parseFloat(m[1]);
+        if (!(a > 0 && a < 130)) return;
+        // map age by BOTH accession and title — beta-matrix columns may use either
+        if (gsms[i]) ages.set(gsms[i], a);
+        if (titles[i]) ages.set(titles[i], a);
       });
     }
   }
@@ -102,6 +110,10 @@ async function main() {
   console.log(`clock: ${(COEFFS as any).clock || 'Horvath2013'} · ${CLOCK.size} CpGs`);
   const ages = seriesPath ? await readAgesSeriesMatrix(seriesPath) : await readAgesCsv(agesPath!);
   console.log(`ages loaded: ${ages.size} samples`);
+  // normalized index (strip case + punctuation) for tolerant id matching
+  const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const normAges = new Map<string, number>();
+  for (const [k, v] of ages) normAges.set(norm(k), v);
 
   // stream the matrix, keeping only clock CpG rows
   let samples: string[] = [];
@@ -135,6 +147,7 @@ async function main() {
     for (const [k, v] of ages) if (k.toLowerCase() === lc) return v;
     const base = s.replace(/\.(AVG_Beta|Detection\.Pval)$/i, '').replace(/^X/, '');
     if (ages.has(base)) return ages.get(base);
+    const nv = normAges.get(norm(s)); if (nv != null) return nv;
     return undefined;
   };
 
@@ -148,7 +161,12 @@ async function main() {
     rows.push({ sample: samples[i], chrono, dnam: Math.round(r.dnamAge * 100) / 100, err: r.dnamAge - chrono, cov: r.coverage });
   }
 
-  if (rows.length === 0) { console.error('No samples matched between the matrix and the ages. Check sample-id formats.'); process.exit(1); }
+  if (rows.length === 0) {
+    console.error('No samples matched between the matrix and the ages. Check sample-id formats.');
+    console.error('  first matrix sample ids : ' + samples.slice(0, 5).join(' | '));
+    console.error('  first age keys          : ' + [...ages.keys()].slice(0, 5).join(' | '));
+    process.exit(1);
+  }
 
   const preds = rows.map((r) => r.dnam), actual = rows.map((r) => r.chrono);
   const r = pearson(preds, actual);
