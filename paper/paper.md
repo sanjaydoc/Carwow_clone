@@ -8,7 +8,7 @@ tags:
   - TypeScript
   - privacy-preserving
 authors:
-  - name: Dr. Sanjay Anbu, MBBS (Bachelor of Medicine and Bachelor of Surgery)
+  - name: Dr. Sanjay Anbu
     orcid: 0000-0000-0000-0000   # <<REPLACE with your ORCID (create free at orcid.org)>>
     affiliation: 1
     corresponding: true
