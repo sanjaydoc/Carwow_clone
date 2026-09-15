@@ -1,0 +1,19 @@
+{
+  "title": "StemCells Protocol Simulator",
+  "upload_type": "software",
+  "description": "A privacy-preserving, in-browser tool for epigenetic-age estimation (Horvath 2013 clock) and transparent regenerative-therapy planning. Validated on GSE40279 (n=656): Pearson r = 0.918, MAE 4.77 yr, median 3.87 yr.",
+  "creators": [
+    {
+      "name": "Anbu, Sanjay",
+      "orcid": "0009-0007-8480-6069",
+      "affiliation": "StemCells Protocol, Kilpauk, Chennai, Tamil Nadu, India"
+    }
+  ],
+  "keywords": [
+    "epigenetics",
+    "DNA methylation",
+    "epigenetic clock",
+    "regenerative medicine",
+    "privacy-preserving"
+  ]
+}

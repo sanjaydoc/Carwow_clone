@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "StemCells Protocol Simulator"
+abstract: "A privacy-preserving, in-browser tool for epigenetic-age estimation (Horvath 2013 clock) and transparent regenerative-therapy planning. Validated on GSE40279 (n=656): Pearson r = 0.918, MAE 4.77 yr."
+type: software
+authors:
+  - family-names: Anbu
+    given-names: Sanjay
+    orcid: "https://orcid.org/0009-0007-8480-6069"
+    affiliation: "StemCells Protocol, Kilpauk, Chennai, Tamil Nadu, India"
+version: "1.0.0"
+date-released: "2026-09-15"
+url: "https://stemcellsprotocol.com"
+repository-code: "https://github.com/sanjaydoc/Stemcellsprotocol"
+license-url: "https://github.com/sanjaydoc/Stemcellsprotocol/blob/main/LICENSE"
+keywords:
+  - epigenetics
+  - DNA methylation
+  - epigenetic clock
+  - regenerative medicine
+  - privacy-preserving
