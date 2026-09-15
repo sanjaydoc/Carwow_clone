@@ -82,6 +82,40 @@ built (state-conditioning, affective m_t, self-model, metacognition, empathy); 6
 `eval_ppl`, `eval_lsm`, `probe_state`, `eval_metacog`, `eval_caps`, `rsi_loop`. Artifacts: LSM
 Training Lab + LSM Architecture (claude.ai). GTA/CARLA game adapter is planned AFTER 10/10 green.
 
+## Publication & benchmarking (the epigenetic-clock software paper)
+Goal: publish the simulator's epigenetic clock as a **software paper** for academic credibility.
+(That is NOT clinical/regulatory accreditation — ISO 15189 / CLIA / GMP / IRB / CDSCO-FDA is a
+separate ladder.) Frame the paper honestly: only the **epigenetic-age computation is validated**;
+reprogramming / tumorigenicity / immunogenicity / cellular modules are illustrative, said so.
+
+- **Validation benchmark:** `client/scripts/bench-clock.ts` (dev-only, not in the shipped build;
+  `tsconfig` include is `["src"]`). Reuses the production `predict()`. Run from `client/`:
+  `npx -y tsx@4 scripts/bench-clock.ts --beta <GSE40279_average_beta.txt.gz> --series-matrix
+  <GSE40279_series_matrix.txt.gz> --out results.csv`. It joins GEO samples on the **trailing numeric
+  id** (matrix columns `X1001` ↔ series titles `age 67y 1001`). Docs: `client/scripts/BENCH.md`.
+  **Result on GSE40279 (Hannum whole-blood, n=656, 100% coverage): Pearson r = 0.918, MAE = 4.77 yr,
+  median 3.87 yr** — matches Horvath 2013 (~3.6 yr). This is the paper's headline number.
+- **Manuscript files (in `paper/`):** `paper.md` (JOSS format) + `paper.bib` + `validation.png`
+  (predicted-vs-actual scatter, built with **Pillow** — no matplotlib here) + `paper.pdf`
+  (bioRxiv-ready, built with **reportlab**, script in scratchpad — `pandoc` is NOT installed).
+  Author: **Dr. Sanjay Anbu**; affiliation **StemCells Protocol, Kilpauk, Chennai, Tamil Nadu
+  600010, India**; ORCID pending (only outstanding item).
+- **Tests + CI (JOSS requirement, done):** `client/scripts/clock.test.ts` (node:test, 5 tests,
+  run with `npx tsx@4 --test`) + `.github/workflows/ci.yml` ("CI" workflow: `tsc -b` + the tests
+  on every push/PR). Separate from the Pages "pages build and deployment" workflow.
+- **Publishing venues — recommended path: ORCID → Zenodo DOI → bioRxiv preprint → JOSS.** Optional
+  extras: arXiv (q-bio.GN), SoftwareX, GigaScience. Warn about predatory journals.
+- **Tracker artifact: "StemCells Publication Tracker"** —
+  https://claude.ai/artifact/QPQaUpgpgpR4tYRsjoX8qg (pinned; capabilities `artifact` + `db`). Holds a
+  benchmarks table, publishing-venue status pills, a readiness checklist, and a dynamic **Source
+  files** panel that lists the whole `manuscript` db collection. The text files are stored in the
+  artifact database (collection `manuscript`, doc ids `paper_md`, `paper_bib`, `clock_test`,
+  `ci_yml`). **When you change a paper file, update BOTH the repo file AND the db doc** (Artifact
+  `write_db` set, if_version-pinned) so the tracker stays in sync. Binaries (PDF, figure) live only
+  in the repo, not the db.
+- Optional next strengthener: add **Hannum + PhenoAge** clocks (multi-clock) to remove the
+  single-clock reviewer objection.
+
 ## Working style with this founder
 - He is busy and dislikes long paragraphs — answer in short, scannable lines/bullets.
 - He often runs commands on his own Windows laptop and pastes output back; give copy-paste-ready
