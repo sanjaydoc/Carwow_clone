@@ -114,6 +114,10 @@ async function main() {
   const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
   const normAges = new Map<string, number>();
   for (const [k, v] of ages) normAges.set(norm(k), v);
+  // trailing-number join: matrix cols like "X1001" ↔ GEO titles like "age 67y 1001"
+  const coreOf = (s: string) => (s.match(/(\d+)\s*$/)?.[1]) || '';
+  const coreAges = new Map<string, number>();
+  for (const [k, v] of ages) { if (/^gsm\d+$/i.test(k)) continue; const c = coreOf(k); if (c) coreAges.set(c, v); }
 
   // stream the matrix, keeping only clock CpG rows
   let samples: string[] = [];
@@ -148,6 +152,7 @@ async function main() {
     const base = s.replace(/\.(AVG_Beta|Detection\.Pval)$/i, '').replace(/^X/, '');
     if (ages.has(base)) return ages.get(base);
     const nv = normAges.get(norm(s)); if (nv != null) return nv;
+    const cv = coreAges.get(coreOf(s)); if (cv != null) return cv;
     return undefined;
   };
 
