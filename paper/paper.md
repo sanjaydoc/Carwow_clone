@@ -32,7 +32,11 @@ The epigenetic-age computation is a faithful TypeScript implementation of the Ho
 (2013) multi-tissue clock [@horvath2013] and runs **entirely on the user's device** — the
 methylation file is never uploaded to a server. The same code powers a public educational
 website and an offline research build. This paper describes the tool and validates its
-epigenetic-age estimates against a public reference cohort.
+epigenetic-age estimates against a public reference cohort (GSE40279, n=656), reproducing
+reference accuracy: Pearson r = 0.918, mean absolute error 4.77 years, median 3.87 years.
+Only the epigenetic-age computation is validated; the accompanying reprogramming,
+tumorigenicity and cellular-outcome modules are explicitly illustrative planning heuristics,
+not validated predictors.
 
 # Statement of need
 
